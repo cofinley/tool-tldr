@@ -1,8 +1,7 @@
 .idea/
 __pycache__/
 db_repository/
-search.db/
 tmp/
 venv/
-app.db
+*.db
 jquery*

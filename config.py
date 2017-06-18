@@ -1,6 +1,53 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+
+class Config:
+	SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+	SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+	SQLALCHEMY_TRACK_MODIFICATIONS = True
+	WHOOSH_BASE = os.path.join(basedir, 'search.db')
+	WTF_CSRF_ENABLED = True
+	MAIL_SUBJECT_PREFIX = '[Tool TL;DR]'
+	MAIL_SENDER = 'Tool TL;DR Admin <flasky@example.com>'
+	ADMIN = os.environ.get('TOOL_TLDR_ADMIN')
+
+	@staticmethod
+	def init_app(app):
+		pass
+
+
+class DevelopmentConfig(Config):
+	DEBUG = True
+	MAIL_SERVER = 'smtp.googlemail.com'
+	MAIL_PORT = 587
+	MAIL_USE_TLS = True
+	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+	SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
+	'sqlite:///' + os.path.join(basedir, 'app-dev.db')
+
+
+class TestingConfig(Config):
+	TESTING = True
+	SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
+	'sqlite:///' + os.path.join(basedir, 'app-test.db')
+
+
+class ProductionConfig(Config):
+	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+	'sqlite:///' + os.path.join(basedir, 'app.db')
+
+
+config = {
+	'development': DevelopmentConfig,
+	'testing': TestingConfig,
+	'production': ProductionConfig,
+	'default': DevelopmentConfig
+}
+
+
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
