@@ -140,6 +140,129 @@ def create_mock_users():
 	db.session.commit()
 
 
+def create_mock_categories():
+
+	# cats = {
+	# 	"Web Development": {
+	# 		"id": 1,
+	# 		"name": "Web Development",
+	# 		"parent": None
+	# 	},
+	# 	"Testing": {
+	# 		"id": 2,
+	# 		"name": "Testing",
+	# 		"parent": None
+	# 	},
+	# 	"GUI": {
+	# 		"id": 3,
+	# 		"name": "GUI",
+	# 		"parent": None
+	# 	},
+	# 	"Systems": {
+	# 		"id": 4,
+	# 		"name": "Systems",
+	# 		"parent": None
+	# 	},
+	# 	"Mobile": {
+	# 		"id": 5,
+	# 		"name": "Mobile",
+	# 		"parent": None
+	# 	},
+	# 	"Development": {
+	# 		"id": 6,
+	# 		"name": "Development",
+	# 		"parent": None
+	# 	},
+	# 	"Build": {
+	# 		"id": 7,
+	# 		"name": "Build",
+	# 		"parent": None
+	# 	},
+	# 	"Command Line": {
+	# 		"id": 8,
+	# 		"name": "Command Line",
+	# 		"parent": None
+	# 	},
+	# 	"Data Analysis": {
+	# 		"id": 9,
+	# 		"name": "Data Analysis",
+	# 		"parent": None
+	# 	},
+	# 	"Machine Learning": {
+	# 		"id": 10,
+	# 		"name": "Machine Learning",
+	# 		"parent": None
+	# 	},
+	# 	"Game Development": {
+	# 		"id": 11,
+	# 		"name": "Game Development",
+	# 		"parent": None
+	# 	},
+	# 	"Networking": {
+	# 		"id": 12,
+	# 		"name": "Networking",
+	# 		"parent": None
+	# 	},
+	# 	"Cloud": {
+	# 		"id": 13,
+	# 		"name": "Cloud",
+	# 		"parent": None
+	# 	},
+	# 	"Testing2": {
+	# 		"id": 14,
+	# 		"name": "Testing",
+	# 		"parent": None
+	# 	},
+	# 	"Item2": {
+	# 		"id": 15,
+	# 		"name": "Item",
+	# 		"parent": None
+	# 	},
+	# 	"Item": {
+	# 		"id": 16,
+	# 		"name": "Item",
+	# 		"parent": None
+	# 	},
+	# 	"Front-end": {
+	# 		"id": 17,
+	# 		"name": "Front-end",
+	# 		"parent": 1
+	# 	},
+	# 	"Back-end": {
+	# 		"id": 18,
+	# 		"name": "Back-end",
+	# 		"parent": 1
+	# 	},
+	# 	"Application Framework": {
+	# 		"id": 19,
+	# 		"name": "Application Framework",
+	# 		"parent": 18
+	# 	},
+	# }
+
+	l = ["Web Development",
+	 "Testing",
+	 "GUI",
+	 "Systems",
+	 "Mobile",
+	 "Development",
+	 "Build",
+	 "Command Line",
+	 "Data Analysis",
+	 "Machine Learning",
+	 "Game Development",
+	 "Networking",
+	 "Cloud",
+	 "Testing2",
+	 "Item",
+	 "Item2"]
+
+	for cat in l:
+		c = models.Category(name=cat, parent=None)
+		db.session.add(c)
+	db.session.commit()
+
+
 def create_mock_tools():
 	t1 = models.Tool(
 		name="Flask",

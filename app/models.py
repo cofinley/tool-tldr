@@ -1,7 +1,14 @@
-from app import db, app
-import flask_whooshalchemyplus
+from . import db, login_manager
+from flask import current_app
 from whoosh.analysis import FancyAnalyzer
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+
+class Permission:
+	WRITE_ARTICLES = 0x04
+	MODERATE_COMMENTS = 0x08
+	ADMINISTER = 0x80
 
 
 class Role(db.Model):
@@ -22,6 +29,7 @@ class User(db.Model):
 	password_hash = db.Column(db.String(128))
 	tools = db.relationship("Tool", backref="author", lazy="dynamic")
 	role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
+	confirmed = db.Column(db.Boolean, default=False)
 
 	@property
 	def password(self):
@@ -33,6 +41,68 @@ class User(db.Model):
 
 	def verify_password(self, password):
 		return check_password_hash(self.password_hash, password)
+
+	def generate_confirmation_token(self, expiration=3600):
+		s = Serializer(current_app.config['SECRET_KEY'], expiration)
+		return s.dumps({'confirm': self.id})
+
+	def confirm(self, token):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except:
+			return False
+		if data.get('confirm') != self.id:
+			return False
+		self.confirmed = True
+		db.session.add(self)
+		return True
+
+	def generate_reset_token(self, expiration=3600):
+		s = Serializer(current_app.config['SECRET_KEY'], expiration)
+		return s.dumps({'reset': self.id})
+
+	def generate_email_change_token(self, new_email, expiration=3600):
+		s = Serializer(current_app.config['SECRET_KEY'], expiration)
+		return s.dumps({'change_email': self.id, 'new_email': new_email})
+
+	def change_email(self, token):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except:
+			return False
+		if data.get('change_email') != self.id:
+			return False
+		new_email = data.get('new_email')
+		if new_email is None:
+			return False
+		if self.query.filter_by(email=new_email).first() is not None:
+			return False
+		self.email = new_email
+		db.session.add(self)
+		return True
+
+	def generate_auth_token(self, expiration):
+		s = Serializer(current_app.config['SECRET_KEY'],
+					   expires_in=expiration)
+		return s.dumps({'id': self.id}).decode('ascii')
+
+	@staticmethod
+	def verify_auth_token(token):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except:
+			return None
+		return User.query.get(data['id'])
+
+	def can(self, permissions):
+		return self.role is not None and \
+			   (self.role.permissions & permissions) == permissions
+
+	def is_administrator(self):
+		return self.can(Permission.ADMINISTER)
 
 	@property
 	def is_authenticated(self):
@@ -51,6 +121,11 @@ class User(db.Model):
 
 	def __repr__(self):
 		return "<User %r>" % self.username
+
+
+@login_manager.user_loader
+def load_user(user_id):
+	return User.query.get(int(user_id))
 
 
 class Category(db.Model):
@@ -120,4 +195,4 @@ class Tool(db.Model):
 		return "<Tool %d: %r>" % (self.id, self.name)
 
 
-flask_whooshalchemyplus.init_app(app)
+# flask_whooshalchemyplus.init_app(app)

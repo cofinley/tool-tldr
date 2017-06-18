@@ -1,13 +1,16 @@
-from flask import render_template, flash, redirect, request, jsonify
-from app import app, models, utils
-from .forms import LoginForm, RegistrationForm
+from flask import render_template, redirect, url_for, abort, flash, request, jsonify
+from . import main
+from .. import models, cache, utils
+from app.auth.forms import LoginForm, RegistrationForm
+from ..decorators import admin_required, permission_required
 
 
 # timestamp=datetime.datetime.utcnow()
 
 
-@app.route("/")
-@app.route("/index")
+@main.route("/")
+@main.route("/index")
+@cache.cached(timeout=50)
 def index():
 	categories = [category.name for category in models.Category.query.filter_by(parent=None)]
 	show_more = False
@@ -15,35 +18,12 @@ def index():
 		print("More than 16 cats")
 		show_more = True
 	return render_template("index.html",
-						   title="Tool TL;DR",
 						   categories=categories[:16],
 						   show_more=show_more)
 
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-	form = LoginForm()
-	if form.validate_on_submit():
-		flash("Login requested for username {}".format(str(form.username.data)))
-		return redirect("/index")
-	return render_template("login.html",
-						   title="Log in",
-						   form=form)
-
-
-@app.route("/register", methods=["GET", "POST"])
-def signup():
-	form = RegistrationForm()
-	if form.validate_on_submit():
-		flash("Register requested for username {}".format(str(form.username.data)))
-		return redirect("/index")
-	return render_template("register.html",
-						   title="Sign up",
-						   form=form)
-
-
-@app.route("/explore", defaults={"category": ""})
-@app.route("/explore/<path:category>")
+@main.route("/explore", defaults={"category": ""})
+@main.route("/explore/<path:category>")
 def browse_categories(category):
 	queried_env = request.args.get("env")
 	print("Queried env:", repr(queried_env))
@@ -74,7 +54,7 @@ def browse_categories(category):
 						   tree=tree)
 
 
-@app.route("/tools/<path:tool_name>")
+@main.route("/tools/<path:tool_name>")
 def fetch_tool_page(tool_name):
 	tool = models.Tool.query.filter_by(name_lower=tool_name.lower()).first()
 
@@ -99,7 +79,6 @@ def fetch_tool_page(tool_name):
 	project_link = utils.get_hostname(tool.link)
 
 	return render_template("tool.html",
-						   title=tool_name,
 						   content=tool,
 						   env_alts=alts_for_this_env,
 						   other_alts=alts_for_other_envs,
@@ -107,7 +86,7 @@ def fetch_tool_page(tool_name):
 						   link=project_link)
 
 
-@app.route("/search")
+@main.route("/search")
 def search_tools():
 	tool_name_query = request.args.get("term")
 	results = []
