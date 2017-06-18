@@ -1,50 +1,51 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>{{ title }}</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>{{ title }}</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="../static/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i"
+              rel="stylesheet">
+        <link href="../static/css/style.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="../static/favicons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../static/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../static/favicons/favicon-16x16.png">
-    <link rel="manifest" href="../static/favicons/manifest.json">
-    <link rel="mask-icon" href="../static/favicons/safari-pinned-tab.svg" color="#e33b3b">
-    <link rel="shortcut icon" href="../static/favicons/favicon.ico">
-    <meta name="msapplication-config" content="../static/favicons/browserconfig.xml">
-    <meta name="theme-color" content="#e33b3b">
+        <link rel="apple-touch-icon" sizes="180x180" href="../static/favicons/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="../static/favicons/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="../static/favicons/favicon-16x16.png">
+        <link rel="manifest" href="../static/favicons/manifest.json">
+        <link rel="mask-icon" href="../static/favicons/safari-pinned-tab.svg" color="#e33b3b">
+        <link rel="shortcut icon" href="../static/favicons/favicon.ico">
+        <meta name="msapplication-config" content="../static/favicons/browserconfig.xml">
+        <meta name="theme-color" content="#e33b3b">
 
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" defer></script>
-    <script> window.Fuse || document.write('<script src="../static/js/jquery-3.2.1.min.js" defer><\/script>'); </script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
-    <script> window.Fuse || document.write('<script src="../static/js/jquery-ui.min.js" defer><\/script>'); </script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" defer></script>
+        <script> window.Fuse || document.write('<script src="../static/js/jquery-3.2.1.min.js" defer><\/script>'); </script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
+        <script> window.Fuse || document.write('<script src="../static/js/jquery-ui.min.js" defer><\/script>'); </script>
 
-    <script src="../static/js/autocomplete.js" defer></script>
-  </head>
-  <body>
- 	<div id="header">
-		<div id="logo">
-			<span class="logo-text-tool">tool</span> <span class="logo-text-tldr">tl;dr</span>
-		</div>
+        <script src="../static/js/autocomplete.js" defer></script>
+    </head>
+    <body>
+    <div id="header">
+        <div id="logo">
+            <span class="logo-text-tool">tool</span> <span class="logo-text-tldr">tl;dr</span>
+        </div>
         <div id="nav-user-actions">
             <p class="nav-user-text-button"><a href="/login">Log in</a></p>
             <p class="nav-user-text-button"><a href="/register">Sign up</a></p>
         </div>
-		<div id="nav">
-			<div id="links">
-				<span><a class="nav-link" href="/">home</a></span>
-				<span><a class="nav-link" href="/explore">browse</a></span>
-				<span><a class="nav-link" href="">about</a></span>
-			</div>
+        <div id="nav">
+            <div id="links">
+                <span><a class="nav-link" href="/">home</a></span>
+                <span><a class="nav-link" href="/explore">browse</a></span>
+                <span><a class="nav-link" href="">about</a></span>
+            </div>
             <input id="search-input" placeholder="Search">
-		</div>
-	</div>
-	<div id="content">
+        </div>
+    </div>
+    <div id="content">
         {% block content %}{% endblock %}
-	</div>
-  </body>
+    </div>
+    </body>
 </html>
