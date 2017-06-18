@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="tagline">
+        <p>A community wiki for navigating programming tools in layman's terms.</p>
+    </div>
+    <input id="big-search-bar-input" placeholder="Search software tools" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search software tools'" />
+    <div id="categories">
+        <p id="category-title">Categories</p>
+        <ul id="category-links">
+            {% for category in categories %}
+                <li><span class="category-list-item"><a href="{{ "/explore/" ~ category}}">{{ category }}</a></span></li>
+            {% endfor %}
+        </ul>
+        {%  if show_more %}
+            <p id="show-more"><a href="/explore">Show More...</a></p>
+        {% endif %}
+    </div>
+{% endblock %}

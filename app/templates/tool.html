@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="tool-content">
+    <div id="tool-left-content">
+        <div class="tool-question-block">
+            <h1 class="tool-question-title">What</h1>
+            <p>{{ content.what }}</p>
+        </div>
+        <div class="tool-question-block">
+            <h1 class="tool-question-title">Why</h1>
+            <p>{{ content.why }}</p>
+        </div>
+        <div class="tool-question-block">
+            <h1 class="tool-question-title">Where</h1>
+            <p>{{ content.where }}</p>
+        </div>
+        <div class="tool-question-block">
+            <h1 class="tool-question-title">Alternatives</h1>
+            {% if env_alts %}
+            <div class="env-alts-section">
+                <h3 class="env-alts-env-title"><i>For {{ content.env.title() }}</i></h3>
+                <ul class="env-alts-list">
+                    {% for alt in env_alts[:5] %}
+                        <li><a href="{{ '/tools/' ~ alt.name }}">{{ alt.name }}</a></li>
+                        {%- if loop.index > 0 %}
+                            <p class="alts-more-link"><a href="{{ '/explore/' ~ tree[-1].name ~ '?env=' ~ content.env }}">More for {{ content.env.title() }}...</a></p>
+                            {% break %}
+                        {% endif %}
+                    {%- endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% if other_alts %}
+            <div class="env-alts-section">
+                <h3 class="env-alts-env-title"><i>For other environments</i></h3>
+                <ul class="env-alts-list">
+                    {% for alt in other_alts[:5] %}
+                        <li><a href="{{ '/tools/' ~ alt.name }}">{{ alt.name }}</a> ({{ alt.env.title() }})</li>
+                        {%- if loop.index > 0 %}
+                            <p class="alts-more-link"><a href="{{ '/explore/' ~ tree[-1].name }}">More for all environments...</a></p>
+                            {% break %}
+                        {% endif %}
+                    {%- endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% if not env_alts and not other_alts %}
+                <p><i>No alternatives at this time</i></p>
+            {% endif %}
+        </div>
+    </div>
+    <div id="tool-right-content">
+        <div id="tool-pane">
+            <div id="tool-pane-top">
+                <div id="tool-avatar" style="background: url({{ content.avatar_url }}) no-repeat white"></div>
+                <h1 id="tool-name">{{ content.name }}</h1>
+            </div>
+            <hr>
+            <div id="tool-pane-bottom">
+                <table id="tool-metadata-table">
+                    <tr class="tool-metadata-row ">
+                        <td class="tool-metadata-name">Category</td>
+                        <td class="tool-metadata-value">
+                            {% for parent in tree %}
+                                <p class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a href="{{ '/explore/' ~ parent.name }}">{{ parent.name }}</a></p>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr class="tool-metadata-row">
+                        <td class="tool-metadata-name">Environment</td>
+                        <td class="tool-metadata-value">{{ content.env.title() }}</td>
+                    </tr>
+                    <tr class="tool-metadata-row">
+                        <td class="tool-metadata-name">Created</td>
+                        <td class="tool-metadata-value">{{ content.created }}</td>
+                    </tr>
+                    <tr class="tool-metadata-row">
+                        <td class="tool-metadata-name">Version</td>
+                        <td class="tool-metadata-value">{{ content.version }}</td>
+                    </tr>
+                    <tr class="tool-metadata-row">
+                        <td class="tool-metadata-name">Link</td>
+                        <td class="tool-metadata-value"><a id="tool-link" href="{{ content.link }}" target="_blank">{{ link }}</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
