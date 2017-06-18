@@ -99,10 +99,44 @@ class PasswordHashTestCase(unittest.TestCase):
 		self.assertTrue(u.password_hash != u2.password_hash)
 
 
+def tear_down_roles():
+	r = models.Role.query.all()
+	for role in r:
+		db.session.delete(role)
+	db.session.commit()
+
+
+def tear_down_users():
+	u = models.User.query.all()
+	for user in u:
+		db.session.delete(user)
+	db.session.commit()
+
+
 def tear_down_tools():
 	tools = models.Tool.query.all()
 	for tool in tools:
 		db.session.delete(tool)
+	db.session.commit()
+
+
+def create_mock_roles():
+	admin = models.Role(name="Admin")
+	mod = models.Role(name="Moderator")
+	user = models.Role(name="User")
+	db.session.add(admin)
+	db.session.add(mod)
+	db.session.add(user)
+	db.session.commit()
+
+
+def create_mock_users():
+	admin_user = models.User(username="Test Admin", email="admins@testing.com", password="test", role_id=1)
+	mod_user = models.User(username="Test Mod", email="mod@testing.com", password="test", role_id=2)
+	user_user = models.User(username="Test User", email="user@testing.com", password="test", role_id=3)
+	db.session.add(admin_user)
+	db.session.add(mod_user)
+	db.session.add(user_user)
 	db.session.commit()
 
 
@@ -138,7 +172,7 @@ def create_mock_tools():
 		revision_number=0,
 		revision_created_time=datetime.datetime.utcnow(),
 		revision_modified_time=datetime.datetime.utcnow(),
-		revision_owner=1,
+		revision_owner=2,
 		env="python",
 		name_lower="django"
 	)
@@ -156,7 +190,7 @@ def create_mock_tools():
 		revision_number=0,
 		revision_created_time=datetime.datetime.utcnow(),
 		revision_modified_time=datetime.datetime.utcnow(),
-		revision_owner=1,
+		revision_owner=3,
 		env="ruby",
 		name_lower="ruby on rails"
 	)
@@ -167,7 +201,16 @@ def create_mock_tools():
 	db.session.commit()
 
 
-def test_bottom_up_tree(self):
+def reset_db():
+	tear_down_roles()
+	tear_down_users()
+	tear_down_tools()
+	create_mock_roles()
+	create_mock_users()
+	create_mock_tools()
+
+
+def test_bottom_up_tree():
 	parent_id = 18
 	parent_list = utils.build_bottom_up_tree(parent_id)
 	for i, parent in enumerate(parent_list):
