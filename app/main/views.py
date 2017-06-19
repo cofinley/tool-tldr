@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, abort, flash, request, jsonify
+from flask import render_template, redirect, url_for, abort, flash, request, jsonify, current_app
 from . import main
 from .. import models, cache, utils
 from app.auth.forms import LoginForm, RegistrationForm
@@ -94,3 +94,9 @@ def search_tools():
 	for result in search:
 		results.append(result.name)
 	return jsonify(results)
+
+
+@main.route('/user/<username>')
+def user(username):
+	user = models.User.query.filter_by(username=username).first_or_404()
+	return render_template('user.html', user=user)

@@ -10,7 +10,7 @@ class Config:
 	WHOOSH_BASE = os.path.join(basedir, 'search.db')
 	WTF_CSRF_ENABLED = True
 	MAIL_SUBJECT_PREFIX = '[Tool TL;DR]'
-	MAIL_SENDER = 'Tool TL;DR Admin <tooltldr@gmail.com>'
+	MAIL_SENDER = "connor.finley5@gmail.com"
 	ADMIN = os.environ.get('TOOL_TLDR_ADMIN')
 	CACHE_TYPE = "redis"
 	CACHE_REDIS_URL = "redis://localhost:6379"
@@ -25,8 +25,11 @@ class DevelopmentConfig(Config):
 	MAIL_SERVER = 'smtp.googlemail.com'
 	MAIL_PORT = 587
 	MAIL_USE_TLS = True
-	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+	MAIL_USE_SSL = False
+	# MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+	MAIL_USERNAME = "connor.finley5@gmail.com"
+	# MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+	MAIL_PASSWORD = "neqdrsuqmozajhyo"
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
 	'sqlite:///' + os.path.join(basedir, 'app-dev.db')
 

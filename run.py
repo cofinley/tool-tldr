@@ -33,6 +33,7 @@ def test():
 	unittest.TextTestRunner(verbosity=2).run(tests)
 
 
+@app.cli.command()
 def deploy():
 	"""Run deployment tasks."""
 	from flask_migrate import upgrade

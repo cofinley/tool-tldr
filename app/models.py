@@ -1,8 +1,11 @@
+from datetime import datetime
+
 from . import db, login_manager
 from flask import current_app
 from whoosh.analysis import FancyAnalyzer
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from flask_login import UserMixin, AnonymousUserMixin
 
 
 class Permission:
@@ -16,6 +19,24 @@ class Role(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(64), unique=True)
 	users = db.relationship("User", backref="role", lazy="dynamic")
+	permissions = db.Column(db.Integer)
+
+	@staticmethod
+	def insert_roles():
+		roles = {
+			'User': (Permission.WRITE_ARTICLES, True),
+			'Moderator': (Permission.WRITE_ARTICLES |
+						  Permission.MODERATE_COMMENTS, False),
+			'Admin': (0xff, False)
+		}
+		for r in roles:
+			role = Role.query.filter_by(name=r).first()
+			if role is None:
+				role = Role(name=r)
+			role.permissions = roles[r][0]
+			role.default = roles[r][1]
+			db.session.add(role)
+		db.session.commit()
 
 	def __repr__(self):
 		return "<Role %r>" % self.name
@@ -30,6 +51,7 @@ class User(db.Model):
 	tools = db.relationship("Tool", backref="author", lazy="dynamic")
 	role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
 	confirmed = db.Column(db.Boolean, default=False)
+	last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
 
 	@property
 	def password(self):
@@ -104,6 +126,10 @@ class User(db.Model):
 	def is_administrator(self):
 		return self.can(Permission.ADMINISTER)
 
+	def ping(self):
+		self.last_seen = datetime.utcnow()
+		db.session.add(self)
+
 	@property
 	def is_authenticated(self):
 		return True
@@ -121,6 +147,16 @@ class User(db.Model):
 
 	def __repr__(self):
 		return "<User %r>" % self.username
+
+
+class AnonymousUser(AnonymousUserMixin):
+	def can(self, permissions):
+		return False
+
+	def is_administrator(self):
+		return False
+
+login_manager.anonymous_user = AnonymousUser
 
 
 @login_manager.user_loader
