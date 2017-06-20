@@ -1,13 +1,18 @@
-from flask import render_template, flash, redirect, request, jsonify
-from app import app, models, utils
-from .forms import LoginForm, RegistrationForm
+from flask import render_template, redirect, url_for, abort, flash, request, jsonify, current_app
+from . import main
+from .. import models, cache, utils, db
+from app.main.forms import EditProfileForm, EditProfileAdminForm
+from app.auth.forms import LoginForm, RegistrationForm
+from ..decorators import admin_required, permission_required
+from flask_login import login_required, current_user
 
 
 # timestamp=datetime.datetime.utcnow()
 
 
-@app.route("/")
-@app.route("/index")
+@main.route("/")
+@main.route("/index")
+@cache.cached(timeout=50)
 def index():
 	categories = [category.name for category in models.Category.query.filter_by(parent=None)]
 	show_more = False
@@ -15,38 +20,14 @@ def index():
 		print("More than 16 cats")
 		show_more = True
 	return render_template("index.html",
-						   title="Tool TL;DR",
 						   categories=categories[:16],
 						   show_more=show_more)
 
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-	form = LoginForm()
-	if form.validate_on_submit():
-		flash("Login requested for username {}".format(str(form.username.data)))
-		return redirect("/index")
-	return render_template("login.html",
-						   title="Log in",
-						   form=form)
-
-
-@app.route("/register", methods=["GET", "POST"])
-def signup():
-	form = RegistrationForm()
-	if form.validate_on_submit():
-		flash("Register requested for username {}".format(str(form.username.data)))
-		return redirect("/index")
-	return render_template("register.html",
-						   title="Sign up",
-						   form=form)
-
-
-@app.route("/explore", defaults={"category": ""})
-@app.route("/explore/<path:category>")
+@main.route("/explore", defaults={"category": ""})
+@main.route("/explore/<path:category>")
 def browse_categories(category):
 	queried_env = request.args.get("env")
-	print("Queried env:", repr(queried_env))
 	if category:
 		main_category = models.Category.query.filter_by(name=category).first()
 		title = main_category.name
@@ -74,7 +55,7 @@ def browse_categories(category):
 						   tree=tree)
 
 
-@app.route("/tools/<path:tool_name>")
+@main.route("/tools/<path:tool_name>")
 def fetch_tool_page(tool_name):
 	tool = models.Tool.query.filter_by(name_lower=tool_name.lower()).first()
 
@@ -99,7 +80,6 @@ def fetch_tool_page(tool_name):
 	project_link = utils.get_hostname(tool.link)
 
 	return render_template("tool.html",
-						   title=tool_name,
 						   content=tool,
 						   env_alts=alts_for_this_env,
 						   other_alts=alts_for_other_envs,
@@ -107,7 +87,7 @@ def fetch_tool_page(tool_name):
 						   link=project_link)
 
 
-@app.route("/search")
+@main.route("/search")
 def search_tools():
 	tool_name_query = request.args.get("term")
 	results = []
@@ -115,3 +95,43 @@ def search_tools():
 	for result in search:
 		results.append(result.name)
 	return jsonify(results)
+
+
+@main.route('/user/<username>')
+def user(username):
+	user = models.User.query.filter_by(username=username).first_or_404()
+	return render_template('user.html', user=user)
+
+
+@main.route('/edit-profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+	form = EditProfileForm()
+	if form.validate_on_submit():
+		current_user.username = form.username.data
+		db.session.add(current_user)
+		flash('Your profile has been updated.')
+		return redirect(url_for('.user', username=current_user.username))
+	form.username.data = current_user.username
+	return render_template('edit_profile.html', form=form)
+
+
+@main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_profile_admin(id):
+	user = models.User.query.get_or_404(id)
+	form = EditProfileAdminForm(user=user)
+	if form.validate_on_submit():
+		user.email = form.email.data
+		user.username = form.username.data
+		user.confirmed = form.confirmed.data
+		user.role = models.Role.query.get(form.role.data)
+		db.session.add(user)
+		flash('The profile has been updated.')
+		return redirect(url_for('.user', username=user.username))
+	form.email.data = user.email
+	form.username.data = user.username
+	form.confirmed.data = user.confirmed
+	form.role.data = user.role_id
+	return render_template('edit_profile.html', form=form, user=user)

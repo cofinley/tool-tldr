@@ -1,10 +1,11 @@
 {% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
 {% block content %}
 <h1>{{ title }}</h1>
 <ul id="explore-list">
 {#    {% for category, value in tree.items() recursive %}#}
     {% for item in tree %}
-        {% if item._cached_tablename == "category" %}
+        {% if item._cached_tablename == "categories" %}
             <li class="explore-link"><input class="explore-checkbox" type="checkbox" /><span class="category-list-item"><a href="{{ '/explore/' ~ item.name }}">{{ item.name }}</a></span>
         {% else %}
             <li class="explore-link"><input class="explore-checkbox" type="checkbox" /><span class="category-list-item"><a href="{{ '/tools/' ~ item.name }}">{{ item.name }}</a></span>

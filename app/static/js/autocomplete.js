@@ -1,5 +1,4 @@
 $(function () {
-    console.log("running");
     var cache = {};
     $("#search-input").autocomplete({
         minLength: 3,
