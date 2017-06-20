@@ -84,6 +84,18 @@ class User(db.Model):
 		s = Serializer(current_app.config['SECRET_KEY'], expiration)
 		return s.dumps({'reset': self.id})
 
+	def reset_password(self, token, new_password):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except:
+			return False
+		if data.get('reset') != self.id:
+			return False
+		self.password = new_password
+		db.session.add(self)
+		return True
+
 	def generate_email_change_token(self, new_email, expiration=3600):
 		s = Serializer(current_app.config['SECRET_KEY'], expiration)
 		return s.dumps({'change_email': self.id, 'new_email': new_email})
