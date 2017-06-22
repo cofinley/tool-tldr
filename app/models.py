@@ -6,6 +6,9 @@ from whoosh.analysis import FancyAnalyzer
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, AnonymousUserMixin
+from .history_meta import Versioned
+from sqlalchemy import create_engine, MetaData, Table
+from sqlalchemy.orm import mapper, sessionmaker
 
 
 class Permission:
@@ -48,7 +51,10 @@ class User(db.Model):
 	username = db.Column(db.String(64), index=True, unique=True)
 	email = db.Column(db.String(120), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
-	tools = db.relationship("Tool", backref="author", lazy="dynamic")
+	name = db.Column(db.String(64))
+	about_me = db.Column(db.Text())
+	member_since = db.Column(db.DateTime(), default=datetime.utcnow)
+	# edits = db.relationship("Edit", backref="author", lazy="dynamic")
 	role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
 	confirmed = db.Column(db.Boolean, default=False)
 	last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
@@ -198,8 +204,8 @@ src_alts = db.Table("src_alts",
 )
 
 
-class Tool(db.Model):
-	__tablename__= "tools"
+class Tool(Versioned, db.Model):
+	__tablename__ = "tools"
 	__searchable__ = ["name"]
 	__analyzer__ = FancyAnalyzer()
 
@@ -210,21 +216,18 @@ class Tool(db.Model):
 	parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
 	env = db.Column(db.String(30))
 	created = db.Column(db.String(25))
-	version = db.Column(db.String(10))
+	project_version = db.Column(db.String(10))
 	link = db.Column(db.String(150))
 	what = db.Column(db.String(200))
 	why = db.Column(db.String(200))
 	where = db.Column(db.String(200))
+	# edits = db.relationship("Edit", backref="tool", lazy="dynamic")
 	dest_alts = db.relationship("Tool",
 								secondary=src_alts,
 								primaryjoin=src_alts.c.src == id,
 								secondaryjoin=src_alts.c.dest == id,
 								backref=db.backref("src_alts", lazy="dynamic"),
 								lazy="dynamic")
-	revision_number = db.Column(db.Integer)
-	revision_created_time = db.Column(db.DateTime)
-	revision_modified_time = db.Column(db.DateTime)
-	revision_owner = db.Column(db.Integer, db.ForeignKey("users.id"))
 
 	def add_alt(self, tool):
 		if not self.has_alt(tool):
@@ -243,4 +246,18 @@ class Tool(db.Model):
 		return "<Tool %d: %r>" % (self.id, self.name)
 
 
-# flask_whooshalchemyplus.init_app(app)
+class ToolHistory(object):
+	pass
+
+
+def load_tool_history_session():
+	db_uri = current_app.config["SQLALCHEMY_DATABASE_URI"]
+	engine = create_engine(db_uri)
+
+	metadata = MetaData(engine)
+	history = Table("tools_history", metadata, autoload=True)
+	mapper(ToolHistory, history)
+
+	Session = sessionmaker(bind=engine)
+	session = Session()
+	return session

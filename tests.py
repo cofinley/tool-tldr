@@ -16,9 +16,7 @@ class AltTestCase(unittest.TestCase):
 			link="https://flask.pocoo.com",
 			what="lipsum",
 			why="lipsum",
-			where="lipsum",
-			revision_number=0,
-			revision_owner=1
+			where="lipsum"
 		)
 		t2 = models.Tool(
 			id=2,
@@ -31,9 +29,7 @@ class AltTestCase(unittest.TestCase):
 			link="https://flask.pocoo.com",
 			what="lipsum2",
 			why="lipsu2m",
-			where="lipsum2",
-			revision_number=0,
-			revision_owner=1
+			where="lipsum2"
 		)
 
 		db.session.add(t1)
@@ -240,25 +236,12 @@ def create_mock_categories():
 	# 	},
 	# }
 
-	l = ["Web Development",
-	 "Testing",
-	 "GUI",
-	 "Systems",
-	 "Mobile",
-	 "Development",
-	 "Build",
-	 "Command Line",
-	 "Data Analysis",
-	 "Machine Learning",
-	 "Game Development",
-	 "Networking",
-	 "Cloud",
-	 "Testing2",
-	 "Item",
-	 "Item2"]
+	# for cat in cats:
+	# 	c = models.Category(id=cats[cat]["id"], name=cats[cat]["name"], parent=cats[cat]["parent"])
+	# 	db.session.add(c)
 
-	for cat in l:
-		c = models.Category(name=cat, parent=None)
+	for i, cat in enumerate(l):
+		c = models.Category(id=i+1, name=cat, parent=None)
 		db.session.add(c)
 	db.session.commit()
 
@@ -269,15 +252,11 @@ def create_mock_tools():
 		avatar_url="http://flask.pocoo.org/docs/0.12/_static/flask.png",
 		parent_category_id=18,
 		created="April 12, 2010",
-		version="0.12",
+		project_version="0.12",
 		link="http://flask.pocoo.org",
 		what="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		where="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		why="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
-		revision_number=0,
-		revision_created_time=datetime.datetime.utcnow(),
-		revision_modified_time=datetime.datetime.utcnow(),
-		revision_owner=1,
 		env="python",
 		name_lower="flask"
 	)
@@ -287,15 +266,11 @@ def create_mock_tools():
 		avatar_url="https://www.djangoproject.com/s/img/logos/django-logo-positive.png",
 		parent_category_id=18,
 		created="April 13, 2010",
-		version="1.11.2",
+		project_version="1.11.2",
 		link="https://www.djangoproject.com/",
 		what="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		where="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		why="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
-		revision_number=0,
-		revision_created_time=datetime.datetime.utcnow(),
-		revision_modified_time=datetime.datetime.utcnow(),
-		revision_owner=2,
 		env="python",
 		name_lower="django"
 	)
@@ -305,15 +280,11 @@ def create_mock_tools():
 		avatar_url="http://rubyonrails.org/images/rails-logo.svg",
 		parent_category_id=18,
 		created="April 14, 2010",
-		version="5.1.1",
+		project_version="5.1.1",
 		link="http://rubyonrails.org/",
 		what="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		where="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		why="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
-		revision_number=0,
-		revision_created_time=datetime.datetime.utcnow(),
-		revision_modified_time=datetime.datetime.utcnow(),
-		revision_owner=3,
 		env="ruby",
 		name_lower="ruby on rails"
 	)
@@ -328,6 +299,12 @@ def reset_db():
 	tear_down_roles()
 	tear_down_users()
 	tear_down_tools()
+	create_mock_roles()
+	create_mock_users()
+	create_mock_tools()
+
+
+def populate_db():
 	create_mock_roles()
 	create_mock_users()
 	create_mock_tools()
