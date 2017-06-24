@@ -135,3 +135,14 @@ def edit_profile_admin(id):
 	form.confirmed.data = user.confirmed
 	form.role.data = user.role_id
 	return render_template('edit_profile.html', form=form, user=user)
+
+
+@main.route("/view_all_edits/<tool_name>")
+def view_edits(tool_name):
+	current_version = models.Tool.query.filter_by(name=tool_name).first()
+	session = models.load_tool_history_session()
+	previous_versions = session.query(models.ToolHistory).filter(models.ToolHistory.id == current_version.id).all()
+	return render_template("view_edits.html",
+					tool_name=tool_name,
+					current_version=current_version,
+					previous_versions=previous_versions)

@@ -8,9 +8,13 @@ from flask_login import LoginManager
 from config import config
 import flask_whooshalchemyplus
 from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SignallingSession
+from .history_meta import versioned_session
+
 
 bootstrap = Bootstrap()
 mail = Mail()
+versioned_session(SignallingSession)
 db = SQLAlchemy()
 cache = Cache()
 
