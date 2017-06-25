@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, abort, flash, request, jsonify, current_app
+from flask import render_template, redirect, url_for, flash, request, jsonify
 from sqlalchemy.orm import sessionmaker
 
 from . import main
@@ -71,12 +71,6 @@ def fetch_category_page(category_name):
 @main.route("/tools/<path:tool_name>")
 def fetch_tool_page(tool_name):
 	tool = models.Tool.query.filter(func.lower(models.Tool.name) == func.lower(tool_name)).first()
-
-	# KEEP THESE B/C USERS MAY WANT TO SPECIFY ALTERNATIVES THEMSELVES RATHER THAN
-	#   RELYING ON AGREED-UPON PARENT CATEGORIES
-	# this_env = tool.env
-	# alts_for_this_env = tool.dest_alts.filter_by(env=this_env).all()
-	# alts_for_other_envs = tool.dest_alts.filter(models.Tool.env != this_env).all()
 
 	alts_for_this_env = models.Tool.query\
 		.filter_by(parent_category_id=tool.parent_category_id)\

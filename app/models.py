@@ -53,7 +53,6 @@ class User(db.Model):
 	name = db.Column(db.String(64))
 	about_me = db.Column(db.Text())
 	member_since = db.Column(db.DateTime(), default=datetime.utcnow)
-	# edits = db.relationship("Edit", backref="author", lazy="dynamic")
 	role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
 	confirmed = db.Column(db.Boolean, default=False)
 	last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
@@ -181,18 +180,6 @@ def load_user(user_id):
 	return User.query.get(int(user_id))
 
 
-
-
-# Define many-to-many association table
-# Tools will have many alternatives and those alternatives will also have many alternatives
-# src == source == this tool's id was seen in another (source) tool's alts
-# dest == destination == this tool is linking to other (destination) tools as its alts
-src_alts = db.Table("src_alts",
-					   db.Column("src", db.Integer, db.ForeignKey("tools.id")),
-					   db.Column("dest", db.Integer, db.ForeignKey("tools.id"))
-)
-
-
 class Tool(Versioned, db.Model):
 	__tablename__ = "tools"
 	__searchable__ = ["name"]
@@ -207,25 +194,6 @@ class Tool(Versioned, db.Model):
 	project_version = db.Column(db.String(10))
 	link = db.Column(db.String(150))
 	why = db.Column(db.String(200))
-	dest_alts = db.relationship("Tool",
-								secondary=src_alts,
-								primaryjoin=src_alts.c.src == id,
-								secondaryjoin=src_alts.c.dest == id,
-								backref=db.backref("src_alts", lazy="dynamic"),
-								lazy="dynamic")
-
-	def add_alt(self, tool):
-		if not self.has_alt(tool):
-			self.dest_alts.append(tool)
-			return self
-
-	def remove_alt(self, tool):
-		if self.has_alt(tool):
-			self.dest_alts.remove(tool)
-			return self
-
-	def has_alt(self, tool):
-		return self.dest_alts.filter(src_alts.c.dest == tool.id).count() > 0
 
 	def __repr__(self):
 		return "<Tool %d: %r>" % (self.id, self.name)
