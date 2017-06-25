@@ -1,6 +1,6 @@
 import unittest
 from flask import current_app
-from app import create_app, db
+from app import create_app, db, utils
 
 
 class BasicsTestCase(unittest.TestCase):
@@ -20,3 +20,10 @@ class BasicsTestCase(unittest.TestCase):
 
     def test_app_is_testing(self):
         self.assertTrue(current_app.config["TESTING"])
+
+
+def test_bottom_up_tree():
+    parent_id = 18
+    parent_list = utils.build_bottom_up_tree(parent_id)
+    for i, parent in enumerate(parent_list):
+        print((" " * 2 * i), parent.name)
