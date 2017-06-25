@@ -603,6 +603,39 @@ tr > td {
 }
 
 
+/* EXPLORE TREE */
+
+#explore-header {
+    display: flex;
+}
+
+#explore-header button {
+    height: 100%;
+    margin: auto;
+}
+
+#explore-title {
+    flex: 1;
+}
+
+#explore-tree ul {
+    font-size: 1.5rem !important;
+}
+
+#explore-tree li {
+    margin-bottom: 10px !important;
+}
+
+#explore-tree  ul.jqtree-tree .jqtree-element {
+    cursor: default !important;
+}
+
+#explore-tree .jqtree-toggler {
+    cursor: pointer !important;
+}
+
+
+/* END EXPLORE TREE */
 
 /* BOOTSTRAP */
 

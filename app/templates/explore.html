@@ -1,18 +1,15 @@
 {% extends "base.html" %}
 {% block title %}{{ title }}{% endblock %}
+{% block explore_style %}<link rel="stylesheet" href="{{ url_for('static', filename='css/jqtree.css') }}">{% endblock %}
+{% block explore_script %}
+<script src="{{ url_for('static', filename='js/tree.jquery.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/explore_tree.js') }}" defer></script>
+{% endblock %}
+
 {% block content %}
-<h1>{{ title }}</h1>
-<ul id="explore-list">
-{#    {% for category, value in tree.items() recursive %}#}
-    {% for item in tree %}
-        {% if item._cached_tablename == "categories" %}
-            <li class="explore-link"><input class="explore-checkbox" type="checkbox" /><span class="category-list-item"><a href="{{ '/explore/' ~ item.name }}">{{ item.name }}</a></span>
-        {% else %}
-            <li class="explore-link"><input class="explore-checkbox" type="checkbox" /><span class="category-list-item"><a href="{{ '/tools/' ~ item.name }}">{{ item.name }}</a></span>
-        {% endif %}
-{#        {% if value.items() %}#}
-{#            <ul class="submenu">{{ loop(value.items()) }}</ul>#}
-{#        {% endif %}</li>#}
-    {% endfor %}
-</ul>
+<div id="explore-header">
+    <h1 id="explore-title">{{ title }}</h1>
+    <button id="collapse-button" type="button" class="btn btn-default">Collapse All</button>
+</div>
+<div id="explore-tree" data-url="/explore_nodes/"></div>
 {% endblock %}

@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        {% block explore_style %}<link>{% endblock %}
 
         <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
@@ -25,8 +26,8 @@
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
         <script> window.Fuse || document.write('<script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}" defer><\/script>'); </script>
         <script src="{{ url_for('static', filename='js/alert.js') }}" defer></script>
-
         <script src="{{ url_for('static', filename='js/autocomplete.js') }}" defer></script>
+        {% block explore_script %}<script></script>{% endblock %}
     </head>
     <body>
     <div id="header">
@@ -45,7 +46,7 @@
         <div id="nav">
             <div id="links">
                 <span><a class="nav-link" href="/">home</a></span>
-                <span><a class="nav-link" href="/explore">browse</a></span>
+                <span><a class="nav-link" href="/explore">explore</a></span>
                 <span><a class="nav-link" href="">about</a></span>
             </div>
             <input id="search-input" placeholder="Search">
