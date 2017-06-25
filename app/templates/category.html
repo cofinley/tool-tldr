@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ category.name }}{% endblock %}
+{% block content %}
+
+    <p class="view-edits-link"><a href="{{ '/view_edits?type=categories&name=' ~ category.name }}">View Edits</a></p>
+    <div id="breadcrumbs">
+    {% for item in breadcrumbs %}
+        {% if not loop.last %}
+            <span class="breadcrumb-item"><a href="{{ '/categories/' ~ item.name }}">{{ item.name }}</a></span><span>  /  </span>
+        {% endif %}
+        {% if loop.last %}
+            <span class="breadcrumb-item">{{ item.name }}</span>
+        {% endif %}
+    {% endfor %}
+    </div>
+
+    <div id="category-header">
+        <h1>{{ category.name }}</h1>
+    </div>
+
+    <div id="category-content-higher">
+        <div class="category-question-block">
+            <h1 class="category-question-title">What</h1>
+            <p>{{ category.what }}</p>
+        </div>
+        <div class="category-question-block">
+            <h1 class="category-question-title">Why</h1>
+            <p>{{ category.why }}</p>
+        </div>
+        <div class="category-question-block">
+            <h1 class="category-question-title">Where</h1>
+            <p>{{ category.where }}</p>
+        </div>
+    </div>
+
+    <div id="category-content-lower">
+        <div class="category-lower-block">
+            <h1 class="env-alts-env-title">Subcategories</h1>
+            {% if subcategories %}
+                <ul class="category-content-list">
+                    {% for category in subcategories %}
+                        <li class="alt-list-item"><a href="{{ '/categories/' ~ category.name }}">{{ category.name }}</a></li>
+                        {%- if loop.index > 5 %}
+                            <p class="alts-more-link"><a href="#">Show more</a></p>
+                            {% break %}
+                        {% endif %}
+                    {%- endfor %}
+                </ul>
+            {% endif %}
+            {% if not subcategories %}
+                <p class="alt-list-item">No subcategories at this time</p>
+            {% endif %}
+        </div>
+
+        <div class="category-lower-block">
+            <h1 class="env-alts-env-title">Tools</h1>
+            {% if subtools %}
+                <ul class="category-content-list">
+                    {% for tool in subtools %}
+                        <li class="alt-list-item"><a href="{{ '/tools/' ~ tool.name }}">{{ tool.name }}</a> ({{ tool.env.title() }})</li>
+                        {%- if loop.index > 5 %}
+                            <p class="alts-more-link"><a href="#">Show more</a></p>
+                            {% break %}
+                        {% endif %}
+                    {%- endfor %}
+                </ul>
+            {% endif %}
+
+           {% if not subtools %}
+                <p class="alt-list-item">No tools at this time</p>
+           {% endif %}
+        </div>
+    </div>
+{% endblock %}

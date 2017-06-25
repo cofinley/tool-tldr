@@ -1,8 +1,8 @@
-"""Initial
+"""empty message
 
-Revision ID: 0506d36f591a
+Revision ID: e8a457fb017c
 Revises: 
-Create Date: 2017-06-21 19:15:25.026699
+Create Date: 2017-06-24 15:11:32.393351
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0506d36f591a'
+revision = 'e8a457fb017c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,9 +21,25 @@ def upgrade():
     op.create_table('categories',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=True),
-    sa.Column('parent_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['parent_id'], ['categories.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('parent_category_id', sa.Integer(), nullable=True),
+    sa.Column('what', sa.String(length=200), nullable=True),
+    sa.Column('why', sa.String(length=200), nullable=True),
+    sa.Column('where', sa.String(length=200), nullable=True),
+    sa.Column('version', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['parent_category_id'], ['categories.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sqlite_autoincrement=True
+    )
+    op.create_table('categories_history',
+    sa.Column('id', sa.Integer(), autoincrement=False, nullable=False),
+    sa.Column('name', sa.String(length=50), autoincrement=False, nullable=True),
+    sa.Column('parent_category_id', sa.Integer(), autoincrement=False, nullable=True),
+    sa.Column('what', sa.String(length=200), autoincrement=False, nullable=True),
+    sa.Column('why', sa.String(length=200), autoincrement=False, nullable=True),
+    sa.Column('where', sa.String(length=200), autoincrement=False, nullable=True),
+    sa.Column('version', sa.Integer(), autoincrement=False, nullable=False),
+    sa.Column('changed', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id', 'version')
     )
     op.create_table('roles',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -32,21 +48,34 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
+    op.create_table('tools_history',
+    sa.Column('id', sa.Integer(), autoincrement=False, nullable=False),
+    sa.Column('name', sa.String(length=50), autoincrement=False, nullable=True),
+    sa.Column('avatar_url', sa.String(length=150), autoincrement=False, nullable=True),
+    sa.Column('parent_category_id', sa.Integer(), autoincrement=False, nullable=True),
+    sa.Column('env', sa.String(length=30), autoincrement=False, nullable=True),
+    sa.Column('created', sa.String(length=25), autoincrement=False, nullable=True),
+    sa.Column('project_version', sa.String(length=10), autoincrement=False, nullable=True),
+    sa.Column('link', sa.String(length=150), autoincrement=False, nullable=True),
+    sa.Column('why', sa.String(length=200), autoincrement=False, nullable=True),
+    sa.Column('version', sa.Integer(), autoincrement=False, nullable=False),
+    sa.Column('changed', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id', 'version')
+    )
     op.create_table('tools',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=True),
-    sa.Column('name_lower', sa.String(length=50), nullable=True),
     sa.Column('avatar_url', sa.String(length=150), nullable=True),
     sa.Column('parent_category_id', sa.Integer(), nullable=True),
     sa.Column('env', sa.String(length=30), nullable=True),
     sa.Column('created', sa.String(length=25), nullable=True),
-    sa.Column('version', sa.String(length=10), nullable=True),
+    sa.Column('project_version', sa.String(length=10), nullable=True),
     sa.Column('link', sa.String(length=150), nullable=True),
-    sa.Column('what', sa.String(length=200), nullable=True),
     sa.Column('why', sa.String(length=200), nullable=True),
-    sa.Column('where', sa.String(length=200), nullable=True),
+    sa.Column('version', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['parent_category_id'], ['categories.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sqlite_autoincrement=True
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -84,6 +113,8 @@ def downgrade():
 
     op.drop_table('users')
     op.drop_table('tools')
+    op.drop_table('tools_history')
     op.drop_table('roles')
+    op.drop_table('categories_history')
     op.drop_table('categories')
     # ### end Alembic commands ###

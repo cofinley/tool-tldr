@@ -348,6 +348,11 @@ li {
 
 /* LEFT */
 
+#tool-header {
+    text-align: center;
+    font-size: 1.5em;
+}
+
 #tool-content {
     display: flex;
 }
@@ -473,6 +478,45 @@ tr > td {
 
 
 /* END TOOLS PAGE */
+
+
+/* CATEGORY PAGE */
+
+.view-edits-link {
+    float:right !important;
+}
+
+#category-header {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+#category-content-higher {
+    width: 50%;
+    margin: 0 auto;
+    font-size: 1.2em;
+}
+
+.category-question-block {
+    margin-bottom: 30px;
+}
+
+#category-content-lower {
+    width: 70%;
+    margin: 0 auto;
+    display: flex;
+}
+
+.category-lower-block {
+    margin-left: 15%;
+}
+
+.alt-list-item {
+    font-size: 1.2em;
+}
+
+
+/* END CATEGORY PAGE */
 
 
 /* BOOTSTRAP */

@@ -7,8 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, AnonymousUserMixin
 from .history_meta import Versioned
-from sqlalchemy import create_engine, MetaData, Table
-from sqlalchemy.orm import mapper, sessionmaker
+from sqlalchemy import Table
 
 
 class Permission:
@@ -182,16 +181,6 @@ def load_user(user_id):
 	return User.query.get(int(user_id))
 
 
-class Category(db.Model):
-	__tablename__ = "categories"
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(50))
-	parent_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
-	parent = db.relationship('Category', remote_side=[id], backref='children')
-	tools = db.relationship("Tool", backref="category", lazy="dynamic")
-
-	def __repr__(self):
-		return "<Category %d: %r>" % (self.id, self.name)
 
 
 # Define many-to-many association table
@@ -211,17 +200,13 @@ class Tool(Versioned, db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(50))
-	name_lower = db.Column(db.String(50))
 	avatar_url = db.Column(db.String(150))
 	parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
 	env = db.Column(db.String(30))
 	created = db.Column(db.String(25))
 	project_version = db.Column(db.String(10))
 	link = db.Column(db.String(150))
-	what = db.Column(db.String(200))
 	why = db.Column(db.String(200))
-	where = db.Column(db.String(200))
-	# edits = db.relationship("Edit", backref="tool", lazy="dynamic")
 	dest_alts = db.relationship("Tool",
 								secondary=src_alts,
 								primaryjoin=src_alts.c.src == id,
@@ -246,18 +231,30 @@ class Tool(Versioned, db.Model):
 		return "<Tool %d: %r>" % (self.id, self.name)
 
 
-class ToolHistory(object):
-	pass
+class ToolHistory:
+	def __init__(self):
+		self.table = Table("tools_history", db.metadata, autoload=True, autoload_with=db.engine)
 
 
-def load_tool_history_session():
-	db_uri = current_app.config["SQLALCHEMY_DATABASE_URI"]
-	engine = create_engine(db_uri)
+class Category(Versioned, db.Model):
+	__tablename__ = "categories"
+	__searchable__ = ["name"]
+	__analyzer__ = FancyAnalyzer()
 
-	metadata = MetaData(engine)
-	history = Table("tools_history", metadata, autoload=True)
-	mapper(ToolHistory, history)
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(50))
+	parent_category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+	parent = db.relationship('Category', remote_side=[id], backref='children')
+	tools = db.relationship("Tool", backref="category", lazy="dynamic")
+	what = db.Column(db.String(200))
+	why = db.Column(db.String(200))
+	where = db.Column(db.String(200))
 
-	Session = sessionmaker(bind=engine)
-	session = Session()
-	return session
+	def __repr__(self):
+		return "<Category %d: %r>" % (self.id, self.name)
+
+
+class CategoryHistory:
+	def __init__(self):
+		self.table = Table("categories_history", db.metadata, autoload=True, autoload_with=db.engine)
+
