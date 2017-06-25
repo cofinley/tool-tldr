@@ -1,3 +1,4 @@
+import urllib
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from sqlalchemy.orm import sessionmaker
 
@@ -23,35 +24,32 @@ def index():
 						   show_more=show_more)
 
 
-@main.route("/explore", defaults={"category": ""})
-@main.route("/explore/<path:category>")
-def browse_categories(category):
-	queried_env = request.args.get("env")
-	if category:
-		main_category = models.Category.query.filter_by(name=category).first()
-		title = main_category.name
-		children_categories = [category for category in models.Category.query.filter_by(parent_category_id=main_category.id).all()]
-		if queried_env:
-			children_tools = [tool for tool in models.Tool.query
-				.filter_by(parent_category_id=main_category.id)
-				.filter_by(env=queried_env)
-				.all()]
-		else:
-			children_tools = [tool for tool in models.Tool.query.filter_by(parent_category_id=main_category.id).all()]
-		tree = {}
-		for i in (children_categories + children_tools):
-			tree[i] = {}
-	else:
-		title = "Explore"
-		categories = [category for category in models.Category.query.filter_by(parent_category_id=None)]
-		# tree = utils.build_top_down_tree()
-		tree = {}
-		for i in categories:
-			tree[i] = {}
-
+@main.route("/explore")
+def browse_categories():
+	title = "Explore"
 	return render_template("explore.html",
-						   title=title,
-						   tree=tree)
+						   title=title)
+
+
+@main.route("/explore_nodes/")
+def explore_nodes():
+	node_id = request.args.get("node")
+	if node_id:
+		children = models.Category.query.filter_by(parent_category_id=node_id).all()
+	else:
+		children = models.Category.query.filter_by(parent_category_id=None).all()
+
+	cols = ['id', 'name']
+	results = [{col: getattr(child, col) for col in cols} for child in children]
+
+	# Rename 'name' key as 'label' for jqTree
+	for result in results:
+		label_link = "<a href='/categories/{}'>{}</a>".format(urllib.parse.quote(result["name"]), result["name"])
+		result.pop("name")
+		result["label"] = label_link
+		result["load_on_demand"] = True
+
+	return jsonify(results)
 
 
 @main.route("/categories/<path:category_name>")
