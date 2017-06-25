@@ -12,11 +12,9 @@ class AltTestCase(unittest.TestCase):
 			parent_category_id=18,
 			env="Python",
 			created="April 12, 2010",
-			version="0.12",
+			project_version="0.12",
 			link="https://flask.pocoo.com",
-			what="lipsum",
 			why="lipsum",
-			where="lipsum"
 		)
 		t2 = models.Tool(
 			id=2,
@@ -25,11 +23,9 @@ class AltTestCase(unittest.TestCase):
 			parent_category_id=18,
 			env="Python",
 			created="April 13, 2010",
-			version="0.12",
+			project_version="0.12",
 			link="https://flask.pocoo.com",
-			what="lipsum2",
 			why="lipsu2m",
-			where="lipsum2"
 		)
 
 		db.session.add(t1)
