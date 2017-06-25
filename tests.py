@@ -109,6 +109,13 @@ def tear_down_users():
 	db.session.commit()
 
 
+def tear_down_categories():
+	c = models.Category.query.all()
+	for cat in c:
+		db.session.delete(cat)
+	db.session.commit()
+
+
 def tear_down_tools():
 	tools = models.Tool.query.all()
 	for tool in tools:
@@ -240,8 +247,36 @@ def create_mock_categories():
 	# 	c = models.Category(id=cats[cat]["id"], name=cats[cat]["name"], parent=cats[cat]["parent"])
 	# 	db.session.add(c)
 
-	for i, cat in enumerate(l):
-		c = models.Category(id=i+1, name=cat, parent=None)
+	cats = [
+		"Web Development",
+		"Testing",
+		"GUI",
+		"Systems",
+		"Mobile",
+		"Development",
+		"Build",
+		"Command Line",
+		"Data Analysis",
+		"Machine Learning",
+		"Game Development",
+		"Networking",
+		"Cloud",
+		"Testing2",
+		"Item2",
+		"Item",
+		"Front-end",
+		"Back-end",
+		"Application Framework"]
+
+	for i, cat in enumerate(cats):
+		c = models.Category(
+			id=i+1,
+			name=cat,
+			parent=None,
+			what="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
+			why="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
+			where="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat."
+		)
 		db.session.add(c)
 	db.session.commit()
 
@@ -254,11 +289,8 @@ def create_mock_tools():
 		created="April 12, 2010",
 		project_version="0.12",
 		link="http://flask.pocoo.org",
-		what="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
-		where="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		why="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		env="python",
-		name_lower="flask"
 	)
 
 	t2 = models.Tool(
@@ -268,11 +300,8 @@ def create_mock_tools():
 		created="April 13, 2010",
 		project_version="1.11.2",
 		link="https://www.djangoproject.com/",
-		what="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
-		where="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		why="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		env="python",
-		name_lower="django"
 	)
 
 	t3 = models.Tool(
@@ -282,11 +311,8 @@ def create_mock_tools():
 		created="April 14, 2010",
 		project_version="5.1.1",
 		link="http://rubyonrails.org/",
-		what="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
-		where="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		why="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempor massa id tellus tempor, eget aliquam sapien vehicula. Praesent a tortor aliquet, pulvinar elit eget, hendrerit erat.",
 		env="ruby",
-		name_lower="ruby on rails"
 	)
 
 	db.session.add(t1)
@@ -295,19 +321,23 @@ def create_mock_tools():
 	db.session.commit()
 
 
-def reset_db():
+def tear_down_db():
 	tear_down_roles()
 	tear_down_users()
+	tear_down_categories()
 	tear_down_tools()
-	create_mock_roles()
-	create_mock_users()
-	create_mock_tools()
 
 
 def populate_db():
-	create_mock_roles()
+	models.Role.insert_roles()
 	create_mock_users()
+	create_mock_categories()
 	create_mock_tools()
+
+
+def reset_db():
+	tear_down_db()
+	populate_db()
 
 
 def test_bottom_up_tree():

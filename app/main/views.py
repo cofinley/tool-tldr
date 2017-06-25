@@ -1,13 +1,12 @@
 from flask import render_template, redirect, url_for, abort, flash, request, jsonify, current_app
+from sqlalchemy.orm import sessionmaker
+
 from . import main
 from .. import models, cache, utils, db
 from app.main.forms import EditProfileForm, EditProfileAdminForm
-from app.auth.forms import LoginForm, RegistrationForm
 from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
-
-
-# timestamp=datetime.datetime.utcnow()
+from sqlalchemy import func
 
 
 @main.route("/")
@@ -31,7 +30,7 @@ def browse_categories(category):
 	if category:
 		main_category = models.Category.query.filter_by(name=category).first()
 		title = main_category.name
-		children_categories = [category for category in models.Category.query.filter_by(parent_id=main_category.id).all()]
+		children_categories = [category for category in models.Category.query.filter_by(parent_category_id=main_category.id).all()]
 		if queried_env:
 			children_tools = [tool for tool in models.Tool.query
 				.filter_by(parent_category_id=main_category.id)
@@ -44,7 +43,7 @@ def browse_categories(category):
 			tree[i] = {}
 	else:
 		title = "Explore"
-		categories = [category for category in models.Category.query.filter_by(parent_id=None)]
+		categories = [category for category in models.Category.query.filter_by(parent_category_id=None)]
 		# tree = utils.build_top_down_tree()
 		tree = {}
 		for i in categories:
@@ -55,9 +54,23 @@ def browse_categories(category):
 						   tree=tree)
 
 
+@main.route("/categories/<path:category_name>")
+def fetch_category_page(category_name):
+	category = models.Category.query.filter(func.lower(models.Category.name) == func.lower(category_name)).first()
+	subcategories = models.Category.query.filter_by(parent_category_id=category.id).all()
+	subtools = models.Tool.query.filter_by(parent_category_id=category.id).all()
+	category_tree = utils.build_bottom_up_tree(category.id)
+
+	return render_template("category.html",
+						   category=category,
+						   subcategories=subcategories,
+						   subtools=subtools,
+						   breadcrumbs=category_tree)
+
+
 @main.route("/tools/<path:tool_name>")
 def fetch_tool_page(tool_name):
-	tool = models.Tool.query.filter_by(name_lower=tool_name.lower()).first()
+	tool = models.Tool.query.filter(func.lower(models.Tool.name) == func.lower(tool_name)).first()
 
 	# KEEP THESE B/C USERS MAY WANT TO SPECIFY ALTERNATIVES THEMSELVES RATHER THAN
 	#   RELYING ON AGREED-UPON PARENT CATEGORIES
@@ -80,7 +93,7 @@ def fetch_tool_page(tool_name):
 	project_link = utils.get_hostname(tool.link)
 
 	return render_template("tool.html",
-						   content=tool,
+						   tool=tool,
 						   env_alts=alts_for_this_env,
 						   other_alts=alts_for_other_envs,
 						   tree=category_tree,
@@ -95,6 +108,9 @@ def search_tools():
 	for result in search:
 		results.append(result.name)
 	return jsonify(results)
+
+
+# USER ROUTES
 
 
 @main.route('/user/<username>')
@@ -137,12 +153,26 @@ def edit_profile_admin(id):
 	return render_template('edit_profile.html', form=form, user=user)
 
 
-@main.route("/view_all_edits/<tool_name>")
-def view_edits(tool_name):
-	current_version = models.Tool.query.filter_by(name=tool_name).first()
-	session = models.load_tool_history_session()
-	previous_versions = session.query(models.ToolHistory).filter(models.ToolHistory.id == current_version.id).all()
+# EDIT ROUTES
+
+
+@main.route("/view_edits")
+def view_edits():
+	type = request.args.get("type")
+	name = request.args.get("name")
+	if type == "categories":
+		cls = models.Category
+		edits_cls = models.CategoryHistory()
+	if type == "tools":
+		cls = models.Tool
+		edits_cls = models.ToolHistory()
+
+	Session = sessionmaker(bind=db.engine)
+	session = Session()
+	current_version = cls.query.filter_by(name=name).first()
+	previous_versions = session.query(edits_cls.table).filter_by(id=current_version.id).all()
+	session.close()
 	return render_template("view_edits.html",
-					tool_name=tool_name,
-					current_version=current_version,
-					previous_versions=previous_versions)
+						   name=name,
+						   current_version=current_version,
+						   previous_versions=previous_versions)

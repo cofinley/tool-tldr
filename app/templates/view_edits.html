@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ tool_name }}{% endblock %}
+{% block title %}{{ name }} edits{% endblock %}
 {% block content %}
 <p><span>Version {{ current_version.version }}</span>: {{ current_version.name }}</p>
 {% for version in previous_versions|sort(attribute="version", reverse=True) %}
