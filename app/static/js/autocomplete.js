@@ -6,7 +6,6 @@ $(function () {
             "ui-autocomplete": "autocomplete-highlight autocomplete-small"
         },
         source: function (request, response) {
-            console.table(request);
             var term = request.term;
             if (term in cache) {
                 response(cache[term]);
@@ -14,15 +13,19 @@ $(function () {
             }
 
             $.getJSON(window.location.origin + "/search", request, function (data, status, xhr) {
-                console.log("term: " + term);
-                console.log("data: " + data);
                 cache[term] = data;
                 response(data);
             });
         },
         select: function (event, ui) {
             event.preventDefault();
-            window.location.href = window.location.origin + "/tools/" + ui.item.value;
+            if (ui.item.type === "tool") {
+                window.location.href = window.location.origin + "/tools/" + ui.item.value;
+            }
+            else if (ui.item.type === "category") {
+                window.location.href = window.location.origin + "/categories/" + ui.item.value;
+            }
+
             return false;
         }
     });
@@ -45,7 +48,13 @@ $(function () {
         },
         select: function (event, ui) {
             event.preventDefault();
-            window.location.href = window.location.origin + "/tools/" + ui.item.value;
+            if (ui.item.type === "tool") {
+                window.location.href = window.location.origin + "/tools/" + ui.item.value;
+            }
+            else if (ui.item.type === "category") {
+                window.location.href = window.location.origin + "/categories/" + ui.item.value;
+            }
+
             return false;
         }
     });
