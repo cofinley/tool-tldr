@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block title %}{{ title }}{% endblock %}
-{% block explore_style %}<link rel="stylesheet" href="{{ url_for('static', filename='css/jqtree.css') }}">{% endblock %}
-{% block explore_script %}
-<script src="{{ url_for('static', filename='js/tree.jquery.js') }}" defer></script>
-<script src="{{ url_for('static', filename='js/explore_tree.js') }}" defer></script>
+{% block js_extra %}
+    <script src="{{ url_for('static', filename='js/tree.jquery.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/explore_tree.js') }}" defer></script>
 {% endblock %}
 
 {% block content %}

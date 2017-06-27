@@ -1,0 +1,13 @@
+css_all:
+    filters: yui_css
+    output: gen/packed.css
+    contents:
+        - css/bootstrap.css
+        - css/jqtree.css
+        - css/style.css
+js_all:
+    filters: yui_js
+    output: gen/packed.js
+    contents:
+        - js/alert.js
+        - js/autocomplete.js
