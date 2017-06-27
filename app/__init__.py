@@ -10,9 +10,11 @@ import flask_whooshalchemyplus
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SignallingSession
 from .history_meta import versioned_session
+from flask_assets import Environment
 
 
 bootstrap = Bootstrap()
+assets = Environment()
 mail = Mail()
 versioned_session(SignallingSession)
 db = SQLAlchemy()
@@ -29,6 +31,8 @@ def create_app(config_name):
 	config[config_name].init_app(app)
 
 	bootstrap.init_app(app)
+	assets.init_app(app)
+	assets.from_yaml(config[config_name].BUNDLE_YML)
 	mail.init_app(app)
 	db.init_app(app)
 	login_manager.init_app(app)
