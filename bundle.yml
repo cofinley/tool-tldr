@@ -4,7 +4,6 @@ css_all:
     contents:
         - css/bootstrap.css
         - css/jqtree.css
-        - css/style.css
 js_all:
     filters: yui_js
     output: gen/packed.js

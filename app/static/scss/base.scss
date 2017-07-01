@@ -2,6 +2,10 @@
 
 body {
     font-family: $font-stack;
+
+    a {
+        @include blue-link;
+    }
 }
 
 #content {
