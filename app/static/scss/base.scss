@@ -1,0 +1,10 @@
+@import "variables";
+
+body {
+    font-family: $font-stack;
+}
+
+#content {
+    width: $content-width;
+    margin: 45px auto 0 auto;
+}

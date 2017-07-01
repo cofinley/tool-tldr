@@ -20,6 +20,10 @@
       -2px 2px 0 #fff,
       2px 2px 0 #fff;
 
+    #logo-link {
+      text-decoration: none;
+    }
+
     .logo-text-tool {
       color: $dark-gray;
 
@@ -33,6 +37,10 @@
       float: left;
       margin-left: 15px;
       margin-top: 10px;
+
+      .nav-user-link {
+        @include blue-link;
+      }
     }
   }
   #nav {
@@ -49,13 +57,7 @@
 
       .nav-link {
         margin-right: 20px;
-        color: $dark-gray;
-
-        a {
-          &:hover {
-            text-decoration: none;
-          }
-        }
+        @include dark-link;
       }
     }
     #search-input {

@@ -18,3 +18,21 @@ $light-gray: lightgray;
 // Widths
 
 $header-width: 88%;
+$content-width: 82%;
+$category-column-width: 75%;
+
+// Mixins
+
+@mixin blue-link {
+  color: $blue;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@mixin dark-link {
+  color: $dark-gray;
+  text-decoration: none;
+}

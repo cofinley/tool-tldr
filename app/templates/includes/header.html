@@ -1,14 +1,14 @@
 <div id="header">
     <div id="logo">
-        <span class="logo-text-tool">tool</span> <span class="logo-text-tldr">tl;dr</span>
+        <a id="logo-link" href="/"><span class="logo-text-tool">tool</span> <span class="logo-text-tldr">tl;dr</span></a>
     </div>
     <div id="nav-user-actions">
         {% if current_user.is_authenticated %}
-            <p class="nav-user-text-button"><a href="{{ '/user/' ~ current_user.username }}">My Account</a></p>
-            <p class="nav-user-text-button"><a href="/auth/logout">Sign out</a></p>
+            <p class="nav-user-text-button"><a class="nav-user-link" href="{{ '/user/' ~ current_user.username }}">My Account</a></p>
+            <p class="nav-user-text-button"><a class="nav-user-link" href="/auth/logout">Sign out</a></p>
         {% else %}
-            <p class="nav-user-text-button"><a href="/auth/login">Log in</a></p>
-            <p class="nav-user-text-button"><a href="/auth/register">Sign up</a></p>
+            <p class="nav-user-text-button"><a class="nav-user-link" href="/auth/login">Log in</a></p>
+            <p class="nav-user-text-button"><a class="nav-user-link" href="/auth/register">Sign up</a></p>
         {% endif %}
     </div>
     <div id="nav">

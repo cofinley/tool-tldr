@@ -1,0 +1,22 @@
+@import "variables";
+
+.autocomplete-highlight {
+    font-family: $font-stack;
+    font-weight: $font-light;
+    color: $dark-gray;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active {
+    border: 1px solid $blue;
+    background: $blue;
+    font-weight: $font-light;
+    color: #ffffff;
+}
+
+.autocomplete-small {
+    font-size: 1.2em;
+}
+
+.autocomplete-big {
+    font-size: 1.5em;
+}

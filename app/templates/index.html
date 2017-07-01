@@ -9,7 +9,7 @@
         <p id="category-title">Categories</p>
         <ul id="category-links">
             {% for category in categories %}
-                <li><span class="category-list-item"><a href="{{ "/categories/" ~ category}}">{{ category }}</a></span></li>
+                <li><span class="category-list-item"><a class="category-link" href="{{ "/categories/" ~ category}}">{{ category }}</a></span></li>
             {% endfor %}
         </ul>
         {%  if show_more %}

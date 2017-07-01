@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 {% block title %}{{ title }}{% endblock %}
-{% block js_extra %}
-    <script src="{{ url_for('static', filename='js/tree.jquery.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='js/explore_tree.js') }}" defer></script>
-{% endblock %}
 
 {% block content %}
 <div id="explore-header">
@@ -11,4 +7,7 @@
     <button id="collapse-button" type="button" class="btn btn-default">Collapse All</button>
 </div>
 <div id="explore-tree" data-url="/explore_nodes/"></div>
+
+<script src="{{ url_for('static', filename='js/tree.jquery.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/explore_tree.js') }}" defer></script>
 {% endblock %}
