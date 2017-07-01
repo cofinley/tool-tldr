@@ -1,0 +1,43 @@
+@import "variables";
+
+#explore-header {
+
+  display: flex;
+
+  button {
+    height: 100%;
+    margin: auto;
+  }
+
+  #explore-title {
+    flex: 1;
+
+  }
+  #collapse-button {
+
+  }
+}
+
+#explore-tree {
+  ul {
+    font-size: 1.3rem !important;
+  }
+
+  li {
+    margin-bottom: 10px !important;
+  }
+
+  .jqtree-element {
+    cursor: default;
+  }
+
+  .jqtree-toggler {
+    cursor: pointer;
+  }
+
+  span {
+    a {
+      @include blue-link;
+    }
+  }
+}

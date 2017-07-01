@@ -1,0 +1,41 @@
+// Fonts
+
+$font-stack: 'Montserrat', sans-serif;
+
+$font-light: 300;
+$font-medium: 500;
+$font-heavy: 600;
+$font-heaviest: 800;
+
+// Colors
+
+$red: #e33b3b;
+$blue: #005aad;
+$dark-gray: #222;
+$gray: #666;
+$light-gray: lightgray;
+
+// Widths
+
+$header-width: 88%;
+$content-width: 82%;
+$category-column-width: 75%;
+$tool-content-right-width: 26%;
+$category-content-higher-width: 50%;
+$category-content-lower-width: 70%;
+
+// Mixins
+
+@mixin blue-link {
+  color: $blue;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@mixin dark-link {
+  color: $dark-gray;
+  text-decoration: none;
+}

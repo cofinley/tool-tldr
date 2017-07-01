@@ -1,0 +1,55 @@
+@import "variables";
+
+.view-edits-link {
+  float:right !important;
+  a {
+      @include blue-link;
+    }
+}
+
+#breadcrumbs {
+  .breadcrumb-item {
+    a {
+      @include blue-link;
+    }
+  }
+}
+
+#category-header {
+  text-align: center;
+  font-size: 1.5em;
+}
+
+#category-content-higher {
+
+  width: $category-content-higher-width;
+  margin: 0 auto;
+  font-size: 1.2em;
+  .category-question-block {
+    margin-bottom: 30px;
+    .category-question-title {
+
+    }
+  }
+}
+
+#category-content-lower {
+  width: $category-content-lower-width;
+  margin: 0 auto;
+  display: flex;
+  .category-lower-block {
+    margin-left: 15%;
+    .env-alts-env-title {
+      font-weight: $font-medium;
+      margin: 0;
+    }
+    .category-content-list {
+      .alt-list-item {
+        font-size: 1.2em;
+        a {
+          @include blue-link;
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ tool.name }}{% endblock %}
 {% block content %}
-<p><a href="{{ '/view_edits?type=tools&name=' ~ tool.name }}">View Edits</a></p>
+<p id="view-edits-link"><a href="{{ '/view_edits?type=tools&name=' ~ tool.name }}">View Edits</a></p>
  <div id="tool-header">
     <h1>{{ tool.name }} is
     {% if tree[-1].name[0].lower() in ["a","e","i","o","u"] %}
@@ -13,7 +13,7 @@
     tool.
     </h1>
 </div>
-    <div id="tool-content">
+<div id="tool-content">
     <div id="tool-left-content">
         <div class="tool-question-block">
             <h1 class="tool-question-title">Why</h1>
@@ -67,7 +67,7 @@
                         <td class="tool-metadata-name">Category</td>
                         <td class="tool-metadata-value">
                             {% for parent in tree %}
-                                <p class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a href="{{ '/explore/' ~ parent.name }}">{{ parent.name }}</a></p>
+                                <p class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a href="{{ '/categories/' ~ parent.name }}">{{ parent.name }}</a></p>
                             {% endfor %}
                         </td>
                     </tr>
