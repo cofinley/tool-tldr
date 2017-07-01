@@ -1,0 +1,39 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block title %}Tool TL;DR{% endblock %}</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css" rel="stylesheet">
+
+    {% assets "css_all" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}"></link>
+    {% endassets %}
+
+    {% assets "scss_all" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}"></link>
+    {% endassets %}
+
+    {% block css_extra %} {% endblock %}
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='favicons/manifest.json') }}">
+    <link rel="mask-icon" color="#e33b3b" href="{{ url_for('static', filename='favicons/safari-pinned-tab.svg') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicons/favicon.ico') }}">
+    <meta name="msapplication-config" content="{{ url_for('static', filename='favicons/browserconfig.xml') }}">
+    <meta name="theme-color" content="#e33b3b">
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" defer></script>
+{#        <script> window.jQuery || document.write('<script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}" defer><\/script>'); </script>#}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" defer></script>
+{#        <script> window.jQuery || document.write('<script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}" defer><\/script>'); </script>#}
+
+    {% assets "js_all" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}" defer></script>
+    {% endassets %}
+
+    {% block js_extra %} {% endblock %}
+</head>

@@ -11,3 +11,10 @@ js_all:
     contents:
         - js/alert.js
         - js/autocomplete.js
+
+scss_all:
+    filters: pyscss
+    output: gen/packed_scss.css
+    contents:
+        - scss/variables.scss
+        - scss/header.scss

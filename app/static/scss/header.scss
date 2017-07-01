@@ -1,0 +1,73 @@
+@import "variables";
+
+#header {
+  width: $header-width;
+  height: 80px;
+  display: flex;
+  margin: 0 auto;
+  border-bottom: 1px solid lightgray;
+  position: relative;
+
+  #logo {
+
+    font-style: italic;
+    font-weight: $font-heaviest;
+    font-size: 5em;
+    flex: 1;
+    text-shadow:
+      -2px -2px 0 #fff,
+      2px -2px 0 #fff,
+      -2px 2px 0 #fff,
+      2px 2px 0 #fff;
+
+    .logo-text-tool {
+      color: $dark-gray;
+
+    }
+    .logo-text-tldr {
+      color: $red;
+    }
+  }
+  #nav-user-actions {
+    .nav-user-text-button {
+      float: left;
+      margin-left: 15px;
+      margin-top: 10px;
+    }
+  }
+  #nav {
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    margin-bottom: 5px;
+
+    #links {
+      font-weight: $font-heavy;
+      font-size: 1.4em;
+      float: left;
+      margin-top: 3px;
+
+      .nav-link {
+        margin-right: 20px;
+        color: $dark-gray;
+
+        a {
+          &:hover {
+            text-decoration: none;
+          }
+        }
+      }
+    }
+    #search-input {
+      width: 225px;
+      height: 25px;
+      padding: 5px;
+      font-size: 1.2em;
+      font-family: $font-stack;
+      font-weight: $font-light;
+      color: $gray;
+      border: 2px solid lightgray;
+      float: right;
+    }
+  }
+}

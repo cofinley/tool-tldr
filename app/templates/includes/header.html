@@ -1,0 +1,22 @@
+<div id="header">
+    <div id="logo">
+        <span class="logo-text-tool">tool</span> <span class="logo-text-tldr">tl;dr</span>
+    </div>
+    <div id="nav-user-actions">
+        {% if current_user.is_authenticated %}
+            <p class="nav-user-text-button"><a href="{{ '/user/' ~ current_user.username }}">My Account</a></p>
+            <p class="nav-user-text-button"><a href="/auth/logout">Sign out</a></p>
+        {% else %}
+            <p class="nav-user-text-button"><a href="/auth/login">Log in</a></p>
+            <p class="nav-user-text-button"><a href="/auth/register">Sign up</a></p>
+        {% endif %}
+    </div>
+    <div id="nav">
+        <div id="links">
+            <span><a class="nav-link" href="/">home</a></span>
+            <span><a class="nav-link" href="/explore">explore</a></span>
+            <span><a class="nav-link" href="">about</a></span>
+        </div>
+        <input id="search-input" placeholder="Search">
+    </div>
+</div>

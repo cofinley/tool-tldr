@@ -1,4 +1,12 @@
 
+
+
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/*
+
 #logo {
     font-style: italic;
     font-weight: 800;
@@ -9,18 +17,13 @@
     2px -2px 0 #fff,
     -2px 2px 0 #fff,
     2px 2px 0 #fff;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
     cursor:default;
-}
-
-body {
-    font-family: 'Montserrat', sans-serif;
 }
 
 .logo-text-tool {
@@ -65,7 +68,7 @@ a.nav-link:hover {
     color: #666;
     border: 2px solid lightgray;
     float: right;
-}
+}*/
 
 #tagline {
     text-align: center;
