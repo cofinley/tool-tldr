@@ -12,7 +12,7 @@ js_all:
         - js/autocomplete.js
 
 scss_all:
-    filters: pyscss
+    filters: pyscss, yui_css
     output: gen/packed_scss.css
     contents:
         - scss/*
