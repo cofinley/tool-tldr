@@ -11,7 +11,6 @@ $(function () {
                 response(cache[term]);
                 return;
             }
-
             $.getJSON(window.location.origin + "/search", request, function (data, status, xhr) {
                 cache[term] = data;
                 response(data);

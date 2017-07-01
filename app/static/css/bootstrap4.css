@@ -1,11 +1,5 @@
 /*!
- * Bootstrap v4.0.0-alpha.6 (https://getbootstrap.com)
- * Copyright 2011-2017 The Bootstrap Authors
- * Copyright 2011-2017 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
-/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
-/*html {
+html {
   font-family: sans-serif;
   line-height: 1.15;
   -ms-text-size-adjust: 100%;
@@ -336,7 +330,7 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
-/*body {
+/*!body {
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 1rem;
   font-weight: normal;
@@ -370,7 +364,7 @@ address {
   line-height: inherit;
 }
 
-/*ol,
+/*!ol,
 ul,
 dl {
   margin-top: 0;
@@ -530,7 +524,7 @@ output {
   display: none !important;
 }
 
-/*h1, h2, h3, h4, h5, h6,
+/*!h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 0.5rem;
   font-family: inherit;
@@ -592,7 +586,7 @@ h6, .h6 {
   line-height: 1.1;
 }
 
-/*hr {
+/*!hr {
   margin-top: 1rem;
   margin-bottom: 1rem;
   border: 0;
@@ -3815,7 +3809,7 @@ tbody.collapse.show {
   content: "Browse";
 }
 
-/*.nav {
+/*!.nav {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -5026,7 +5020,7 @@ a.badge:focus, a.badge:hover {
 .alert-danger .alert-link {
   color: #843534;
 }
-/*
+/*!
 @-webkit-keyframes progress-bar-stripes {
   from {
     background-position: 1rem 0;
@@ -5104,6 +5098,7 @@ a.badge:focus, a.badge:hover {
       -ms-flex: 1 1 0%;
           flex: 1 1 0%;
 }
+*/
 
 .list-group {
   display: -webkit-box;
@@ -5335,6 +5330,7 @@ button.list-group-item-danger.active {
   border-color: #a94442;
 }
 
+/*!
 .embed-responsive {
   position: relative;
   display: block;
@@ -5402,7 +5398,7 @@ button.close {
   border: 0;
   -webkit-appearance: none;
 }
-/*
+/*!
 .modal-open {
   overflow: hidden;
 }
@@ -9317,4 +9313,4 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
     display: none !important;
   }
 }
-/*# sourceMappingURL=bootstrap.css.map */
+/*!# sourceMappingURL=bootstrap.css.map */

@@ -5,8 +5,3 @@ body {
         @include blue-link;
     }
 }
-
-#content {
-    width: $content-width;
-    margin: 45px auto 0 auto;
-}

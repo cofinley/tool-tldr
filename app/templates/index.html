@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Tool TL;DR{% endblock %}
 {% block content %}
-    <div id="tagline">
+    <div id="tagline" class="col-lg-4 mt-5 offset-lg-4 p-4 col-md-8 offset-md-2 text-center">
         <p>A community wiki for navigating programming tools in layman's terms.</p>
     </div>
-    <input id="big-search-bar-input" placeholder="Search software tools" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search software tools'" />
+    <div class="col-lg-4 input-group input-group-lg offset-lg-4 col-md-8 offset-md-2">
+        <input id="big-search-bar-input" class="form-control" placeholder="Search software tools" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search software tools'">
+    </div>
     <div id="categories">
         <p id="category-title">Categories</p>
-        <ul id="category-links">
+        <div class="row col-lg-8 offset-lg-2 col-xs-10 offset-xs-1">
             {% for category in categories %}
-                <li><span class="category-list-item"><a class="category-link" href="{{ "/categories/" ~ category}}">{{ category }}</a></span></li>
+                <a class="category-list-item col-lg-3 col-md-4 col-sm-6 col-xs-12" href="{{ "/categories/" ~ category}}">{{ category }}</a>
             {% endfor %}
-        </ul>
+        </div>
         {%  if show_more %}
             <p id="show-more"><a href="/explore">Show More...</a></p>
         {% endif %}

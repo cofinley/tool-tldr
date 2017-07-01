@@ -1,22 +1,21 @@
 #tagline {
-  text-align: center;
-  max-width: 20em;
+  //text-align: center;
+  //max-width: 20em;
   font-weight: $font-light;
-  font-size: 1.8em;
-  margin: 90px auto 60px auto;
+  font-size: 1.75em;
+  //margin: 90px auto 60px auto;
 }
 
 #big-search-bar-input {
-  font-size: 1.5em;
+  //font-size: 1.5em;
   font-family: $font-stack;
   font-weight: $font-light;
   color: $dark-gray;
-  padding: 10px;
-  height: 40px;
-  border: 1px solid #999;
-  margin: 0 auto;
-  display: block;
-  width: 550px;
+  //padding: 10px;
+  //height: 40px;
+  //border: 1px solid #999;
+  //margin: 0 auto;
+  //width: 550px;
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -33,24 +32,26 @@
     margin-bottom: 50px;
   }
 
+  .category-li {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+  }
+
   #category-links {
 
-    column-count:4;
-    -moz-column-count:4;
-    -webkit-column-count:4;
-    list-style-position: inside;
-    margin: 0 auto;
+    -moz-column-width: 15em; /* Firefox */
+    -webkit-column-width: 15em; /* webkit, Safari, Chrome */
+    column-width: 15em;
+    margin: 0;
+    //
+    padding: 0;
+    list-style-type: none;
     width: $category-column-width;
-
-    li {
-      font-size: 0.8em;
-      margin-bottom: 7px;
-    }
 
     .category-list-item {
       font-weight: $font-light;
-      font-size: 1.6em;
-      margin-left: -10px;
+      font-size: 1.3em;
+      margin-bottom: 7px;
     }
 
     .category-link {
