@@ -1,8 +1,27 @@
 {% extends "base.html" %}
 {% block title %}{{ name }} edits{% endblock %}
 {% block content %}
-<p><span>Version {{ current_version.version }}</span>: {{ current_version.name }}</p>
-{% for version in previous_versions|sort(attribute="version", reverse=True) %}
-    <p><span>Version {{ version.version }}</span>: {{ version.name }}</p>
-{% endfor %}
+    <h1>{{ name }}: Edits</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Version #</th>
+                <th>Edit Time</th>
+                <th>Edit Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">{{ current_version.version }}</th>
+                <td>{{ current_version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
+                <td>{{ current_version.edit_msg }}</td>
+            </tr>
+            {% for version in previous_versions|sort(attribute="version", reverse=True) %}
+                <tr>
+                    <th scope="row">{{ version.version }}</th>
+                    <td>{{ version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
+                    <td>{{ version.edit_msg }}</td>
+                </tr>
+            {% endfor %}
+    </table>
 {% endblock %}

@@ -92,3 +92,11 @@ class Helper:
 	def reset_all(self):
 		db.drop_all()
 		self.setup_all()
+
+	@staticmethod
+	def drop_all():
+		db.drop_all()
+
+	@staticmethod
+	def create_all():
+		db.create_all()

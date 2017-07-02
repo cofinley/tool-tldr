@@ -1,10 +1,11 @@
 import urllib
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from sqlalchemy.orm import sessionmaker
+from datetime import datetime
 
 from . import main
 from .. import models, cache, utils, db
-from app.main.forms import EditProfileForm, EditProfileAdminForm
+from app.main.forms import EditProfileForm, EditProfileAdminForm, EditCategoryPageForm, EditToolPageForm
 from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
 from sqlalchemy import func
@@ -173,3 +174,56 @@ def view_edits():
 						   name=name,
 						   current_version=current_version,
 						   previous_versions=previous_versions)
+
+
+@main.route("/edit-category", methods=["GET", "POST"])
+def edit_category_page():
+	id = request.args.get("id")
+
+	category = models.Category.query.get_or_404(id)
+	form = EditCategoryPageForm()
+	if form.validate_on_submit():
+		category.name = form.name.data
+		category.what = form.what.data
+		category.why = form.why.data
+		category.where = form.where.data
+		category.edit_msg = form.edit_msg.data
+		category.edit_time = datetime.utcnow()
+		db.session.add(category)
+		flash('The category has been updated.', 'success')
+		return redirect(url_for('.fetch_category_page', category_name=category.name))
+	form.name.data = category.name
+	form.what.data = category.what
+	form.why.data = category.why
+	form.where.data = category.where
+	form.edit_msg.data = ""
+	return render_template('edit_category.html', form=form, category=category)
+
+
+@main.route("/edit-tool", methods=["GET", "POST"])
+def edit_tool_page():
+	id = request.args.get("id")
+	tool = models.Tool.query.get_or_404(id)
+	form = EditToolPageForm()
+
+	if form.validate_on_submit():
+		tool.name = form.name.data
+		tool.avatar_url = form.avatar_url.data
+		tool.env = form.env.data.lower()
+		tool.created = form.created.data
+		tool.project_version = form.project_version.data
+		tool.link = form.link.data
+		tool.why = form.why.data
+		tool.edit_msg = form.edit_msg.data
+		tool.edit_time = datetime.utcnow()
+		flash('The tool has been updated.', 'success')
+		return redirect(url_for('.fetch_tool_page', tool_name=tool.name))
+	form.name.data = tool.name
+	form.avatar_url.data = tool.avatar_url
+	form.env.data = tool.env.title()
+	form.created.data = tool.created
+	form.project_version.data = tool.project_version
+	form.link.data = tool.link
+	form.why.data = tool.why
+	form.edit_msg.data = ""
+	return render_template('edit_tool.html', form=form, tool=tool)

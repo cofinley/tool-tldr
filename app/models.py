@@ -186,14 +186,16 @@ class Tool(Versioned, db.Model):
 	__analyzer__ = FancyAnalyzer()
 
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(50))
-	avatar_url = db.Column(db.String(150))
+	name = db.Column(db.String(64))
+	avatar_url = db.Column(db.String(200))
 	parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
-	env = db.Column(db.String(30))
+	env = db.Column(db.String(64))
 	created = db.Column(db.String(25))
 	project_version = db.Column(db.String(10))
-	link = db.Column(db.String(150))
+	link = db.Column(db.String(200))
 	why = db.Column(db.String(200))
+	edit_msg = db.Column(db.String(100), default="Initial edit")
+	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
 
 	def __repr__(self):
 		return "<Tool %d: %r>" % (self.id, self.name)
@@ -210,13 +212,15 @@ class Category(Versioned, db.Model):
 	__analyzer__ = FancyAnalyzer()
 
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(50))
+	name = db.Column(db.String(64))
 	parent_category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
 	parent = db.relationship('Category', remote_side=[id], backref='children')
 	tools = db.relationship("Tool", backref="category", lazy="dynamic")
 	what = db.Column(db.String(200))
 	why = db.Column(db.String(200))
 	where = db.Column(db.String(200))
+	edit_msg = db.Column(db.String(100), default="Initial edit")
+	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
 
 	def __repr__(self):
 		return "<Category %d: %r>" % (self.id, self.name)
