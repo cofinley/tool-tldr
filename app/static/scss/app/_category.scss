@@ -17,7 +17,6 @@
 
 
 #category-header {
-  //text-align: center;
   font-size: 1.5em;
 }
 
@@ -25,9 +24,6 @@
   font-size: 1.1rem;
 
   #category-content-left {
-    //width: $category-content-width;
-    //margin: 0 auto;
-    //font-size: 1.2em;
     .category-question-block {
       margin-bottom: 30px;
       .category-question-title {
@@ -37,16 +33,12 @@
   }
 
   #category-content-right {
-    //width: $category-content-width;
-    //margin: auto;
     .category-right-block {
       .env-alts-env-title {
         font-weight: $font-medium;
-        //margin: 0;
       }
       .category-content-list {
         .alt-list-item {
-          //font-size: 1.2em;
           a {
             @include blue-link;
           }
