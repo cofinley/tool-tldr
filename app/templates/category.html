@@ -22,24 +22,24 @@
         <h1 class="display-4">{{ category.name }}</h1>
     </div>
 
-    <div id="category-content" class="d-flex flex-row">
-        <div id="category-content-left">
-            <div class="category-question-block col-xl-11">
+    <div id="category-content" class="d-flex justify-content-between row">
+        <div id="category-content-left" class="col-md-5 ml-3">
+            <div class="category-question-block">
                 <h1 class="category-question-title">What</h1>
                 <p>{{ category.what }}</p>
             </div>
-            <div class="category-question-block col-xl-11">
+            <div class="category-question-block">
                 <h1 class="category-question-title">Why</h1>
                 <p>{{ category.why }}</p>
             </div>
-            <div class="category-question-block col-xl-11">
+            <div class="category-question-block">
                 <h1 class="category-question-title">Where</h1>
                 <p>{{ category.where }}</p>
             </div>
         </div>
 
-        <div id="category-content-right" class="d-flex justify-content-around">
-        <div class="category-lower-block">
+        <div id="category-content-right" class="col-md-6 row">
+        <div class="category-right-block col-lg-6">
             <h1 class="env-alts-env-title">Subcategories</h1>
             {% if subcategories %}
                 <ul class="category-content-list">
@@ -57,7 +57,7 @@
             {% endif %}
         </div>
 
-        <div class="category-lower-block">
+        <div class="category-right-block col-lg-6">
             <h1 class="env-alts-env-title">Tools</h1>
             {% if subtools %}
                 <ul class="category-content-list">

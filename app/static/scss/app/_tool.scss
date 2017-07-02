@@ -19,7 +19,8 @@
 }
 
 #tool-content {
-  display: flex;
+  //display: flex;
+  width: 100%;
   font-size: 1.1rem;
 
   a {
@@ -27,7 +28,7 @@
   }
 
   #tool-left-content {
-    flex: 1;
+    //flex: 1;
 
     .tool-question-block {
       .tool-question-title {
@@ -39,7 +40,7 @@
         margin-bottom: 40px;
         margin-left: 15px;
         font-size: 1.2em;
-        max-width: 70%;
+        //max-width: 70%;
       }
       .env-alts-section {
         margin-left: 15px;
@@ -69,6 +70,7 @@
   #tool-right-content {
     width: $tool-content-right-width;
     font-size: 1rem;
+
     #tool-pane {
       background-color: #efefef;
       padding-top: 30px;
@@ -79,8 +81,8 @@
           padding: 15px;
           border: 1px solid gray;
           background-origin: content-box !important;
-          width: 200px;
-          height: 200px;
+          width: $tool-image;
+          height: $tool-image;
           background-position: center !important;
           background-size: contain !important;
         }
@@ -126,3 +128,26 @@
     }
   }
 }
+
+@media (min-width: 576px) {
+  #tool-right-content {
+    position: inherit;
+    order: -1;
+    margin-bottom: 20px;
+  }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) { }
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  #tool-right-content {
+    position: relative;
+    top: -40px;
+    order: 1;
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) { }

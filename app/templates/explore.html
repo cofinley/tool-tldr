@@ -2,9 +2,9 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div id="explore-header" class="d-flex justify-content-between">
+<div id="explore-header" class="d-flex justify-content-between align-items-center">
     <h1 id="explore-title">{{ title }}</h1>
-    <button id="collapse-button" type="button" class="btn btn-secondary align-self-center">Collapse All</button>
+    <button id="collapse-button" type="button" class="btn btn-secondary">Collapse All</button>
 </div>
 <div id="explore-tree" class="col-11" data-url="/explore_nodes/"></div>
 {% endblock %}

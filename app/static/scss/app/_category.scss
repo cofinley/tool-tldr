@@ -25,7 +25,7 @@
   font-size: 1.1rem;
 
   #category-content-left {
-    width: $category-content-width;
+    //width: $category-content-width;
     //margin: 0 auto;
     //font-size: 1.2em;
     .category-question-block {
@@ -37,9 +37,9 @@
   }
 
   #category-content-right {
-    width: $category-content-width;
+    //width: $category-content-width;
     //margin: auto;
-    .category-lower-block {
+    .category-right-block {
       .env-alts-env-title {
         font-weight: $font-medium;
         //margin: 0;
