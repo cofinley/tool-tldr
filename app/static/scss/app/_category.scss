@@ -1,17 +1,21 @@
-.view-edits-link {
-  float:right !important;
-  a {
-      @include blue-link;
-    }
-}
+#category-top-info {
 
-#breadcrumbs {
-  .breadcrumb-item {
+  .view-edits-link {
+    //float:right !important;
     a {
       @include blue-link;
     }
   }
+
+  #breadcrumbs {
+    .breadcrumb-item {
+      a {
+        @include blue-link;
+      }
+    }
+  }
 }
+
 
 #category-header {
   text-align: center;
@@ -33,10 +37,10 @@
 
 #category-content-lower {
   width: $category-content-lower-width;
-  margin: 0 auto;
-  display: flex;
+  margin: 50px auto 0 auto;
+  //display: flex;
   .category-lower-block {
-    margin-left: 15%;
+    //margin-left: 15%;
     .env-alts-env-title {
       font-weight: $font-medium;
       margin: 0;

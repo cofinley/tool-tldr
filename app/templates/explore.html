@@ -2,12 +2,9 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div id="explore-header">
+<div id="explore-header" class="d-flex justify-content-between">
     <h1 id="explore-title">{{ title }}</h1>
-    <button id="collapse-button" type="button" class="btn btn-default">Collapse All</button>
+    <button id="collapse-button" type="button" class="btn btn-secondary align-self-center">Collapse All</button>
 </div>
-<div id="explore-tree" data-url="/explore_nodes/"></div>
-
-{#<script src="{{ url_for('static', filename='js/tree.jquery.js') }}" defer></script>#}
-{#<script src="{{ url_for('static', filename='js/explore_tree.js') }}" defer></script>#}
+<div id="explore-tree" class="col-11" data-url="/explore_nodes/"></div>
 {% endblock %}

@@ -1,8 +1,8 @@
 #header {
-  //width: $header-width;
+  width: $header-width;
   height: 80px;
   //display: flex;
-  //margin: 0 auto;
+  margin: 0 auto;
   border-bottom: 1px solid lightgray;
   //position: relative;
 
@@ -12,6 +12,7 @@
     font-weight: $font-heaviest;
     font-size: 5em;
     //flex: 1;
+    margin-top: -1px;
     text-shadow:
       -2px -2px 0 #fff,
       2px -2px 0 #fff,
@@ -20,6 +21,13 @@
 
     #logo-link {
       text-decoration: none;
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome and Opera */
     }
 
     .logo-text-tool {
@@ -32,7 +40,7 @@
   }
 
   #nav {
-    height: 110px;
+    height: 105px;
     //bottom: 0;
     //right: 0;
     //position: absolute;

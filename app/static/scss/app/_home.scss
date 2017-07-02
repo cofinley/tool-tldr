@@ -3,19 +3,23 @@
   //max-width: 20em;
   font-weight: $font-light;
   font-size: 1.75em;
-  //margin: 90px auto 60px auto;
+  margin: 90px auto 60px auto;
 }
 
-#big-search-bar-input {
-  //font-size: 1.5em;
-  font-family: $font-stack;
-  font-weight: $font-light;
-  color: $dark-gray;
-  //padding: 10px;
-  //height: 40px;
-  //border: 1px solid #999;
-  //margin: 0 auto;
-  //width: 550px;
+#big-search {
+  margin: 0 auto;
+
+  #big-search-bar-input {
+    //font-size: 1.5em;
+    font-family: $font-stack;
+    font-weight: $font-light;
+    color: $dark-gray;
+    //padding: 10px;
+    //height: 40px;
+    //border: 1px solid #999;
+    //margin: 0 auto;
+    //width: 550px;
+  }
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -32,9 +36,11 @@
     margin-bottom: 50px;
   }
 
-  .category-li {
+  #category-columns {
+    font-size: 1.3em;
+  }
+  a {
     margin-bottom: 10px;
-    font-size: 1.1em;
   }
 
   #category-links {

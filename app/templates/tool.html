@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ tool.name }}{% endblock %}
 {% block content %}
-<p id="view-edits-link"><a href="{{ '/view_edits?type=tools&name=' ~ tool.name }}">View Edits</a></p>
+<div id="tool-top-info" class="align-items-center d-flex justify-content-end">
+    <p id="view-edits-link"><a href="{{ '/view_edits?type=tools&name=' ~ tool.name }}">View Edits</a></p>
+</div>
  <div id="tool-header">
     <h1>{{ tool.name }} is
     {% if tree[-1].name[0].lower() in ["a","e","i","o","u"] %}

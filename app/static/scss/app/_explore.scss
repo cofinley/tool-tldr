@@ -1,14 +1,17 @@
 #explore-header {
 
-  display: flex;
+  //display: flex;
+
+  //width: $content-width;
 
   button {
     height: 100%;
-    margin: auto;
+    //margin: auto;
   }
 
   #explore-title {
-    flex: 1;
+    //flex: 1;
+    margin: 0;
 
   }
   #collapse-button {
@@ -17,9 +20,8 @@
 }
 
 #explore-tree {
-  ul {
-    font-size: 1.3rem !important;
-  }
+
+  font-size: 1.2rem;
 
   li {
     margin-bottom: 10px !important;

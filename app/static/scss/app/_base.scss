@@ -1,7 +1,21 @@
 body {
     font-family: $font-stack;
 
+    .page {
+        width: 100%;
+
+        .content {
+            width: $content-width;
+            margin: 2rem auto 0 auto;
+
+            .btn {
+                font-family: $font-stack !important;
+            }
+        }
+    }
+
     a {
         @include blue-link;
     }
 }
+

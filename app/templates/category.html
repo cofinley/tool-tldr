@@ -2,16 +2,18 @@
 {% block title %}{{ category.name }}{% endblock %}
 {% block content %}
 
-    <p class="view-edits-link"><a href="{{ '/view_edits?type=categories&name=' ~ category.name }}">View Edits</a></p>
-    <div id="breadcrumbs">
-    {% for item in breadcrumbs %}
-        {% if not loop.last %}
-            <span class="breadcrumb-item"><a href="{{ '/categories/' ~ item.name }}">{{ item.name }}</a></span><span>  /  </span>
-        {% endif %}
-        {% if loop.last %}
-            <span class="breadcrumb-item">{{ item.name }}</span>
-        {% endif %}
-    {% endfor %}
+    <div id="category-top-info" class="align-items-center d-flex justify-content-between">
+        <div id="breadcrumbs">
+        {% for item in breadcrumbs %}
+            {% if not loop.last %}
+                <span class="breadcrumb-item"><a href="{{ '/categories/' ~ item.name }}">{{ item.name }}</a></span><span>  /  </span>
+            {% endif %}
+            {% if loop.last %}
+                <span class="breadcrumb-item">{{ item.name }}</span>
+            {% endif %}
+        {% endfor %}
+        </div>
+        <p class="view-edits-link"><a href="{{ '/view_edits?type=categories&name=' ~ category.name }}">View Edits</a></p>
     </div>
 
     <div id="category-header">
@@ -19,21 +21,21 @@
     </div>
 
     <div id="category-content-higher">
-        <div class="category-question-block">
+        <div class="category-question-block col-xl-10 offset-xl-1">
             <h1 class="category-question-title">What</h1>
             <p>{{ category.what }}</p>
         </div>
-        <div class="category-question-block">
+        <div class="category-question-block col-xl-10 offset-xl-1">
             <h1 class="category-question-title">Why</h1>
             <p>{{ category.why }}</p>
         </div>
-        <div class="category-question-block">
+        <div class="category-question-block col-xl-10 offset-xl-1">
             <h1 class="category-question-title">Where</h1>
             <p>{{ category.where }}</p>
         </div>
     </div>
 
-    <div id="category-content-lower">
+    <div id="category-content-lower" class="d-flex justify-content-around">
         <div class="category-lower-block">
             <h1 class="env-alts-env-title">Subcategories</h1>
             {% if subcategories %}

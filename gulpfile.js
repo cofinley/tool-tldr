@@ -1,6 +1,13 @@
 'use strict';
 var staticPath = "./app/static/";
 
+var jsFileOrder = [
+	staticPath + 'js/lib/tree.jquery.js',
+	staticPath + 'js/app/explore_tree.js',
+	staticPath + 'js/app/alert.js',
+	staticPath + 'js/app/autocomplete.js'
+];
+
 var gulp = require('gulp');
 
 var cleanCSS = require('gulp-clean-css');
@@ -9,7 +16,6 @@ var sass = require('gulp-sass');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
-
 
 // Lint Task, only lint my js files
 gulp.task('lint', function() {
@@ -35,7 +41,7 @@ gulp.task('minify-css', ['sass'], () => {
 
 // Concatenate & Minify JS
 gulp.task('scripts', function() {
-    return gulp.src(staticPath + "js/**/*.js")
+    return gulp.src(jsFileOrder)
         .pipe(concat('all.js'))
         .pipe(gulp.dest(staticPath + 'dist'))
         .pipe(rename('all.min.js'))

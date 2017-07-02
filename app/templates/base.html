@@ -2,15 +2,17 @@
 <html lang="en">
     {% include "includes/head.html" %}
     <body>
-        <div id="container">
+        <div class="container page">
             {% include "includes/header.html" %}
-            {% for message in get_flashed_messages() %}
-            <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ message }}
+            <div class="content">
+                {% for message in get_flashed_messages() %}
+                    <div class="alert alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {% block content %}{% endblock %}
             </div>
-            {% endfor %}
-            {% block content %}{% endblock %}
         </div>
     </body>
 </html>
