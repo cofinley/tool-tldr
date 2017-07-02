@@ -2,6 +2,7 @@
 {% block title %}{{ tool.name }}{% endblock %}
 {% block content %}
 <div id="tool-top-info" class="align-items-center d-flex justify-content-end">
+    <p id="view-edits-link" class="mr-3"><a href="{{ '/edit-tool?id=' ~ tool.id }}">Edit Page</a></p>
     <p id="view-edits-link"><a href="{{ '/view_edits?type=tools&name=' ~ tool.name }}">View Edits</a></p>
 </div>
  <div id="tool-header">

@@ -16,6 +16,15 @@ body {
                 }
             }
 
+            input {
+                font-family: $font-stack;
+            }
+
+            textarea {
+                font-family: $font-stack;
+                height: 100px;
+            }
+
             .btn {
                 font-family: $font-stack !important;
             }

@@ -9,7 +9,6 @@
     </div>
     <div id="categories">
         <p id="category-title">Categories</p>
-{#        <div id="category-columns" class="row col-lg-8 offset-lg-2 col-xs-10 offset-xs-1">#}
         <div id="category-columns" class="row col-md-8">
                 {% for category in categories %}
                     <a class="category-list-item col-xl-3 col-lg-4 col-sm-4" href="{{ "/categories/" ~ category}}">{{ category }}</a>
