@@ -1,0 +1,51 @@
+#category-top-info {
+
+  .view-edits-link {
+    a {
+      @include blue-link;
+    }
+  }
+
+  #breadcrumbs {
+    .breadcrumb-item {
+      a {
+        @include blue-link;
+      }
+    }
+  }
+}
+
+
+#category-header {
+  font-size: 1.5em;
+}
+
+#category-content {
+  font-size: 1.1rem;
+
+  #category-content-left {
+    .category-question-block {
+      margin-bottom: 30px;
+      .category-question-title {
+        font-weight: $font-medium;
+      }
+    }
+  }
+
+  #category-content-right {
+    .category-right-block {
+      .env-alts-env-title {
+        font-weight: $font-medium;
+      }
+      .category-content-list {
+        .alt-list-item {
+          a {
+            @include blue-link;
+          }
+        }
+      }
+    }
+  }
+}
+
+

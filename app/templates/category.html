@@ -2,39 +2,44 @@
 {% block title %}{{ category.name }}{% endblock %}
 {% block content %}
 
-    <p class="view-edits-link"><a href="{{ '/view_edits?type=categories&name=' ~ category.name }}">View Edits</a></p>
-    <div id="breadcrumbs">
-    {% for item in breadcrumbs %}
-        {% if not loop.last %}
-            <span class="breadcrumb-item"><a href="{{ '/categories/' ~ item.name }}">{{ item.name }}</a></span><span>  /  </span>
+    <div id="category-top-info" class="align-items-center d-flex justify-content-{% if breadcrumbs|length > 1 %}between{% else %}end{% endif %}">
+        {% if breadcrumbs|length > 1 %}
+            <div id="breadcrumbs">
+            {% for item in breadcrumbs %}
+                {% if not loop.last %}
+                    <span class="breadcrumb-item"><a href="{{ '/categories/' ~ item.name }}">{{ item.name }}</a></span><span>  /  </span>
+                {% endif %}
+                {% if loop.last %}
+                    <span class="breadcrumb-item">{{ item.name }}</span>
+                {% endif %}
+            {% endfor %}
+            </div>
         {% endif %}
-        {% if loop.last %}
-            <span class="breadcrumb-item">{{ item.name }}</span>
-        {% endif %}
-    {% endfor %}
+        <p class="view-edits-link"><a href="{{ '/view_edits?type=categories&name=' ~ category.name }}">View Edits</a></p>
     </div>
 
     <div id="category-header">
-        <h1>{{ category.name }}</h1>
+        <h1 class="display-4">{{ category.name }}</h1>
     </div>
 
-    <div id="category-content-higher">
-        <div class="category-question-block">
-            <h1 class="category-question-title">What</h1>
-            <p>{{ category.what }}</p>
+    <div id="category-content" class="d-flex justify-content-between row">
+        <div id="category-content-left" class="col-md-5 ml-3">
+            <div class="category-question-block">
+                <h1 class="category-question-title">What</h1>
+                <p>{{ category.what }}</p>
+            </div>
+            <div class="category-question-block">
+                <h1 class="category-question-title">Why</h1>
+                <p>{{ category.why }}</p>
+            </div>
+            <div class="category-question-block">
+                <h1 class="category-question-title">Where</h1>
+                <p>{{ category.where }}</p>
+            </div>
         </div>
-        <div class="category-question-block">
-            <h1 class="category-question-title">Why</h1>
-            <p>{{ category.why }}</p>
-        </div>
-        <div class="category-question-block">
-            <h1 class="category-question-title">Where</h1>
-            <p>{{ category.where }}</p>
-        </div>
-    </div>
 
-    <div id="category-content-lower">
-        <div class="category-lower-block">
+        <div id="category-content-right" class="col-md-6 row">
+        <div class="category-right-block col-lg-6">
             <h1 class="env-alts-env-title">Subcategories</h1>
             {% if subcategories %}
                 <ul class="category-content-list">
@@ -52,7 +57,7 @@
             {% endif %}
         </div>
 
-        <div class="category-lower-block">
+        <div class="category-right-block col-lg-6">
             <h1 class="env-alts-env-title">Tools</h1>
             {% if subtools %}
                 <ul class="category-content-list">
@@ -70,5 +75,6 @@
                 <p class="alt-list-item">No tools at this time</p>
            {% endif %}
         </div>
+    </div>
     </div>
 {% endblock %}

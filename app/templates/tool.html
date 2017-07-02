@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 {% block title %}{{ tool.name }}{% endblock %}
 {% block content %}
-<p id="view-edits-link"><a href="{{ '/view_edits?type=tools&name=' ~ tool.name }}">View Edits</a></p>
- <div id="tool-header">
-    <h1>{{ tool.name }} is
-    {% if tree[-1].name[0].lower() in ["a","e","i","o","u"] %}
-    an
-    {% else %}
-    a
-    {% endif %}
-    <a href="{{ '/categories/' ~ tree[-1].name }}">{{ tree[-1].name }}</a>
-    tool.
-    </h1>
+<div id="tool-top-info" class="align-items-center d-flex justify-content-end">
+    <p id="view-edits-link"><a href="{{ '/view_edits?type=tools&name=' ~ tool.name }}">View Edits</a></p>
 </div>
-<div id="tool-content">
-    <div id="tool-left-content">
+ <div id="tool-header">
+    <h1 id="tool-heading" class="display-4">{{ tool.name }}</h1>
+</div>
+<div id="tool-content" class="row justify-content-between">
+    <div id="tool-left-content" class="col-md-6 ml-3">
+        <div class="tool-question-block">
+            <h1 class="tool-question-title">What</h1>
+            <p>It's {% if tree[-1].name[0].lower() in ["a","e","i","o","u"] %}
+            an
+            {% else %}
+            a
+            {% endif %}<a href="{{ '/categories/' ~ tree[-1].name }}">{{ tree[-1].name }}</a>.</p>
+        </div>
         <div class="tool-question-block">
             <h1 class="tool-question-title">Why</h1>
             <p>{{ tool.why }}</p>
@@ -54,7 +56,7 @@
             {% endif %}
         </div>
     </div>
-    <div id="tool-right-content">
+    <div id="tool-right-content" class="col-md-auto">
         <div id="tool-pane">
             <div id="tool-pane-top">
                 <div id="tool-avatar" style="background: url({{ tool.avatar_url }}) no-repeat white"></div>

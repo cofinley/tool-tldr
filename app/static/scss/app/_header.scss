@@ -1,0 +1,89 @@
+#header {
+  width: $header-width;
+  height: 80px;
+  margin: 0 auto;
+  border-bottom: 1px solid lightgray;
+
+  #logo {
+
+    font-style: italic;
+    font-weight: $font-heaviest;
+    font-size: 5em;
+    margin-top: -1px;
+    text-shadow:
+      -2px -2px 0 #fff,
+      2px -2px 0 #fff,
+      -2px 2px 0 #fff,
+      2px 2px 0 #fff;
+
+    #logo-link {
+      text-decoration: none;
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome and Opera */
+    }
+
+    .logo-text-tool {
+      color: $dark-gray;
+
+    }
+    .logo-text-tldr {
+      color: $red;
+    }
+  }
+
+  #nav {
+    height: 105px;
+
+    #nav-user-actions {
+      .nav-user-text-button {
+        margin-left: 15px;
+
+        .nav-user-link {
+          @include blue-link;
+        }
+      }
+    }
+
+    #links {
+      font-weight: $font-heavy;
+      font-size: 1.4em;
+
+      .nav-link {
+        margin-right: 20px;
+        @include dark-link;
+      }
+
+      #search-input-group {
+        width: 220px;
+        height: 35px;
+
+      #search-input {
+          font-size: 0.7em;
+          font-family: $font-stack;
+          font-weight: $font-light;
+          color: $gray;
+        }
+      }
+    }
+  }
+}
+
+// Extra small devices (portrait phones, less than 576px)
+// No media query since this is the default in Bootstrap
+
+//// Small devices (landscape phones, 576px and up)
+//@media (min-width: 576px) {  }
+//
+//// Medium devices (tablets, 768px and up)
+//@media (min-width: 768px) {  }
+//
+//// Large devices (desktops, 992px and up)
+//@media (min-width: 992px) {  }
+//
+//// Extra large devices (large desktops, 1200px and up)
+//@media (min-width: 1200px) {  }

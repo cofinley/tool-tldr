@@ -1,0 +1,153 @@
+#view-edits-link {
+  float: right;
+  a {
+    @include blue-link;
+  }
+}
+
+#tool-header {
+  //text-align: center;
+  font-size: 1.5em;
+
+  #tool-heading {
+    margin-top: 0;
+  }
+
+  a {
+    @include blue-link;
+  }
+}
+
+#tool-content {
+  //display: flex;
+  width: 100%;
+  font-size: 1.1rem;
+
+  a {
+    @include blue-link;
+  }
+
+  #tool-left-content {
+    //flex: 1;
+
+    .tool-question-block {
+      .tool-question-title {
+        margin-top: 0;
+        font-weight: $font-medium;
+      }
+
+      & > p {
+        margin-bottom: 40px;
+        margin-left: 15px;
+        font-size: 1.2em;
+        //max-width: 70%;
+      }
+      .env-alts-section {
+        margin-left: 15px;
+        float: left;
+        margin-right: 100px;
+
+        .env-alts-env-title {
+          font-weight: $font-medium;
+          margin-top: 0;
+        }
+      }
+    }
+  }
+
+  .env-alts-list {
+    & > li {
+      font-size: 1.2em !important;
+    }
+  }
+
+  p.alts-more-link {
+    font-size: 1.2em !important;
+    margin-left: -20px !important;
+    max-width: 125% !important;
+  }
+
+  #tool-right-content {
+    width: $tool-content-right-width;
+    font-size: 1rem;
+
+    #tool-pane {
+      background-color: #efefef;
+      padding-top: 30px;
+      border: 10px solid #dedede;
+      #tool-pane-top {
+        #tool-avatar {
+          margin: auto;
+          padding: 15px;
+          border: 1px solid gray;
+          background-origin: content-box !important;
+          width: $tool-image;
+          height: $tool-image;
+          background-position: center !important;
+          background-size: contain !important;
+        }
+        #tool-name {
+          font-weight: $font-medium;
+          text-align: center;
+        }
+      }
+      #tool-pane-bottom {
+        #tool-metadata-table {
+          width: 100%;
+          display: table;
+          border-spacing: 0 0;
+          border-collapse: collapse;
+          border: none;
+          .tool-metadata-row {
+            vertical-align: top;
+            width: 100%;
+            display: table-row;
+
+            &:nth-child(even) {
+              background-color: $light-gray;
+            }
+
+            td {
+              padding: 8px 0 8px 0;
+              display: table-cell;
+            }
+            .tool-metadata-name {
+              font-weight: $font-medium;
+              padding-left: 15px;
+            }
+            .tool-metadata-value {
+              .tool-parents {
+                white-space: pre !important;
+                margin-top: 0px;
+                margin-bottom: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 576px) {
+  #tool-right-content {
+    position: inherit;
+    order: -1;
+    margin-bottom: 20px;
+  }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) { }
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  #tool-right-content {
+    position: relative;
+    top: -40px;
+    order: 1;
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) { }

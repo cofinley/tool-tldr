@@ -122,7 +122,7 @@ def edit_profile():
 		current_user.name = form.name.data
 		current_user.about_me = form.about_me.data
 		db.session.add(current_user)
-		flash('Your profile has been updated.')
+		flash('Your profile has been updated.', 'success')
 		return redirect(url_for('.user', username=current_user.username))
 	form.name.data = current_user.name
 	form.about_me.data = current_user.about_me
@@ -141,7 +141,7 @@ def edit_profile_admin(id):
 		user.confirmed = form.confirmed.data
 		user.role = models.Role.query.get(form.role.data)
 		db.session.add(user)
-		flash('The profile has been updated.')
+		flash('The profile has been updated.', 'success')
 		return redirect(url_for('.user', username=user.username))
 	form.email.data = user.email
 	form.username.data = user.username

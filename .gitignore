@@ -7,3 +7,6 @@ venv/
 jquery*
 .webassets-cache/
 gen/
+node_modules/
+app/static/dist/
+app/static/css/style.css

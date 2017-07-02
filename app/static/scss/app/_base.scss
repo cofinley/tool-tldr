@@ -1,0 +1,29 @@
+body {
+    font-family: $font-stack;
+
+    .page {
+        width: 100%;
+
+        .content {
+            width: $content-width;
+            margin: auto;
+
+            h1 {
+                font-weight: 500;
+
+                &.display-4 {
+                    font-weight: $font-light;
+                }
+            }
+
+            .btn {
+                font-family: $font-stack !important;
+            }
+        }
+    }
+
+    a {
+        @include blue-link;
+    }
+}
+
