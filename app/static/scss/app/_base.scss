@@ -8,6 +8,14 @@ body {
             width: $content-width;
             margin: auto;
 
+            h1 {
+                font-weight: 500;
+
+                &.display-4 {
+                    font-weight: $font-light;
+                }
+            }
+
             .btn {
                 font-family: $font-stack !important;
             }

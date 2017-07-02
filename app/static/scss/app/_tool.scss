@@ -6,8 +6,12 @@
 }
 
 #tool-header {
-  text-align: center;
+  //text-align: center;
   font-size: 1.5em;
+
+  #tool-heading {
+    margin-top: 0;
+  }
 
   a {
     @include blue-link;
@@ -16,6 +20,7 @@
 
 #tool-content {
   display: flex;
+  font-size: 1.1rem;
 
   a {
     @include blue-link;
@@ -27,6 +32,7 @@
     .tool-question-block {
       .tool-question-title {
         margin-top: 0;
+        font-weight: $font-medium;
       }
 
       & > p {
@@ -62,6 +68,7 @@
 
   #tool-right-content {
     width: $tool-content-right-width;
+    font-size: 1rem;
     #tool-pane {
       background-color: #efefef;
       padding-top: 30px;

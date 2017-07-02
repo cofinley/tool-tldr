@@ -17,38 +17,43 @@
 
 
 #category-header {
-  text-align: center;
+  //text-align: center;
   font-size: 1.5em;
 }
 
-#category-content-higher {
+#category-content {
+  font-size: 1.1rem;
 
-  width: $category-content-higher-width;
-  margin: 0 auto;
-  font-size: 1.2em;
-  .category-question-block {
-    margin-bottom: 30px;
-    .category-question-title {
-
+  #category-content-left {
+    width: $category-content-width;
+    //margin: 0 auto;
+    //font-size: 1.2em;
+    .category-question-block {
+      margin-bottom: 30px;
+      .category-question-title {
+        font-weight: $font-medium;
+      }
     }
   }
-}
 
-#category-content-lower {
-  width: $category-content-lower-width;
-  margin: 50px auto 0 auto;
-  .category-lower-block {
-    .env-alts-env-title {
-      font-weight: $font-medium;
-      margin: 0;
-    }
-    .category-content-list {
-      .alt-list-item {
-        font-size: 1.2em;
-        a {
-          @include blue-link;
+  #category-content-right {
+    width: $category-content-width;
+    //margin: auto;
+    .category-lower-block {
+      .env-alts-env-title {
+        font-weight: $font-medium;
+        //margin: 0;
+      }
+      .category-content-list {
+        .alt-list-item {
+          //font-size: 1.2em;
+          a {
+            @include blue-link;
+          }
         }
       }
     }
   }
 }
+
+

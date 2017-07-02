@@ -5,18 +5,18 @@
     <p id="view-edits-link"><a href="{{ '/view_edits?type=tools&name=' ~ tool.name }}">View Edits</a></p>
 </div>
  <div id="tool-header">
-    <h1>{{ tool.name }} is
-    {% if tree[-1].name[0].lower() in ["a","e","i","o","u"] %}
-    an
-    {% else %}
-    a
-    {% endif %}
-    <a href="{{ '/categories/' ~ tree[-1].name }}">{{ tree[-1].name }}</a>
-    tool.
-    </h1>
+    <h1 id="tool-heading" class="display-4">{{ tool.name }}</h1>
 </div>
 <div id="tool-content">
     <div id="tool-left-content">
+        <div class="tool-question-block">
+            <h1 class="tool-question-title">What</h1>
+            <p>It's {% if tree[-1].name[0].lower() in ["a","e","i","o","u"] %}
+            an
+            {% else %}
+            a
+            {% endif %}<a href="{{ '/categories/' ~ tree[-1].name }}">{{ tree[-1].name }}</a>.</p>
+        </div>
         <div class="tool-question-block">
             <h1 class="tool-question-title">Why</h1>
             <p>{{ tool.why }}</p>
