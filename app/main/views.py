@@ -1,5 +1,5 @@
 import urllib
-from flask import render_template, redirect, url_for, flash, request, jsonify
+from flask import render_template, redirect, url_for, flash, request, jsonify, abort
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
@@ -15,7 +15,7 @@ from sqlalchemy import func
 @main.route("/index")
 @cache.cached(timeout=50)
 def index():
-	categories = [category.name for category in models.Category.query.filter_by(parent=None)]
+	categories = models.Category.query.filter_by(parent=None).all()
 	show_more = False
 	if len(categories) > 16:
 		print("More than 16 cats")
@@ -45,7 +45,7 @@ def explore_nodes():
 
 	# Rename 'name' key as 'label' for jqTree
 	for result in results:
-		label_link = "<a href='/categories/{}'>{}</a>".format(urllib.parse.quote(result["name"]), result["name"])
+		label_link = "<a href='/categories?id={}'>{}</a>".format(result["id"], result["name"])
 		result.pop("name")
 		result["label"] = label_link
 		result["load_on_demand"] = True
@@ -53,9 +53,10 @@ def explore_nodes():
 	return jsonify(results)
 
 
-@main.route("/categories/<path:category_name>")
-def fetch_category_page(category_name):
-	category = models.Category.query.filter(func.lower(models.Category.name) == func.lower(category_name)).first()
+@main.route("/categories")
+def fetch_category_page():
+	id = request.args.get("id")
+	category = models.Category.query.get_or_404(id)
 	subcategories = models.Category.query.filter_by(parent_category_id=category.id).all()
 	subtools = models.Tool.query.filter_by(parent_category_id=category.id).all()
 	category_tree = utils.build_bottom_up_tree(category.id)
@@ -67,9 +68,10 @@ def fetch_category_page(category_name):
 						   breadcrumbs=category_tree)
 
 
-@main.route("/tools/<path:tool_name>")
-def fetch_tool_page(tool_name):
-	tool = models.Tool.query.filter(func.lower(models.Tool.name) == func.lower(tool_name)).first()
+@main.route("/tools")
+def fetch_tool_page():
+	id = request.args.get("id")
+	tool = models.Tool.query.get_or_404(id)
 
 	alts_for_this_env = models.Tool.query\
 		.filter_by(parent_category_id=tool.parent_category_id)\
@@ -157,21 +159,25 @@ def edit_profile_admin(id):
 @main.route("/view_edits")
 def view_edits():
 	type = request.args.get("type")
-	name = request.args.get("name")
-	if type == "categories":
+	id = request.args.get("id")
+	if type == "category":
 		cls = models.Category
 		edits_cls = models.CategoryHistory()
-	if type == "tools":
+	elif type == "tool":
 		cls = models.Tool
 		edits_cls = models.ToolHistory()
+	else:
+		abort(404)
 
 	Session = sessionmaker(bind=db.engine)
 	session = Session()
-	current_version = cls.query.filter_by(name=name).first()
+	current_version = cls.query.get(id)
 	previous_versions = session.query(edits_cls.table).filter_by(id=current_version.id).all()
 	session.close()
 	return render_template("view_edits.html",
-						   name=name,
+						   name=current_version.name,
+						   id=id,
+						   type=type,
 						   current_version=current_version,
 						   previous_versions=previous_versions)
 
@@ -179,7 +185,6 @@ def view_edits():
 @main.route("/edit-category", methods=["GET", "POST"])
 def edit_category_page():
 	id = request.args.get("id")
-
 	category = models.Category.query.get_or_404(id)
 	form = EditCategoryPageForm()
 	if form.validate_on_submit():
@@ -190,8 +195,8 @@ def edit_category_page():
 		category.edit_msg = form.edit_msg.data
 		category.edit_time = datetime.utcnow()
 		db.session.add(category)
-		flash('The category has been updated.', 'success')
-		return redirect(url_for('.fetch_category_page', category_name=category.name))
+		flash('This category has been updated.', 'success')
+		return redirect(url_for('.fetch_category_page', id=category.id))
 	form.name.data = category.name
 	form.what.data = category.what
 	form.why.data = category.why
@@ -216,8 +221,8 @@ def edit_tool_page():
 		tool.why = form.why.data
 		tool.edit_msg = form.edit_msg.data
 		tool.edit_time = datetime.utcnow()
-		flash('The tool has been updated.', 'success')
-		return redirect(url_for('.fetch_tool_page', tool_name=tool.name))
+		flash('This tool has been updated.', 'success')
+		return redirect(url_for('.fetch_tool_page', id=tool.id))
 	form.name.data = tool.name
 	form.avatar_url.data = tool.avatar_url
 	form.env.data = tool.env.title()
@@ -227,3 +232,44 @@ def edit_tool_page():
 	form.why.data = tool.why
 	form.edit_msg.data = ""
 	return render_template('edit_tool.html', form=form, tool=tool)
+
+
+@main.route("/view-diff")
+def view_diff():
+
+	id = request.args.get("id")
+	type = request.args.get("type")
+
+	if type == "category":
+		cls = models.Category
+		edits_cls = models.CategoryHistory()
+	elif type == "tool":
+		cls = models.Tool
+		edits_cls = models.ToolHistory()
+
+	# newer could be in regular table
+	newer_version = request.args.get("newer")
+
+	# older will always be in _history table
+	older_version = request.args.get("older")
+
+	Session = sessionmaker(bind=db.engine)
+	session = Session()
+
+	if newer_version == "current":
+		newer_data = cls.query.get(id)
+	else:
+		newer_data = session.query(edits_cls.table).filter_by(id=id, version=newer_version).first()
+	older_data = session.query(edits_cls.table).filter_by(id=id, version=older_version).first()
+
+	session.close()
+
+	html_results = utils.build_diff(older_data, newer_data, type)
+
+	return render_template("view_diff.html",
+						   id=id,
+						   type=type,
+						   name=newer_data.name,
+						   older_version=older_version,
+						   newer_version=newer_data.version,
+						   diffs=html_results)

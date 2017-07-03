@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% block title %}{{ name }} edits{% endblock %}
 {% block content %}
-    <h1>{{ name }}: Edits</h1>
+    <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ name }}</a>: Edits</h1>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Version #</th>
+                <th>Comparisons</th>
                 <th>Edit Time</th>
                 <th>Edit Message</th>
             </tr>
@@ -13,12 +14,14 @@
         <tbody>
             <tr>
                 <th scope="row">{{ current_version.version }}</th>
+                <td>Current | {% if previous_versions %}<a href="/view-diff?id={{ id }}&type={{ type }}&older={{ current_version.version - 1 }}&newer=current">Previous</a>{% else %}Previous{% endif %}</td>
                 <td>{{ current_version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
                 <td>{{ current_version.edit_msg }}</td>
             </tr>
             {% for version in previous_versions|sort(attribute="version", reverse=True) %}
                 <tr>
                     <th scope="row">{{ version.version }}</th>
+                    <td><a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version.version }}&newer=current">Current</a> | {% if loop.last %}Previous{% else %}<a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version.version - 1 }}&newer={{ version.version }}">Previous</a>{% endif %}</td>
                     <td>{{ version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
                     <td>{{ version.edit_msg }}</td>
                 </tr>

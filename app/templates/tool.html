@@ -2,8 +2,8 @@
 {% block title %}{{ tool.name }}{% endblock %}
 {% block content %}
 <div id="tool-top-info" class="align-items-center d-flex justify-content-end">
-    <p id="view-edits-link" class="mr-3"><a href="{{ '/edit-tool?id=' ~ tool.id }}">Edit Page</a></p>
-    <p id="view-edits-link"><a href="{{ '/view_edits?type=tools&name=' ~ tool.name }}">View Edits</a></p>
+    <p id="view-edits-link" class="mr-3"><a href="/edit-tool?id={{ tool.id }}">Edit Page</a></p>
+    <p id="view-edits-link"><a href="/view_edits?type=tool&id={{ tool.id }}">View Edits</a></p>
 </div>
  <div id="tool-header">
     <h1 id="tool-heading" class="display-4">{{ tool.name }}</h1>
@@ -16,7 +16,7 @@
             an
             {% else %}
             a
-            {% endif %}<a href="{{ '/categories/' ~ tree[-1].name }}">{{ tree[-1].name }}</a>.</p>
+            {% endif %}<a href="/categories?id={{ tree[-1].id }}">{{ tree[-1].name }}</a>.</p>
         </div>
         <div class="tool-question-block">
             <h1 class="tool-question-title">Why</h1>
@@ -29,9 +29,9 @@
                 <h3 class="env-alts-env-title"><i>For {{ tool.env.title() }}</i></h3>
                 <ul class="env-alts-list">
                     {% for alt in env_alts[:5] %}
-                        <li><a href="{{ '/tools/' ~ alt.name }}">{{ alt.name }}</a></li>
+                        <li><a href="/tools?id={{ alt.id }}">{{ alt.name }}</a></li>
                         {%- if loop.index > 0 %}
-                            <p class="alts-more-link"><a href="{{ '/explore/' ~ tree[-1].name ~ '?env=' ~ tool.env }}">More for {{ tool.env.title() }}...</a></p>
+                            <p class="alts-more-link"><a href="/explore/{{ tree[-1].name ~ '?env=' ~ tool.env }}">More for {{ tool.env.title() }}...</a></p>
                             {% break %}
                         {% endif %}
                     {%- endfor %}
@@ -43,9 +43,9 @@
                 <h3 class="env-alts-env-title"><i>For other environments</i></h3>
                 <ul class="env-alts-list">
                     {% for alt in other_alts[:5] %}
-                        <li><a href="{{ '/tools/' ~ alt.name }}">{{ alt.name }}</a> ({{ alt.env.title() }})</li>
+                        <li><a href="/tools?id={{ alt.id }}">{{ alt.name }}</a> ({{ alt.env.title() }})</li>
                         {%- if loop.index > 0 %}
-                            <p class="alts-more-link"><a href="{{ '/explore/' ~ tree[-1].name }}">More for all environments...</a></p>
+                            <p class="alts-more-link"><a href="/explore/{{ tree[-1].name }}">More for all environments...</a></p>
                             {% break %}
                         {% endif %}
                     {%- endfor %}
@@ -70,7 +70,7 @@
                         <td class="tool-metadata-name">Category</td>
                         <td class="tool-metadata-value">
                             {% for parent in tree %}
-                                <p class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a href="{{ '/categories/' ~ parent.name }}">{{ parent.name }}</a></p>
+                                <p class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a href="/categories?id={{ parent.id }}">{{ parent.name }}</a></p>
                             {% endfor %}
                         </td>
                     </tr>
