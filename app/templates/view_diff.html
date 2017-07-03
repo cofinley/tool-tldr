@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ name }} diff{% endblock %}
+{% block content %}
+    <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ name }}</a>: Diff</h1>
+    <p><a href="/view_edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
+    <h3 id="comparison-info">Comparing versions {{ older_version }} and {{ newer_version }}</h3>
+    {% for diff in diffs %}
+        <div class="card">
+          <h3 class="card-header">{{ diff }}</h3>
+          <div class="row">
+              <div class="card-block col-md-6">
+                <h4 class="diff-version-heading pl-3">Version {{ older_version }}</h4>
+                <p class="card-text pl-3">{{ diffs[diff]["left"]|safe }}</p>
+              </div>
+              <div class="card-block col-md-6 right-diff">
+                <h4 class="diff-version-heading pl-3">Version {{ newer_version }}</h4>
+                    <p class="card-text pl-3">{{ diffs[diff]["right"]|safe }}</p>
+              </div>
+          </div>
+        </div>
+    {% endfor %}
+{% endblock %}

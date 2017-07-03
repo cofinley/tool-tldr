@@ -195,8 +195,8 @@ def edit_category_page():
 		category.edit_msg = form.edit_msg.data
 		category.edit_time = datetime.utcnow()
 		db.session.add(category)
-		flash('The category has been updated.', 'success')
-		return redirect(url_for('.fetch_category_page', category_name=category.name))
+		flash('This category has been updated.', 'success')
+		return redirect(url_for('.fetch_category_page', id=category.id))
 	form.name.data = category.name
 	form.what.data = category.what
 	form.why.data = category.why
@@ -221,8 +221,8 @@ def edit_tool_page():
 		tool.why = form.why.data
 		tool.edit_msg = form.edit_msg.data
 		tool.edit_time = datetime.utcnow()
-		flash('The tool has been updated.', 'success')
-		return redirect(url_for('.fetch_tool_page', tool_name=tool.name))
+		flash('This tool has been updated.', 'success')
+		return redirect(url_for('.fetch_tool_page', id=tool.id))
 	form.name.data = tool.name
 	form.avatar_url.data = tool.avatar_url
 	form.env.data = tool.env.title()
@@ -232,3 +232,44 @@ def edit_tool_page():
 	form.why.data = tool.why
 	form.edit_msg.data = ""
 	return render_template('edit_tool.html', form=form, tool=tool)
+
+
+@main.route("/view-diff")
+def view_diff():
+
+	id = request.args.get("id")
+	type = request.args.get("type")
+
+	if type == "category":
+		cls = models.Category
+		edits_cls = models.CategoryHistory()
+	elif type == "tool":
+		cls = models.Tool
+		edits_cls = models.ToolHistory()
+
+	# newer could be in regular table
+	newer_version = request.args.get("newer")
+
+	# older will always be in _history table
+	older_version = request.args.get("older")
+
+	Session = sessionmaker(bind=db.engine)
+	session = Session()
+
+	if newer_version == "current":
+		newer_data = cls.query.get(id)
+	else:
+		newer_data = session.query(edits_cls.table).filter_by(id=id, version=newer_version).first()
+	older_data = session.query(edits_cls.table).filter_by(id=id, version=older_version).first()
+
+	session.close()
+
+	html_results = utils.build_diff(older_data, newer_data, type)
+
+	return render_template("view_diff.html",
+						   id=id,
+						   type=type,
+						   name=newer_data.name,
+						   older_version=older_version,
+						   newer_version=newer_data.version,
+						   diffs=html_results)

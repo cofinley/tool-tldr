@@ -1,0 +1,35 @@
+#comparison-info{
+  font-weight: $font-light;
+}
+
+.card {
+  h3 {
+    font-weight: $font-medium;
+    margin-top: 0;
+  }
+  .card-text {
+    margin-top: 0;
+
+    .diff-danger {
+      color: #a94442;
+      background-color: #f2dede;
+    }
+
+    .diff-success {
+      color: #3c763d;
+      background-color: #dff0d8;
+    }
+  }
+
+  .diff-version-heading {
+    margin-top: 0;
+    font-weight: $font-light;
+    font-size: 1.2rem;
+  }
+
+  .right-diff {
+    border-left: 1px solid $light-gray;
+  }
+
+  margin-bottom: 1rem;
+}
