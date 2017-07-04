@@ -6,42 +6,52 @@ from whoosh.analysis import FancyAnalyzer
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, AnonymousUserMixin
-from .history_meta import Versioned
-from sqlalchemy import Table
+import sqlalchemy as sa
 
 
-class Permission:
-	WRITE_ARTICLES = 0x04
-	MODERATE_COMMENTS = 0x08
-	ADMINISTER = 0x80
+class Tool(db.Model):
+	__tablename__ = "tools"
+	__searchable__ = ["name"]
+	__analyzer__ = FancyAnalyzer()
+	__versioned__ = {}
 
-
-class Role(db.Model):
-	__tablename__ = "roles"
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(64), unique=True)
-	users = db.relationship("User", backref="role", lazy="dynamic")
-	permissions = db.Column(db.Integer)
-
-	@staticmethod
-	def insert_roles():
-		roles = {
-			'User': (Permission.WRITE_ARTICLES, True),
-			'Moderator': (Permission.WRITE_ARTICLES |
-						  Permission.MODERATE_COMMENTS, False),
-			'Admin': (0xff, False)
-		}
-		for r in roles:
-			role = Role.query.filter_by(name=r).first()
-			if role is None:
-				role = Role(name=r)
-			role.permissions = roles[r][0]
-			role.default = roles[r][1]
-			db.session.add(role)
-		db.session.commit()
+	name = db.Column(db.String(64))
+	avatar_url = db.Column(db.String(200))
+	parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
+	env = db.Column(db.String(64))
+	created = db.Column(db.String(25))
+	project_version = db.Column(db.String(10))
+	link = db.Column(db.String(200))
+	why = db.Column(db.String(200))
+	edit_msg = db.Column(db.String(100), default="Initial edit")
+	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
+	edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
 
 	def __repr__(self):
-		return "<Role %r>" % self.name
+		return "<Tool %d: %r>" % (self.id, self.name)
+
+
+class Category(db.Model):
+	__tablename__ = "categories"
+	__searchable__ = ["name"]
+	__analyzer__ = FancyAnalyzer()
+	__versioned__ = {}
+
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(64))
+	parent_category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+	parent = db.relationship('Category', remote_side=[id], backref='children')
+	tools = db.relationship("Tool", backref="category", lazy="dynamic")
+	what = db.Column(db.String(200))
+	why = db.Column(db.String(200))
+	where = db.Column(db.String(200))
+	edit_msg = db.Column(db.String(100), default="Initial edit")
+	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
+	edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+	def __repr__(self):
+		return "<Category %d: %r>" % (self.id, self.name)
 
 
 class User(db.Model):
@@ -56,6 +66,8 @@ class User(db.Model):
 	role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
 	confirmed = db.Column(db.Boolean, default=False)
 	last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
+	tool_edits = db.relationship('Tool', backref="author", lazy="dynamic")
+	category_edits = db.relationship('Category', backref="author", lazy="dynamic")
 
 	@property
 	def password(self):
@@ -180,53 +192,37 @@ def load_user(user_id):
 	return User.query.get(int(user_id))
 
 
-class Tool(Versioned, db.Model):
-	__tablename__ = "tools"
-	__searchable__ = ["name"]
-	__analyzer__ = FancyAnalyzer()
+class Permission:
+	WRITE_ARTICLES = 0x04
+	MODERATE_COMMENTS = 0x08
+	ADMINISTER = 0x80
 
+
+class Role(db.Model):
+	__tablename__ = "roles"
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(64))
-	avatar_url = db.Column(db.String(200))
-	parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
-	env = db.Column(db.String(64))
-	created = db.Column(db.String(25))
-	project_version = db.Column(db.String(10))
-	link = db.Column(db.String(200))
-	why = db.Column(db.String(200))
-	edit_msg = db.Column(db.String(100), default="Initial edit")
-	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
+	name = db.Column(db.String(64), unique=True)
+	users = db.relationship("User", backref="role", lazy="dynamic")
+	permissions = db.Column(db.Integer)
+
+	@staticmethod
+	def insert_roles():
+		roles = {
+			'User': (Permission.WRITE_ARTICLES, True),
+			'Moderator': (Permission.WRITE_ARTICLES |
+						  Permission.MODERATE_COMMENTS, False),
+			'Admin': (0xff, False)
+		}
+		for r in roles:
+			role = Role.query.filter_by(name=r).first()
+			if role is None:
+				role = Role(name=r)
+			role.permissions = roles[r][0]
+			role.default = roles[r][1]
+			db.session.add(role)
+		db.session.commit()
 
 	def __repr__(self):
-		return "<Tool %d: %r>" % (self.id, self.name)
+		return "<Role %r>" % self.name
 
-
-class ToolHistory:
-	def __init__(self):
-		self.table = Table("tools_history", db.metadata, autoload=True, autoload_with=db.engine)
-
-
-class Category(Versioned, db.Model):
-	__tablename__ = "categories"
-	__searchable__ = ["name"]
-	__analyzer__ = FancyAnalyzer()
-
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(64))
-	parent_category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
-	parent = db.relationship('Category', remote_side=[id], backref='children')
-	tools = db.relationship("Tool", backref="category", lazy="dynamic")
-	what = db.Column(db.String(200))
-	why = db.Column(db.String(200))
-	where = db.Column(db.String(200))
-	edit_msg = db.Column(db.String(100), default="Initial edit")
-	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
-
-	def __repr__(self):
-		return "<Category %d: %r>" % (self.id, self.name)
-
-
-class CategoryHistory:
-	def __init__(self):
-		self.table = Table("categories_history", db.metadata, autoload=True, autoload_with=db.engine)
-
+sa.orm.configure_mappers()
