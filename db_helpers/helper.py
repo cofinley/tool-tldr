@@ -10,6 +10,8 @@ class Helper:
 		self.blueprint = create_app(config)
 		self.ctx = self.blueprint.test_request_context()
 		self.ctx.push()
+		self.db = db
+		self.models = models
 
 		self.current_dir = os.path.dirname(__file__)
 
@@ -31,7 +33,8 @@ class Helper:
 					parent_category_id=parent_category_id,
 					what=what,
 					why=why,
-					where=where
+					where=where,
+					edit_author=1
 				)
 				db.session.add(c)
 			db.session.commit()
@@ -54,7 +57,8 @@ class Helper:
 					created=created,
 					project_version=project_version,
 					link=link,
-					why=why
+					why=why,
+					edit_author=1
 				)
 				db.session.add(t)
 			db.session.commit()

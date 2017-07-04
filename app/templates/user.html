@@ -7,22 +7,32 @@
     <div class="profile-header">
         <h1>{{ user.username }}</h1>
         {% if user.name %}
-        <p>
-            {{ user.name }}<br>
-        </p>
+            <p>
+                {{ user.name }}<br>
+            </p>
+        {% endif %}
+        {% if user.about_me %}
+            <p>{{ user.about_me }}</p>
+            <p>
+                &emsp;{{ user.about_me }}<br>
+            </p>
         {% endif %}
         {% if current_user.is_administrator() %}
-        <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+            <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
         {% endif %}
         <p>
             {% if user == current_user %}
-            <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
+                <a class="btn btn-secondary" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
             {% endif %}
             {% if current_user.is_administrator() %}
-            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
+                <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
             {% endif %}
         </p>
     </div>
 </div>
 <h3>Edits by {{ user.username }}</h3>
+{% if tool_edits %}
+    <h4>Tool Edits</h4>
+
+{% endif %}
 {% endblock %}

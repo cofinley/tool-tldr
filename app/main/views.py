@@ -4,11 +4,15 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
 from . import main
-from .. import models, cache, utils, db
+from .. import models as models
+from .. import cache, utils, db
 from app.main.forms import EditProfileForm, EditProfileAdminForm, EditCategoryPageForm, EditToolPageForm
 from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
-from sqlalchemy import func
+from sqlalchemy_continuum import version_class
+
+
+
 
 
 @main.route("/")
@@ -101,20 +105,28 @@ def search_tools():
 	results = []
 	search_tools = models.Tool.query.whoosh_search(search_query, like=True).all()
 	for tool in search_tools:
-		results.append({"label": tool.name, "type": "tool"})
+		results.append({"label": tool.name, "type": "tool", "id": tool.id})
 	search_categories = models.Category.query.whoosh_search(search_query, like=True).all()
 	for category in search_categories:
-		results.append({"label": category.name, "type": "category"})
+		results.append({"label": category.name, "type": "category", "id": category.id})
 	return jsonify(results)
 
 
 # USER ROUTES
 
 
-@main.route('/user/<username>')
-def user(username):
-	user = models.User.query.filter_by(username=username).first_or_404()
-	return render_template('user.html', user=user)
+@main.route('/users')
+def user():
+	id = request.args.get("id")
+	user = models.User.query.get(id)
+	Session = sessionmaker(bind=db.engine)
+	session = Session()
+	tool_edits = session.query(version_class(models.Tool)).filter_by(edit_author=id).all()
+	category_edits = session.query(version_class(models.Category)).filter_by(edit_author=id).all()
+	return render_template('user.html',
+						   user=user,
+						   tool_edits=tool_edits,
+						   category_edits=category_edits)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
@@ -126,7 +138,7 @@ def edit_profile():
 		current_user.about_me = form.about_me.data
 		db.session.add(current_user)
 		flash('Your profile has been updated.', 'success')
-		return redirect(url_for('.user', username=current_user.username))
+		return redirect(url_for('.user', id=current_user.id))
 	form.name.data = current_user.name
 	form.about_me.data = current_user.about_me
 	return render_template('edit_profile.html', form=form)
@@ -145,7 +157,7 @@ def edit_profile_admin(id):
 		user.role = models.Role.query.get(form.role.data)
 		db.session.add(user)
 		flash('The profile has been updated.', 'success')
-		return redirect(url_for('.user', username=user.username))
+		return redirect(url_for('.user', id=user.id))
 	form.email.data = user.email
 	form.username.data = user.username
 	form.confirmed.data = user.confirmed
@@ -162,27 +174,22 @@ def view_edits():
 	id = request.args.get("id")
 	if type == "category":
 		cls = models.Category
-		edits_cls = models.CategoryHistory()
 	elif type == "tool":
 		cls = models.Tool
-		edits_cls = models.ToolHistory()
 	else:
 		abort(404)
 
-	Session = sessionmaker(bind=db.engine)
-	session = Session()
-	current_version = cls.query.get(id)
-	previous_versions = session.query(edits_cls.table).filter_by(id=current_version.id).all()
-	session.close()
+	versions = cls.query.get(id).versions
 	return render_template("view_edits.html",
-						   name=current_version.name,
 						   id=id,
 						   type=type,
-						   current_version=current_version,
-						   previous_versions=previous_versions)
+						   length=versions.count(),
+						   current_version=versions[-1],
+						   previous_versions=versions[:-1])
 
 
 @main.route("/edit-category", methods=["GET", "POST"])
+@login_required
 def edit_category_page():
 	id = request.args.get("id")
 	category = models.Category.query.get_or_404(id)
@@ -194,6 +201,7 @@ def edit_category_page():
 		category.where = form.where.data
 		category.edit_msg = form.edit_msg.data
 		category.edit_time = datetime.utcnow()
+		category.edit_author = current_user.id
 		db.session.add(category)
 		flash('This category has been updated.', 'success')
 		return redirect(url_for('.fetch_category_page', id=category.id))
@@ -206,6 +214,7 @@ def edit_category_page():
 
 
 @main.route("/edit-tool", methods=["GET", "POST"])
+@login_required
 def edit_tool_page():
 	id = request.args.get("id")
 	tool = models.Tool.query.get_or_404(id)
@@ -221,6 +230,7 @@ def edit_tool_page():
 		tool.why = form.why.data
 		tool.edit_msg = form.edit_msg.data
 		tool.edit_time = datetime.utcnow()
+		tool.edit_author = current_user.id
 		flash('This tool has been updated.', 'success')
 		return redirect(url_for('.fetch_tool_page', id=tool.id))
 	form.name.data = tool.name
@@ -242,27 +252,25 @@ def view_diff():
 
 	if type == "category":
 		cls = models.Category
-		edits_cls = models.CategoryHistory()
 	elif type == "tool":
 		cls = models.Tool
-		edits_cls = models.ToolHistory()
 
+	# Version numbers
 	# newer could be in regular table
 	newer_version = request.args.get("newer")
 
 	# older will always be in _history table
-	older_version = request.args.get("older")
+	older_version = int(request.args.get("older"))
 
-	Session = sessionmaker(bind=db.engine)
-	session = Session()
+	versions = cls.query.get(id).versions
 
 	if newer_version == "current":
-		newer_data = cls.query.get(id)
+		newer_display_version = versions.count()
+		newer_data = versions[-1]
 	else:
-		newer_data = session.query(edits_cls.table).filter_by(id=id, version=newer_version).first()
-	older_data = session.query(edits_cls.table).filter_by(id=id, version=older_version).first()
-
-	session.close()
+		newer_display_version = newer_version
+		newer_data = versions[int(newer_version)]
+	older_data = versions[older_version]
 
 	html_results = utils.build_diff(older_data, newer_data, type)
 
@@ -271,5 +279,5 @@ def view_diff():
 						   type=type,
 						   name=newer_data.name,
 						   older_version=older_version,
-						   newer_version=newer_data.version,
+						   newer_version=newer_display_version,
 						   diffs=html_results)

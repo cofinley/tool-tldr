@@ -19,10 +19,10 @@ $(function () {
         select: function (event, ui) {
             event.preventDefault();
             if (ui.item.type === "tool") {
-                window.location.href = window.location.origin + "/tools/" + ui.item.value;
+                window.location.href = window.location.origin + "/tools?id=" + ui.item.id;
             }
             else if (ui.item.type === "category") {
-                window.location.href = window.location.origin + "/categories/" + ui.item.value;
+                window.location.href = window.location.origin + "/categories?id=" + ui.item.id;
             }
 
             return false;
@@ -48,10 +48,10 @@ $(function () {
         select: function (event, ui) {
             event.preventDefault();
             if (ui.item.type === "tool") {
-                window.location.href = window.location.origin + "/tools/" + ui.item.value;
+                window.location.href = window.location.origin + "/tools?id=" + ui.item.id;
             }
             else if (ui.item.type === "category") {
-                window.location.href = window.location.origin + "/categories/" + ui.item.value;
+                window.location.href = window.location.origin + "/categories?id=" + ui.item.id;
             }
 
             return false;
