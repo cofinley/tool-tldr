@@ -6,9 +6,7 @@ from whoosh.analysis import FancyAnalyzer
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, AnonymousUserMixin
-from .history_meta import Versioned
 import sqlalchemy as sa
-from sqlalchemy import Table
 
 
 class Tool(db.Model):
@@ -34,11 +32,6 @@ class Tool(db.Model):
 		return "<Tool %d: %r>" % (self.id, self.name)
 
 
-# class ToolHistory:
-# 	def __init__(self):
-# 		self.table = Table("tools_history", db.metadata, autoload=True, autoload_with=db.engine)
-
-
 class Category(db.Model):
 	__tablename__ = "categories"
 	__searchable__ = ["name"]
@@ -59,11 +52,6 @@ class Category(db.Model):
 
 	def __repr__(self):
 		return "<Category %d: %r>" % (self.id, self.name)
-
-
-# class CategoryHistory:
-# 	def __init__(self):
-# 		self.table = Table("categories_history", db.metadata, autoload=True, autoload_with=db.engine)
 
 
 class User(db.Model):
