@@ -14,15 +14,15 @@
         </thead>
         <tbody>
             <tr>
-                <th scope="row">{{ length }}</th>
-                <td>Current | {% if previous_versions %}<a href="/view-diff?id={{ id }}&type={{ type }}&older={{ length - 1 }}&newer=current">Previous</a>{% else %}Previous{% endif %}</td>
+                <th scope="row">{{ (length + 1) }}</th>
+                <td>Current | {% if previous_versions %}<a href="/view-diff?id={{ id }}&type={{ type }}&older={{ length }}&newer=current">Previous</a>{% else %}Previous{% endif %}</td>
                 <td>{{ current_version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
                 <td><a href="/users?id={{ current_version.author.id }}">{{ current_version.author.username }}</td>
                 <td>{{ current_version.edit_msg }}</td>
             </tr>
             {% for version in previous_versions|sort(attribute="index", reverse=True) %}
                 <tr>
-                    {% set version_number = length - loop.index %}
+                    {% set version_number = (length + 1) - loop.index %}
                     <th scope="row">{{ version_number }}</th>
                     <td><a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version_number }}&newer=current">Current</a> | {% if loop.last %}Previous{% else %}<a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version_number - 1 }}&newer={{ version_number }}">Previous</a>{% endif %}</td>
                     <td>{{ version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>

@@ -183,7 +183,7 @@ def view_edits():
 	return render_template("view_edits.html",
 						   id=id,
 						   type=type,
-						   length=versions.count(),
+						   length=versions.count()-1,
 						   current_version=versions[-1],
 						   previous_versions=versions[:-1])
 
@@ -260,16 +260,20 @@ def view_diff():
 	newer_version = request.args.get("newer")
 
 	# older will always be in _history table
-	older_version = int(request.args.get("older"))
+	# Offset version by -1 to account for 0 indexing
+	# Only needs to happen on backend, it's visually correct/understandable on the frontend
+	# Backend = 0-indexed, frontend = 1-indexed
+	older_version = int(request.args.get("older")) - 1
 
 	versions = cls.query.get(id).versions
 
 	if newer_version == "current":
-		newer_display_version = versions.count()
+		newer_display_version = versions.count() - 1
 		newer_data = versions[-1]
 	else:
+		newer_version = int(newer_version) - 1
 		newer_display_version = newer_version
-		newer_data = versions[int(newer_version)]
+		newer_data = versions[newer_version]
 	older_data = versions[older_version]
 
 	html_results = utils.build_diff(older_data, newer_data, type)
