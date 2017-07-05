@@ -1,9 +1,10 @@
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
 	SubmitField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from wtforms import ValidationError
-from ..models import Role, User
+from ..models import Role, User, Permission
+from flask_login import current_user
 
 
 class EditProfileForm(FlaskForm):
@@ -60,4 +61,5 @@ class EditToolPageForm(FlaskForm):
 	link = StringField("Project URL", validators=[DataRequired(), Length(1, 200)])
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
 	edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
+	recaptcha = RecaptchaField()
 	submit = SubmitField('Submit')

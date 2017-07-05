@@ -1,4 +1,5 @@
 import urllib
+import ipaddress
 from flask import render_template, redirect, url_for, flash, request, jsonify, abort
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -189,8 +190,9 @@ def view_edits():
 
 
 @main.route("/edit-category", methods=["GET", "POST"])
-@login_required
 def edit_category_page():
+	if not current_user.is_authenticated:
+		flash("You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.", "danger")
 	id = request.args.get("id")
 	category = models.Category.query.get_or_404(id)
 	form = EditCategoryPageForm()
@@ -201,7 +203,11 @@ def edit_category_page():
 		category.where = form.where.data
 		category.edit_msg = form.edit_msg.data
 		category.edit_time = datetime.utcnow()
-		category.edit_author = current_user.id
+		if not current_user.is_authenticated:
+			edit_author = request.remote_addr
+		else:
+			edit_author = current_user.id
+		category.edit_author = edit_author
 		db.session.add(category)
 		flash('This category has been updated.', 'success')
 		return redirect(url_for('.fetch_category_page', id=category.id))
@@ -214,8 +220,9 @@ def edit_category_page():
 
 
 @main.route("/edit-tool", methods=["GET", "POST"])
-@login_required
 def edit_tool_page():
+	if not current_user.is_authenticated:
+		flash("You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.", "danger")
 	id = request.args.get("id")
 	tool = models.Tool.query.get_or_404(id)
 	form = EditToolPageForm()
@@ -230,7 +237,11 @@ def edit_tool_page():
 		tool.why = form.why.data
 		tool.edit_msg = form.edit_msg.data
 		tool.edit_time = datetime.utcnow()
-		tool.edit_author = current_user.id
+		if not current_user.is_authenticated:
+			edit_author = request.remote_addr
+		else:
+			edit_author = current_user.id
+		tool.edit_author = edit_author
 		flash('This tool has been updated.', 'success')
 		return redirect(url_for('.fetch_tool_page', id=tool.id))
 	form.name.data = tool.name
@@ -285,3 +296,16 @@ def view_diff():
 						   older_version=older_version,
 						   newer_version=newer_display_version,
 						   diffs=html_results)
+
+
+# JINJA FUNCTIONS
+
+@main.context_processor
+def utility_processor():
+	def is_ip(input):
+		try:
+			ipaddress.ip_address(str(input))
+			return True
+		except ValueError:
+			return False
+	return dict(is_ip=is_ip)

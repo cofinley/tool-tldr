@@ -38,8 +38,12 @@ def get_hostname(url):
 
 def gen_diff_html(old_data, new_data):
 
-	# Generate word-by-word diff
-	diff1 = list(ndiff(old_data.split(" "), new_data.split(" ")))
+	# Generate word-by-word diff if spaces, letter-by-letter if not
+	has_spaces = " " in old_data and " " in new_data
+	if has_spaces:
+		diff1 = list(ndiff(old_data.split(" "), new_data.split(" ")))
+	else:
+		diff1 = list(ndiff(old_data, new_data))
 	# Create copy for other side
 	diff2 = diff1.copy()
 
@@ -54,7 +58,11 @@ def gen_diff_html(old_data, new_data):
 		else:
 			diff1[index] = value.replace(" ", "")
 
-	left = " ".join(diff1)
+	# Join back results differently for fields that contain spaces
+	if has_spaces:
+		left = " ".join(diff1)
+	else:
+		left = "".join(diff1)
 
 	# On right side, hide removals
 	for index, value in enumerate(diff2):
@@ -67,7 +75,10 @@ def gen_diff_html(old_data, new_data):
 		else:
 			diff2[index] = value.replace(" ", "")
 
-	right = " ".join(diff2)
+	if has_spaces:
+		right = " ".join(diff2)
+	else:
+		right = "".join(diff2)
 
 	sides = {"left": left, "right": right}
 
@@ -104,17 +115,16 @@ def build_diff(old, new, type):
 		old_project_version = old.project_version
 		old_link = old.link
 
-		# Don't worry about true diffs for smaller stuff
 		if old_avatar_url != new_avatar_url:
-			diffs["Avatar URL"] = {"left": old_avatar_url, "right": new_avatar_url}
+			diffs["Avatar URL"] = gen_diff_html(old_avatar_url, new_avatar_url)
 		if old_env != new_env:
 			diffs["Environment"] = gen_diff_html(old_env.title(), new_env.title())
 		if old_created != new_created:
 			diffs["Created Date"] = gen_diff_html(old_created, new_created)
 		if old_project_version != new_project_version:
-			diffs["Project Version"] = {"left": old_project_version, "right": new_project_version}
+			diffs["Project Version"] = gen_diff_html(old_project_version, new_project_version)
 		if old_link != new_link:
-			diffs["Project URL"] = {"left": old_link, "right": new_link}
+			diffs["Project URL"] = gen_diff_html(old_link, new_link)
 
 	new_name = new.name
 	new_why = new.why
