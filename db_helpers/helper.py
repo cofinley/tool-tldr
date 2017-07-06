@@ -33,8 +33,7 @@ class Helper:
 					parent_category_id=parent_category_id,
 					what=what,
 					why=why,
-					where=where,
-					edit_author=1
+					where=where
 				)
 				db.session.add(c)
 			db.session.commit()
@@ -57,8 +56,7 @@ class Helper:
 					created=created,
 					project_version=project_version,
 					link=link,
-					why=why,
-					edit_author=1
+					why=why
 				)
 				db.session.add(t)
 			db.session.commit()
@@ -70,7 +68,7 @@ class Helper:
 			next(tsvin, None)  # skip header
 
 			for row in tsvin:
-				id, username, email, password_hash, name, about_me,	member_since, role_id, confirmed, last_seen = row
+				id, username, email, password_hash, name, about_me,	member_since, role_name, confirmed, last_seen = row
 				u = models.User(
 					id=int(id),
 					username=username,
@@ -79,7 +77,7 @@ class Helper:
 					name=name,
 					about_me=about_me,
 					member_since=datetime.strptime(member_since, "%Y-%m-%d %H:%M:%S.%f"),
-					role_id=int(role_id),
+					role_id=models.Role.query.filter_by(name=role_name).first().id,
 					confirmed=bool(confirmed),
 					last_seen=datetime.strptime(last_seen, "%Y-%m-%d %H:%M:%S.%f")
 				)

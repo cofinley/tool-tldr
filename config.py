@@ -9,6 +9,9 @@ class Config:
 	SQLALCHEMY_TRACK_MODIFICATIONS = True
 	WHOOSH_BASE = os.path.join(basedir, 'search.db')
 	WTF_CSRF_ENABLED = True
+	RECAPTCHA_USE_SSL = True
+	RECAPTCHA_PUBLIC_KEY = "6Lfn1icUAAAAAMefI3wT1KHDA6fcgThmbVMqv4MB"
+	RECAPTCHA_PRIVATE_KEY = "6Lfn1icUAAAAAFjb_GazZxvWwQqEam7FpkCiUALA"
 	MAIL_SUBJECT_PREFIX = '[Tool TL;DR]'
 	MAIL_SENDER = "connor.finley5@gmail.com"
 	ADMIN = os.environ.get('TOOL_TLDR_ADMIN')

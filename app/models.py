@@ -148,11 +148,20 @@ class User(db.Model):
 		return User.query.get(data['id'])
 
 	def can(self, permissions):
+		# permissions is (usually) the lower value
+		# If the user's role's permissions outweigh it, the function will return the lesser permission
+		# If the user does not have the permission, it will return 0
 		return self.role is not None and \
 			   (self.role.permissions & permissions) == permissions
 
 	def is_administrator(self):
 		return self.can(Permission.ADMINISTER)
+
+	@property
+	def is_confirmed(self):
+		# confirmed users don't need captcha to change links
+		# 0x0f == 15 == shortcut for all permissions included in confirmed user
+		return self.can(0x0f)
 
 	def ping(self):
 		self.last_seen = datetime.utcnow()
@@ -193,8 +202,13 @@ def load_user(user_id):
 
 
 class Permission:
-	WRITE_ARTICLES = 0x04
-	MODERATE_COMMENTS = 0x08
+	CREATE = 0x01
+	CHANGE_LINKS = 0x02
+	UPLOAD = 0x04
+	MOVE = 0x08
+	UNDO = 0x10
+	DELETE = 0x20
+	LOCK = 0x40
 	ADMINISTER = 0x80
 
 
@@ -208,10 +222,17 @@ class Role(db.Model):
 	@staticmethod
 	def insert_roles():
 		roles = {
-			'User': (Permission.WRITE_ARTICLES, True),
-			'Moderator': (Permission.WRITE_ARTICLES |
-						  Permission.MODERATE_COMMENTS, False),
-			'Admin': (0xff, False)
+			"Registered": (Permission.CREATE | Permission.CHANGE_LINKS, True),
+			"Confirmed": (Permission.CREATE |
+						  Permission.CHANGE_LINKS |
+						  Permission.UPLOAD |
+						  Permission.MOVE, False),
+			"Rollback": (Permission.CREATE |
+								   Permission.CHANGE_LINKS |
+								   Permission.UPLOAD |
+								   Permission.MOVE |
+								   Permission.UNDO, False),
+			"Administrator": (0xff, False)
 		}
 		for r in roles:
 			role = Role.query.filter_by(name=r).first()
