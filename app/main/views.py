@@ -23,7 +23,6 @@ def index():
 	categories = models.Category.query.filter_by(parent=None).all()
 	show_more = False
 	if len(categories) > 16:
-		print("More than 16 cats")
 		show_more = True
 	return render_template("index.html",
 						   categories=categories[:16],
@@ -62,8 +61,8 @@ def explore_nodes():
 def fetch_category_page():
 	id = request.args.get("id")
 	category = models.Category.query.get_or_404(id)
-	subcategories = models.Category.query.filter_by(parent_category_id=category.id).all()
-	subtools = models.Tool.query.filter_by(parent_category_id=category.id).all()
+	subcategories = category.children
+	subtools = category.tools.all()
 	category_tree = utils.build_bottom_up_tree(category.id)
 
 	return render_template("category.html",
@@ -104,8 +103,8 @@ def fetch_tool_page():
 def search_tools():
 	search_query = request.args.get("term")
 	results = []
-	search_tools = models.Tool.query.whoosh_search(search_query, like=True).all()
-	for tool in search_tools:
+	queried_tools = models.Tool.query.whoosh_search(search_query, like=True).all()
+	for tool in queried_tools:
 		results.append({"label": tool.name, "type": "tool", "id": tool.id})
 	search_categories = models.Category.query.whoosh_search(search_query, like=True).all()
 	for category in search_categories:

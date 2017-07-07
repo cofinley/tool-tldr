@@ -25,9 +25,17 @@
           {{ form.recaptcha }}
         </div>
     {% endif %}
-    <div class="float-right mb-5">
-        {{ wtf.form_field(form.submit) }}
-        <button type="button" class="btn btn-outline-danger">Cancel</button>
+    <div class="d-flex justify-content-end mb-5">
+        <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack({{ tool.id }})">Cancel</button>
+        <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
     </div>
 </form>
+
+<script>
+
+    function goBack(id) {
+        window.location.href = "/tools?id=" + id;
+    }
+
+</script>
 {% endblock %}
