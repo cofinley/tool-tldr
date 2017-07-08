@@ -5,7 +5,8 @@ var jsFileOrder = [
 	staticPath + 'js/lib/tree.jquery.js',
 	staticPath + 'js/app/explore_tree.js',
 	staticPath + 'js/app/alert.js',
-	staticPath + 'js/app/autocomplete.js'
+	staticPath + 'js/app/autocomplete.js',
+	staticPath + 'js/app/diff_radio_buttons.js'
 ];
 
 var gulp = require('gulp');

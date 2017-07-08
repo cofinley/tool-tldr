@@ -3,7 +3,7 @@
 {% block content %}
     <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ name }}</a>: Diff</h1>
     <p><a href="/view_edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
-    <h3 id="comparison-info">Comparing versions {{ older_version + 1 }} and {{ newer_version + 1 }}</h3>
+    <h3 id="comparison-info">Comparing version {{ older_version + 1 }} to {{ newer_version + 1 }}</h3>
     {% for diff in diffs %}
         <div class="card">
           <h3 class="card-header">{{ diff }}</h3>
