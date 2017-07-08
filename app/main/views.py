@@ -1,6 +1,6 @@
 import urllib
 import ipaddress
-from flask import render_template, redirect, url_for, flash, request, jsonify, abort
+from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
@@ -170,6 +170,7 @@ def edit_profile_admin(id):
 
 @main.route("/view_edits")
 def view_edits():
+	page = request.args.get("page", 1, type=int)
 	type = request.args.get("type")
 	id = request.args.get("id")
 	if type == "category":
@@ -179,11 +180,19 @@ def view_edits():
 	else:
 		abort(404)
 
-	versions = cls.query.get(id).versions
+	all = version_class(cls).query.all()
+	latest_version_id = all[-1].transaction_id
+	first_version_id = all[0].transaction_id
+	pagination = version_class(cls).query.filter_by(id=id)\
+		.order_by(version_class(cls).transaction_id.desc())\
+		.paginate(page, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
+	versions = list(reversed(pagination.items))
 	return render_template("view_edits.html",
 						   id=id,
 						   type=type,
-						   length=versions.count()-1,
+						   pagination=pagination,
+						   latest_version_id=latest_version_id,
+						   first_version_id=first_version_id,
 						   current_version=versions[-1],
 						   previous_versions=versions[:-1])
 
@@ -266,34 +275,23 @@ def view_diff():
 		cls = models.Tool
 
 	# Version numbers
-	# newer could be in regular table
-	newer_version = request.args.get("newer")
+	newer_version = int(request.args.get("newer"))
+	older_version = int(request.args.get("older"))
 
-	# older will always be in _history table
-	# Offset version by -1 to account for 0 indexing
-	# Only needs to happen on backend, it's visually correct/understandable on the frontend
-	# Backend = 0-indexed, frontend = 1-indexed
-	older_version = int(request.args.get("older")) - 1
-
-	versions = cls.query.get(id).versions
-
-	if newer_version == "current":
-		newer_display_version = versions.count() - 1
-		newer_data = versions[-1]
-	else:
-		newer_version = int(newer_version) - 1
-		newer_display_version = newer_version
-		newer_data = versions[newer_version]
-	older_data = versions[older_version]
+	newer_data = version_class(cls).query.get((id, newer_version))
+	older_data = version_class(cls).query.get((id, older_version))
 
 	html_results = utils.build_diff(older_data, newer_data, type)
+
+	older_time = older_data.edit_time.strftime('%d %B %Y, %H:%M')
+	newer_time = newer_data.edit_time.strftime('%d %B %Y, %H:%M')
 
 	return render_template("view_diff.html",
 						   id=id,
 						   type=type,
 						   name=newer_data.name,
-						   older_version=older_version,
-						   newer_version=newer_display_version,
+						   older_time=older_time,
+						   newer_time=newer_time,
 						   diffs=html_results)
 
 
