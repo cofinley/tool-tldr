@@ -1,5 +1,5 @@
 #comparison-info{
-  font-weight: $font-light;
+  font-weight: $font-medium;
 }
 
 .card {
@@ -18,6 +18,10 @@
     .diff-success {
       color: #3c763d;
       background-color: #dff0d8;
+    }
+
+    &.card-wrapped-text {
+      overflow-wrap: break-word;
     }
   }
 

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
+{% import "_macros.html" as macros %}
 {% block title %}{{ current_version.name }} edits{% endblock %}
 {% block content %}
     <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ current_version.name }}</a>: Edits</h1>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Version #</th>
                 <th class="d-flex align-items-end">
                     <div>
                         Comparisons
@@ -21,9 +21,17 @@
         </thead>
         <tbody>
             <tr>
-                <th scope="row">{{ (length + 1) }}</th>
-                <td>
-                    Current | {% if previous_versions %}<a href="/view-diff?id={{ id }}&type={{ type }}&older={{ length }}&newer=current">Previous</a>{% else %}Previous{% endif %}
+                <td class="comparisons-td">
+                    {% if current_version.transaction_id < latest_version_id %}
+                        <a href="/view-diff?id={{ id }}&type={{ type }}&older={{ current_version.transaction_id }}&newer={{ latest_version_id }}">Current</a> |
+                    {% else %}
+                        Current |
+                    {% endif %}
+                    {% if previous_versions %}
+                        <a href="/view-diff?id={{ id }}&type={{ type }}&older={{ current_version.previous.transaction_id }}&newer={{ current_version.transaction_id }}">Previous</a>
+                    {% else %}
+                        Previous
+                    {% endif %}
                     <div class="form-check form-check-inline ml-5" style="visibility: hidden">
                       <label class="form-check-label">
                         <input class="form-check-input radio-left" type="radio" name="inlineRadioOptionsLeft" id="inlineRadio1" value="null" disabled>
@@ -31,33 +39,36 @@
                     </div>
                     <div class="form-check form-check-inline">
                       <label class="form-check-label">
-                        <input class="form-check-input radio-right" type="radio" name="inlineRadioOptionsRight" id="inlineRadio2" value="current">
+                        <input class="form-check-input radio-right" type="radio" name="inlineRadioOptionsRight" id="inlineRadio2" value="{{ current_version.transaction_id }}">
                       </label>
                     </div>
                 </td>
                 <td>{{ current_version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
                 {% if not is_ip(current_version.edit_author) %}
-                    <td><a href="/users?id={{ current_version.author.id }}">{{ current_version.author.username }}</td>
+                    <td><a href="/users?id={{ current_version.author.id }}">{{ current_version.author.username }}</a></td>
                 {% else %}
                     <td>{{ current_version.edit_author }}</td>
                 {% endif %}
                 <td>{{ current_version.edit_msg }}</td>
             </tr>
-            {% for version in previous_versions|sort(attribute="index", reverse=True) %}
+            {% for version in previous_versions|sort(attribute="transaction_id", reverse=True) %}
                 <tr>
-                    {% set version_number = (length + 1) - loop.index %}
-                    <th scope="row">{{ version_number }}</th>
-                    <td>
-                        <a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version_number }}&newer=current">Current</a> | {% if loop.last %}Previous{% else %}<a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version_number - 1 }}&newer={{ version_number }}">Previous</a>{% endif %}
+                    <td class="comparisons-td">
+                        <a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version.transaction_id }}&newer={{ latest_version_id }}">Current</a> |
+                        {% if version.transaction_id == first_version_id %}
+                            Previous
+                        {% else %}
+                            <a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version.previous.transaction_id }}&newer={{ version.transaction_id }}">Previous</a>
+                        {% endif %}
                         <div class="form-check form-check-inline ml-5">
                           <label class="form-check-label">
-                            <input class="form-check-input radio-left" type="radio" name="inlineRadioOptionsLeft" id="inlineRadio1" value="{{ version_number }}">
+                            <input class="form-check-input radio-left" type="radio" name="inlineRadioOptionsLeft" id="inlineRadio1" value="{{ version.transaction_id }}">
                           </label>
                         </div>
                         {% if not loop.last %}
                         <div class="form-check form-check-inline">
                           <label class="form-check-label">
-                            <input class="form-check-input radio-right" type="radio" name="inlineRadioOptionsRight" id="inlineRadio2" value="{{ version_number }}">
+                            <input class="form-check-input radio-right" type="radio" name="inlineRadioOptionsRight" id="inlineRadio2" value="{{ version.transaction_id }}">
                           </label>
                         </div>
                         {% endif %}
@@ -72,4 +83,7 @@
                 </tr>
             {% endfor %}
     </table>
+    <div class="pagination">
+     {{ macros.edits_pagination_widget(pagination, '.view_edits', id=id, type=type) }}
+    </div>
 {% endblock %}
