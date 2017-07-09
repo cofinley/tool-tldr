@@ -63,3 +63,8 @@ class EditToolPageForm(FlaskForm):
 	edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
 	recaptcha = RecaptchaField()
 	submit = SubmitField('Submit')
+
+
+class TimeTravelForm(FlaskForm):
+	edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
+	submit = SubmitField('Submit')

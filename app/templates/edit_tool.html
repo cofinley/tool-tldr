@@ -26,7 +26,7 @@
         </div>
     {% endif %}
     <div class="d-flex justify-content-end mb-5">
-        <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack({{ tool.id }})">Cancel</button>
+        <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack()">Cancel</button>
         <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
     </div>
 </form>
@@ -34,7 +34,7 @@
 <script>
 
     function goBack(id) {
-        window.location.href = "/tools?id=" + id;
+        window.history.back();
     }
 
 </script>

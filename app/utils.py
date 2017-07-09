@@ -1,4 +1,5 @@
-from difflib import Differ, SequenceMatcher, ndiff
+from difflib import ndiff
+from datetime import timedelta, datetime
 from urllib.parse import urlsplit
 from app import models
 
@@ -85,7 +86,15 @@ def gen_diff_html(old_data, new_data):
 	return sides
 
 
-def build_diff(old, new, type):
+def find_diff(old, new, type):
+	"""
+	Find difference in old model vs. new.
+	If any fields are different, note them in a dictionary of tuples (db column, old text, new text).
+	:param old: old version model
+	:param new: new version model
+	:param type: category or tool
+	:return: dictionary of tuples (db column, old text, new text)
+	"""
 
 	diffs = {}
 
@@ -97,9 +106,9 @@ def build_diff(old, new, type):
 		old_where = old.where
 
 		if old_what != new_what:
-			diffs["What"] = gen_diff_html(old_what, new_what)
+			diffs["What"] = ("what", old_what, new_what)
 		if old_where != new_where:
-			diffs["Where"] = gen_diff_html(old_where, new_where)
+			diffs["Where"] = ("where", old_where, new_where)
 
 	else:
 		# Tool
@@ -116,15 +125,15 @@ def build_diff(old, new, type):
 		old_link = old.link
 
 		if old_avatar_url != new_avatar_url:
-			diffs["Avatar URL"] = gen_diff_html(old_avatar_url, new_avatar_url)
+			diffs["Avatar URL"] = ("avatar_url", old_avatar_url, new_avatar_url)
 		if old_env != new_env:
-			diffs["Environment"] = gen_diff_html(old_env.title(), new_env.title())
+			diffs["Environment"] = ("env", old_env.title(), new_env.title())
 		if old_created != new_created:
-			diffs["Created Date"] = gen_diff_html(old_created, new_created)
+			diffs["Created Date"] = ("created", old_created, new_created)
 		if old_project_version != new_project_version:
-			diffs["Project Version"] = gen_diff_html(old_project_version, new_project_version)
+			diffs["Project Version"] = ("project_version", old_project_version, new_project_version)
 		if old_link != new_link:
-			diffs["Project URL"] = gen_diff_html(old_link, new_link)
+			diffs["Project URL"] = ("link", old_link, new_link)
 
 	new_name = new.name
 	new_why = new.why
@@ -133,8 +142,54 @@ def build_diff(old, new, type):
 	old_why = old.why
 
 	if old_name != new_name:
-		diffs["Name"] = gen_diff_html(old_name, new_name)
+		diffs["Name"] = ("name", old_name, new_name)
 	if old_why != new_why:
-		diffs["Why"] = gen_diff_html(old_why, new_why)
+		diffs["Why"] = ("why", old_why, new_why)
 
 	return diffs
+
+
+def overwrite(old, new, type):
+	"""
+	Overwrite old (typically current) model with data from new (typically an older version).
+	This is used for time travel.
+	:param old: model to be overwritten
+	:param new: model whose date will be used
+	:param type: category or tool
+	:return: old model with overwritten data supplied by new 
+	"""
+
+	if type == "category":
+		old.what = new.what
+		old.where = new.where
+
+	else:
+		# Tool
+		old.avatar_url = new.avatar_url
+		old.env = new.env
+		old.created = new.created
+		old.project_version = new.project_version
+		old.link = new.link
+
+	old.name = new.name
+	old.why = new.why
+
+	return old
+
+
+def check_if_three_edits(user, versions):
+	"""
+	Look at all versions, check if provided user shows up three or more times in the past 24 hours.
+	:param user: user id (ip address if anon, user id if registered)
+	:param versions: sqlalchemy-continuum version table
+	:return: bool if user shows up three or more times for a page
+	"""
+	version_in_last_24_hours = [v for v in versions if datetime.utcnow()-timedelta(hours=24) <=
+													   v.edit_time <=
+													   datetime.utcnow()]
+	user_count = 0
+	for version in version_in_last_24_hours:
+		if user == version.edit_author:
+			user_count += 1
+
+	return user_count >= 3
