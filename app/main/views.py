@@ -7,7 +7,7 @@ from datetime import datetime
 from . import main
 from .. import models as models
 from .. import cache, utils, db
-from app.main.forms import EditProfileForm, EditProfileAdminForm, EditCategoryPageForm, EditToolPageForm
+from app.main.forms import EditProfileForm, EditProfileAdminForm, EditCategoryPageForm, EditToolPageForm, TimeTravelForm
 from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
 from sqlalchemy_continuum import version_class
@@ -273,6 +273,8 @@ def view_diff():
 		cls = models.Category
 	elif type == "tool":
 		cls = models.Tool
+	else:
+		abort(403)
 
 	# Version numbers
 	newer_version = int(request.args.get("newer"))
@@ -281,7 +283,9 @@ def view_diff():
 	newer_data = version_class(cls).query.get((id, newer_version))
 	older_data = version_class(cls).query.get((id, older_version))
 
-	html_results = utils.build_diff(older_data, newer_data, type)
+	diffs = utils.find_diff(older_data, newer_data, type)
+	for key in diffs:
+		diffs[key] = utils.gen_diff_html(diffs[key][1], diffs[key][2])
 
 	older_time = older_data.edit_time.strftime('%d %B %Y, %H:%M')
 	newer_time = newer_data.edit_time.strftime('%d %B %Y, %H:%M')
@@ -292,13 +296,76 @@ def view_diff():
 						   name=newer_data.name,
 						   older_time=older_time,
 						   newer_time=newer_time,
-						   diffs=html_results)
+						   diffs=diffs)
+
+
+@main.route("/time-travel", methods=["GET", "POST"])
+def undo():
+
+	id = request.args.get("id")
+	type = request.args.get("type")
+
+	if type == "category":
+		cls = models.Category
+		return_route = '.fetch_category_page'
+	elif type == "tool":
+		cls = models.Tool
+		return_route = '.fetch_tool_page'
+	else:
+		abort(403)
+
+	# Make sure user hasn't made more than three reverts within past 24 hours
+	if not current_user.is_authenticated:
+		edit_author = request.remote_addr
+	else:
+		edit_author = current_user.id
+
+	if utils.check_if_three_edits(edit_author, cls.query.get_or_404(id).versions):
+		flash("You have already reverted this page three times within a 24 hour period. Try again later.", "warning")
+		return redirect(url_for('main.view_edits', id=id, type=type))
+
+	version = request.args.get("target_version")
+	destination_version = version_class(cls).query.get_or_404((id, version))
+	current_version = cls.query.get_or_404(id)
+
+	current_time = current_version.edit_time.strftime('%d %B %Y, %H:%M')
+	destination_time = destination_version.edit_time.strftime('%d %B %Y, %H:%M')
+
+	diffs = utils.find_diff(current_version, destination_version, type)
+	for key in diffs:
+		diffs[key] = utils.gen_diff_html(diffs[key][1], diffs[key][2])
+
+	if not current_user.is_authenticated:
+		flash("You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.", "danger")
+
+	form = TimeTravelForm()
+	if form.validate_on_submit():
+		# Overwrite entire current state with destination edit state
+		current_version = utils.overwrite(current_version, destination_version, type)
+		current_version.edit_msg = form.edit_msg.data
+		current_version.edit_time = datetime.utcnow()
+		current_version.edit_author = edit_author
+		db.session.commit()
+		flash('This {} has been updated.'.format(type), 'success')
+		return redirect(url_for(return_route, id=id))
+
+	form.edit_msg.data = "Time travel back to {} from {}".format(current_time, destination_time)
+	return render_template("undo.html",
+						   id=id,
+						   type=type,
+						   name=current_version.name,
+						   form=form,
+						   current_time=current_time,
+						   destination_time=destination_time,
+						   diffs=diffs,
+						   current_version=current_version)
 
 
 # JINJA FUNCTIONS
 
 @main.context_processor
 def utility_processor():
+	# IP validator
 	def is_ip(input):
 		try:
 			ipaddress.ip_address(str(input))

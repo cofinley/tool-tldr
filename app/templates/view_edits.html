@@ -17,6 +17,7 @@
                 <th>Edit Time</th>
                 <th>Edit Author</th>
                 <th>Edit Message</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -50,6 +51,7 @@
                     <td>{{ current_version.edit_author }}</td>
                 {% endif %}
                 <td>{{ current_version.edit_msg }}</td>
+                <td></td>
             </tr>
             {% for version in previous_versions|sort(attribute="transaction_id", reverse=True) %}
                 <tr>
@@ -80,6 +82,7 @@
                         <td>{{ version.edit_author }}</td>
                     {% endif %}
                     <td>{{ version.edit_msg }}</td>
+                    <td><a class="btn btn-sm btn-secondary" href="/time-travel?id={{ id }}&type={{ type }}&target_version={{ version.transaction_id }}" role="button" title="Time travel to this edit in time. This will make a new, overwriting edit.">Time Travel</a></td>
                 </tr>
             {% endfor %}
     </table>

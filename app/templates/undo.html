@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Tool TL;DR - Time Travel {{ name }}{% endblock %}
+{% block content %}
+    <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ name }}</a>: Time Travel</h1>
+    <p><a href="/view_edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
+    <div class="my-5">
+        <form class="col-md-5" method="post" role="form">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_errors(form, hiddens="only") }}
+            {{ wtf.form_field(form.edit_msg) }}
+            <div class="d-flex justify-content-end mb-5">
+                <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack()">Cancel</button>
+                <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
+            </div>
+    </div>
+    <div class="row">
+      <h2 class="col-md-6 text-center" id="comparison-info">Current: {{ current_time }}</h2>
+      <h2 class="col-md-6 text-center" id="comparison-info">Destination: {{ destination_time }}</h2>
+      {% for diff in diffs %}
+      <div class="col-sm-6">
+        <div class="card">
+          <h3 class="card-header">{{ diff }}</h3>
+          <div class="card-block">
+              <p class="card-text text-muted">Current</p>
+              <p class="card-wrapped-text card-text pl-3">{{ diffs[diff]["left"]|safe }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="card">
+          <h3 class="card-header">{{ diff }}</h3>
+          <div class="card-block">
+              <p class="card-text text-muted">Destination</p>
+              <p class="card-wrapped-text card-text pl-3">{{ diffs[diff]["right"]|safe }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+{% endblock %}
