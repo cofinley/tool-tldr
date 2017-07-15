@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% block title %}{{ type.title() }} edits by {{ user.username }}{% endblock %}
+{% block content %}
+    <h1>{{ type.title() }} edits by <a href="/users?id={{ user.id }}">{{ user.username }}</a></h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Edit</th>
+                <th>{{ type.title() }} Name (at the time)</th>
+                <th>Edit Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for edit in edits|sort(attribute="edit_time", reverse=True) %}
+                <tr>
+                    <td>
+                        <a href="/view-diff?id={{ edit.id }}&type=category&newer={{ edit.transaction_id }}&older={{ edit.previous.transaction_id }}"
+                           title="{{ edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
+                            {{ edit.edit_time.strftime('%B %d, %Y') }}
+                        </a>
+                    </td>
+                    <td><a href="/categories?id={{ edit.id }}">{{ edit.name }}</a></td>
+                    <td>{{ edit.edit_msg }}</td>
+                </tr>
+            {% endfor %}
+    </table>
+    <div class="pagination">
+        {{ macros.edits_pagination_widget(pagination, '.view_user_edits', id=user.id, type=type) }}
+    </div>
+{% endblock %}

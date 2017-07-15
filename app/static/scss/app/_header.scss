@@ -49,20 +49,27 @@
       }
     }
 
-    #links {
-      font-weight: $font-heavy;
-      font-size: 1.4em;
+    #links-and-search {
 
-      .nav-link {
-        margin-right: 20px;
-        @include dark-link;
+      #links {
+        font-weight: $font-heavy;
+        font-size: 1.4em;
+        margin-top: -8px;
+
+        .nav-link {
+          margin-right: 10px;
+          padding: 0.5em 0.5em;
+          @include dark-link;
+        }
       }
 
       #search-input-group {
         width: 220px;
         height: 35px;
+        font-weight: 600;
+        font-size: 1.4em;
 
-      #search-input {
+        #search-input {
           font-size: 0.7em;
           font-family: $font-stack;
           font-weight: $font-light;

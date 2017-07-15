@@ -17,7 +17,8 @@ class Config:
 	ADMIN = os.environ.get('TOOL_TLDR_ADMIN')
 	CACHE_TYPE = "redis"
 	CACHE_REDIS_URL = "redis://localhost:6379"
-	EDITS_PER_PAGE = 20
+	EDITS_PER_PAGE = 10
+	ALTS_PER_LIST = 10
 
 	@staticmethod
 	def init_app(app):

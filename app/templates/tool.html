@@ -3,7 +3,7 @@
 {% block content %}
 <div id="tool-top-info" class="align-items-center d-flex justify-content-end">
     <p id="view-edits-link" class="mr-3"><a href="/edit-tool?id={{ tool.id }}">Edit Page</a></p>
-    <p id="view-edits-link"><a href="/view_edits?type=tool&id={{ tool.id }}">View Edits</a></p>
+    <p id="view-edits-link"><a href="/view-edits?type=tool&id={{ tool.id }}">View Edits</a></p>
 </div>
  <div id="tool-header">
     <h1 id="tool-heading" class="display-4">{{ tool.name }}</h1>
@@ -28,9 +28,9 @@
             <div class="env-alts-section">
                 <h3 class="env-alts-env-title"><i>For {{ tool.env.title() }}</i></h3>
                 <ul class="env-alts-list">
-                    {% for alt in env_alts[:5] %}
+                    {% for alt in env_alts %}
                         <li><a href="/tools?id={{ alt.id }}">{{ alt.name }}</a></li>
-                        {%- if loop.index > 0 %}
+                        {%- if loop.last %}
                             <p class="alts-more-link"><a href="/explore/{{ tree[-1].name ~ '?env=' ~ tool.env }}">More for {{ tool.env.title() }}...</a></p>
                             {% break %}
                         {% endif %}
@@ -42,9 +42,9 @@
             <div class="env-alts-section">
                 <h3 class="env-alts-env-title"><i>For other environments</i></h3>
                 <ul class="env-alts-list">
-                    {% for alt in other_alts[:5] %}
+                    {% for alt in other_alts %}
                         <li><a href="/tools?id={{ alt.id }}">{{ alt.name }}</a> ({{ alt.env.title() }})</li>
-                        {%- if loop.index > 0 %}
+                        {%- if loop.last %}
                             <p class="alts-more-link"><a href="/explore/{{ tree[-1].name }}">More for all environments...</a></p>
                             {% break %}
                         {% endif %}

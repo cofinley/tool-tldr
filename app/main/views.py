@@ -87,11 +87,11 @@ def fetch_tool_page():
 		.filter_by(parent_category_id=tool.parent_category_id)\
 		.filter_by(env=tool.env)\
 		.filter(models.Tool.id != tool.id)\
-		.all()
+		.all()[:current_app.config['ALTS_PER_LIST']]
 	alts_for_other_envs = models.Tool.query\
 		.filter(models.Tool.parent_category_id == tool.parent_category_id)\
 		.filter(models.Tool.env != tool.env)\
-		.all()
+		.all()[:current_app.config['ALTS_PER_LIST']]
 
 	category_tree = utils.build_bottom_up_tree(tool.parent_category_id)
 
@@ -124,15 +124,46 @@ def search_tools():
 @main.route('/users')
 def user():
 	id = request.args.get("id")
-	user = models.User.query.get(id)
-	Session = sessionmaker(bind=db.engine)
-	session = Session()
-	tool_edits = session.query(version_class(models.Tool)).filter_by(edit_author=id).all()
-	category_edits = session.query(version_class(models.Category)).filter_by(edit_author=id).all()
+	user = models.User.query.get_or_404(id)
+
+	tool_edits = version_class(models.Tool).query.filter_by(edit_author=id).all()
+	category_edits = version_class(models.Category).query.filter_by(edit_author=id).all()
+
+	total_edits = len(tool_edits) + len(category_edits)
+
 	return render_template('user.html',
 						   user=user,
-						   tool_edits=tool_edits,
-						   category_edits=category_edits)
+						   total_edits=total_edits,
+						   tool_edits=tool_edits[-20:],
+						   category_edits=category_edits[-20:])
+
+
+@main.route('/view-user-edits')
+def view_user_edits():
+	id = request.args.get("id")
+	type = request.args.get("type")
+	page = request.args.get("page", 1, type=int)
+
+	user = models.User.query.get_or_404(id)
+
+	if type == "category":
+		cls = models.Category
+	elif type == "tool":
+		cls = models.Tool
+	else:
+		abort(404)
+
+	pagination = version_class(cls).query.filter_by(edit_author=id) \
+		.order_by(version_class(cls).transaction_id.desc()) \
+		.paginate(page, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
+	edits = list(reversed(pagination.items))
+
+	return render_template("view_user_edits.html",
+						   user=user,
+						   type=type,
+						   pagination=pagination,
+						   edits=edits)
+
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
@@ -174,7 +205,7 @@ def edit_profile_admin(id):
 # EDIT ROUTES
 
 
-@main.route("/view_edits")
+@main.route("/view-edits")
 def view_edits():
 	page = request.args.get("page", 1, type=int)
 	type = request.args.get("type")
