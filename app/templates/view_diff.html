@@ -2,7 +2,7 @@
 {% block title %}{{ name }} diff{% endblock %}
 {% block content %}
     <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ name }}</a>: Diff</h1>
-    <p><a href="/view_edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
+    <p><a href="/view-edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
     <div class="row">
       <h2 class="col-md-6 text-center" id="comparison-info">As of {{ older_time }}</h2>
       <h2 class="col-md-6 text-center" id="comparison-info">As of {{ newer_time }}</h2>

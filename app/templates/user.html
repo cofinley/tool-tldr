@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "_macros.html" as macros %}
 
 {% block title %}Tool TL;DR - {{ user.username }}{% endblock %}
 
@@ -10,7 +11,7 @@
             <a class="btn btn-secondary" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
         {% endif %}
         {% if current_user.is_administrator() %}
-            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
+            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', user_id=user.id) }}">Edit Profile [Admin]</a>
         {% endif %}
         {% if current_user.is_administrator() %}
             <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
@@ -28,6 +29,7 @@
                 <li class="list-group-item justify-content-between"><span><b>Last seen</b></span>{{ user.last_seen.strftime("%B %d, %Y") }}</li>
                 <li class="list-group-item justify-content-between"><span><b>Real name</b></span>{{ user.name }}</li>
                 <li class="list-group-item justify-content-between"><span><b>Role</b></span>{{ user.role.name }} {% if user.role.name != "Administrator" %}User{% endif %}</li>
+                <li class="list-group-item justify-content-between"><span><b>Total edits</b></span>{{ total_edits }}</li>
             </ul>
 
             <ul class="list-group">
@@ -76,6 +78,7 @@
                             {% endfor %}
                             </tbody>
                         </table>
+                        <a href="/view-user-edits?id={{ user.id }}&type=tool" class="btn btn-secondary" role="button" aria-pressed="true">View All</a>
                     {% endif %}
                 </div>
 
@@ -106,6 +109,7 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        <a href="/view-user-edits?id={{ user.id }}&type=category" class="btn btn-secondary" role="button" aria-pressed="true">View All</a>
                     {% endif %}
                 </div>
             </div>
