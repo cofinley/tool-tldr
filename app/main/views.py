@@ -124,7 +124,7 @@ def search_tools():
 @main.route('/users')
 def user():
 	id = request.args.get("id")
-	user = models.User.query.get(id)
+	user = models.User.query.get_or_404(id)
 
 	tool_edits = version_class(models.Tool).query.filter_by(edit_author=id).all()
 	category_edits = version_class(models.Category).query.filter_by(edit_author=id).all()
@@ -144,7 +144,7 @@ def view_user_edits():
 	type = request.args.get("type")
 	page = request.args.get("page", 1, type=int)
 
-	user = models.User.query.get(id)
+	user = models.User.query.get_or_404(id)
 
 	if type == "category":
 		cls = models.Category
