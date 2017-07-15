@@ -57,7 +57,8 @@
         margin-top: -8px;
 
         .nav-link {
-          margin-right: 20px;
+          margin-right: 10px;
+          padding: 0.5em 0.5em;
           @include dark-link;
         }
       }
