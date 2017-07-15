@@ -1,17 +1,18 @@
 {% extends "base.html" %}
-{% block title %}{{ name }} diff{% endblock %}
+{% block title %}{{ newer_data.name }} Diff{% endblock %}
 {% block content %}
-    <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ name }}</a>: Diff</h1>
+    <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ newer_data.name }}</a>: Diff</h1>
     <p><a href="/view-edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
+    <p class="mt-5 diff-msg"><b>Edit by <a href="/users?id={{ newer_data.edit_author }}">{{ newer_data.author.username }}</a>:</b>  {{ newer_data.edit_msg }}</p>
     <div class="row">
-      <h2 class="col-md-6 text-center" id="comparison-info">As of {{ older_time }}</h2>
-      <h2 class="col-md-6 text-center" id="comparison-info">As of {{ newer_time }}</h2>
+      <h2 class="col-md-6 text-center" id="comparison-info">Before ({{ older_time }})</h2>
+      <h2 class="col-md-6 text-center" id="comparison-info">After ({{ newer_time }})</h2>
       {% for diff in diffs %}
       <div class="col-sm-6">
         <div class="card">
           <h3 class="card-header">{{ diff }}</h3>
           <div class="card-block">
-              <p class="card-text text-muted">Older</p>
+              <p class="card-text text-muted">Before</p>
               <p class="card-wrapped-text card-text pl-3">{{ diffs[diff]["left"]|safe }}</p>
           </div>
         </div>
@@ -20,7 +21,7 @@
         <div class="card">
           <h3 class="card-header">{{ diff }}</h3>
           <div class="card-block">
-              <p class="card-text text-muted">Newer</p>
+              <p class="card-text text-muted">After</p>
               <p class="card-wrapped-text card-text pl-3">{{ diffs[diff]["right"]|safe }}</p>
           </div>
         </div>
