@@ -19,7 +19,7 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 
 // Lint Task, only lint my js files
-gulp.task('lint', function() {
+gulp.task('lint', function () {
     return gulp.src(staticPath + "js/app/*.js")
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
@@ -31,7 +31,7 @@ gulp.task('sass', function () {
         .pipe(gulp.dest(staticPath + 'css'));
 });
 
-gulp.task('minify-css', ['sass'], () => {
+gulp.task('minify-css', ['sass'], function () {
 	return gulp.src(staticPath + 'css/**/*.css')
 		.pipe(concat('all.css'))
 		.pipe(gulp.dest(staticPath + 'dist'))
@@ -41,7 +41,7 @@ gulp.task('minify-css', ['sass'], () => {
 });
 
 // Concatenate & Minify JS
-gulp.task('scripts', function() {
+gulp.task('scripts', function () {
     return gulp.src(jsFileOrder)
         .pipe(concat('all.js'))
         .pipe(gulp.dest(staticPath + 'dist'))

@@ -12,16 +12,38 @@
 
   font-size: 1.2rem;
 
+  ul.jqtree-tree li.jqtree-selected>.jqtree-element {
+    background: lighten($light-gray, 11%);
+    text-shadow: none;
+
+    span.jqtree-title {
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
   li {
     margin-bottom: 10px !important;
   }
 
   .jqtree-element {
+    padding: 5px 5px 8px 5px;
+    border-radius: 5px;
     cursor: default;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+
+    .blurb {
+      margin-left: 50px;
+      font-size: 0.8em;
+    }
   }
 
   .jqtree-toggler {
     cursor: pointer;
+    margin-left: 5px;
   }
 
   span {

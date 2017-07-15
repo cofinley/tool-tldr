@@ -13,9 +13,6 @@ from flask_login import login_required, current_user
 from sqlalchemy_continuum import version_class
 
 
-
-
-
 @main.route("/")
 @main.route("/index")
 @cache.cached(timeout=50)
@@ -36,7 +33,7 @@ def browse_categories():
 						   title=title)
 
 
-@main.route("/explore_nodes/")
+@main.route("/explore_nodes")
 def explore_nodes():
 	node_id = request.args.get("node")
 	if node_id:
@@ -44,7 +41,7 @@ def explore_nodes():
 	else:
 		children = models.Category.query.filter_by(parent_category_id=None).all()
 
-	cols = ['id', 'name']
+	cols = ["id", "name"]
 	results = [{col: getattr(child, col) for col in cols} for child in children]
 
 	# Rename 'name' key as 'label' for jqTree
@@ -55,6 +52,15 @@ def explore_nodes():
 		result["load_on_demand"] = True
 
 	return jsonify(results)
+
+
+@main.route("/load_blurb")
+def load_blurb():
+	id = request.args.get("id")
+	blurb = models.Category.query.get(id).what
+	result = {"blurb": blurb}
+
+	return jsonify(result)
 
 
 @main.route("/categories")
