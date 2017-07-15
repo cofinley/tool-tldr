@@ -330,7 +330,7 @@ def view_diff():
 	return render_template("view_diff.html",
 						   id=id,
 						   type=type,
-						   name=newer_data.name,
+						   newer_data=newer_data,
 						   older_time=older_time,
 						   newer_time=newer_time,
 						   diffs=diffs)

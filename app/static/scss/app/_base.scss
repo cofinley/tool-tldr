@@ -8,6 +8,10 @@ body {
             width: $content-width;
             margin: auto;
 
+            b {
+                font-weight: $font-medium;
+            }
+
             h1 {
                 font-weight: 500;
 
