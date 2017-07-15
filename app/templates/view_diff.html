@@ -3,7 +3,19 @@
 {% block content %}
     <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ newer_data.name }}</a>: Diff</h1>
     <p><a href="/view-edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
-    <p class="mt-5 diff-msg"><b>Edit by <a href="/users?id={{ newer_data.edit_author }}">{{ newer_data.author.username }}</a>:</b>  {{ newer_data.edit_msg }}</p>
+    <blockquote class="blockquote mt-4 mb-4 ml-0" style="font-size: 1.5em">
+        <p class="mt-0" style="margin-bottom: 5px">{{ newer_data.edit_msg }}</p>
+        <footer class="blockquote-footer">
+            Edit by
+            <cite title="Source Title">
+                {% if not is_ip(newer_data.edit_author) %}
+                    <a href="/users?id={{ newer_data.edit_author }}">{{ newer_data.author.username }}</a>
+                {% else %}
+                    <td>{{ newer_data.edit_author }}</td>
+                {% endif %}
+            </cite>
+        </footer>
+    </blockquote>
     <div class="row">
       <h2 class="col-md-6 text-center" id="comparison-info">Before ({{ older_time }})</h2>
       <h2 class="col-md-6 text-center" id="comparison-info">After ({{ newer_time }})</h2>
