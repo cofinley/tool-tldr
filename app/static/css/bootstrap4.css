@@ -9,6 +9,7 @@ html {
 body {
   margin: 0;
 }
+*/
 
 article,
 aside,
@@ -19,6 +20,7 @@ section {
   display: block;
 }
 
+/*!
 h1 {
   font-size: 2em;
   margin: 0.67em 0;
@@ -3809,7 +3811,7 @@ tbody.collapse.show {
   content: "Browse";
 }
 
-/*!.nav {
+.nav {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -3905,6 +3907,7 @@ tbody.collapse.show {
   display: block;
 }
 
+/*!
 .navbar {
   position: relative;
   display: -webkit-box;

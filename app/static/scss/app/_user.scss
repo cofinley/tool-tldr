@@ -1,0 +1,29 @@
+.profile-edits-list{
+  line-height: 1.6em;
+}
+
+#profile-main {
+
+  .list-group-item b {
+    font-weight: $font-medium;
+  }
+  .profile-info-header {
+    font-weight: $font-medium;
+  }
+}
+
+#about-me {
+ white-space: pre-wrap;
+}
+
+#recent-activity-header {
+  font-size: 2em;
+  font-weight: $font-medium;
+  text-align: center;
+}
+
+.tab-content {
+  th {
+    font-weight: $font-medium;
+  }
+}

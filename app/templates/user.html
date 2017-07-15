@@ -3,36 +3,113 @@
 {% block title %}Tool TL;DR - {{ user.username }}{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <div class="profile-header">
-        <h1>{{ user.username }}</h1>
-        {% if user.name %}
-            <p>
-                {{ user.name }}<br>
-            </p>
+<div id="profile-header" class="align-items-md-center d-flex justify-content-between">
+    <h1>{{ user.username }}</h1>
+    <p>
+        {% if user == current_user %}
+            <a class="btn btn-secondary" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
         {% endif %}
-        {% if user.about_me %}
-            <p>About Me</p>
-            <p>
-                &emsp;{{ user.about_me }}<br>
-            </p>
+        {% if current_user.is_administrator() %}
+            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
         {% endif %}
         {% if current_user.is_administrator() %}
             <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
         {% endif %}
-        <p>
-            {% if user == current_user %}
-                <a class="btn btn-secondary" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
-            {% endif %}
-            {% if current_user.is_administrator() %}
-                <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
-            {% endif %}
-        </p>
+    </p>
+</div>
+<div id="profile-main">
+
+    <div class="row">
+
+        <div class="col-sm-3">
+            <ul class="list-group">
+                <li class="list-group-item text-muted">Profile</li>
+                <li class="list-group-item justify-content-between"><span><b>Member since</b></span>{{ user.member_since.strftime("%B %d, %Y") }}</li>
+                <li class="list-group-item justify-content-between"><span><b>Last seen</b></span>{{ user.last_seen.strftime("%B %d, %Y") }}</li>
+                <li class="list-group-item justify-content-between"><span><b>Real name</b></span>{{ user.name }}</li>
+                <li class="list-group-item justify-content-between"><span><b>Role</b></span>{{ user.role.name }} {% if user.role.name != "Administrator" %}User{% endif %}</li>
+            </ul>
+
+            <ul class="list-group">
+                <li class="list-group-item text-muted">About</li>
+                <li class="list-group-item"><p id="about-me">{{ user.about_me }}</p></li>
+            </ul>
+        </div>
+
+        <div class="col-sm-9">
+
+            <h2 class="profile-info-header">Recent Activity</h2>
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tool-edits" role="tab">Tool Edits</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#category-edits" role="tab">Category Edits</a>
+              </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="tool-edits" role="tabpanel">
+                    {% if tool_edits %}
+
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Edit</th>
+                                <th>Tool Name (at the time)</th>
+                                <th>Edit Message</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for tool_edit in tool_edits|sort(attribute="edit_time", reverse=True) %}
+                                <tr>
+                                    <td>
+                                        <a href="/view-diff?id={{ tool_edit.id }}&type=tool&newer={{ tool_edit.transaction_id }}&older={{ tool_edit.previous.transaction_id }}"
+                                           title="{{ tool_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
+                                            {{ tool_edit.edit_time.strftime('%B %d, %Y') }}
+                                        </a>
+                                    </td>
+                                    <td><a href="/tools?id={{ tool_edit.id }}">{{ tool_edit.name }}</a>
+                                    </td>
+                                    <td>{{ tool_edit.edit_msg }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+
+                <div class="tab-pane" id="category-edits" role="tabpanel">
+                    {% if category_edits %}
+
+
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Edit</th>
+                                <th>Category Name (at the time)</th>
+                                <th>Edit Message</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for category_edit in category_edits|sort(attribute="edit_time", reverse=True) %}
+                                    <tr>
+                                        <td>
+                                            <a href="/view-diff?id={{ category_edit.id }}&type=category&newer={{ category_edit.transaction_id }}&older={{ category_edit.previous.transaction_id }}"
+                                               title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
+                                                {{ category_edit.edit_time.strftime('%B %d, %Y') }}
+                                            </a>
+                                        </td>
+                                        <td><a href="/categories?id={{ category_edit.id }}">{{ category_edit.name }}</a></td>
+                                        <td>{{ category_edit.edit_msg }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<h3>Edits by {{ user.username }}</h3>
-{% if tool_edits %}
-    <h4>Tool Edits</h4>
-
-{% endif %}
 {% endblock %}

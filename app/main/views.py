@@ -125,10 +125,8 @@ def search_tools():
 def user():
 	id = request.args.get("id")
 	user = models.User.query.get(id)
-	Session = sessionmaker(bind=db.engine)
-	session = Session()
-	tool_edits = session.query(version_class(models.Tool)).filter_by(edit_author=id).all()
-	category_edits = session.query(version_class(models.Category)).filter_by(edit_author=id).all()
+	tool_edits = version_class(models.Tool).query.filter_by(edit_author=id).all()
+	category_edits = version_class(models.Category).query.filter_by(edit_author=id).all()
 	return render_template('user.html',
 						   user=user,
 						   tool_edits=tool_edits,

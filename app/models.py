@@ -61,7 +61,7 @@ class User(db.Model):
 	email = db.Column(db.String(120), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
 	name = db.Column(db.String(64))
-	about_me = db.Column(db.Text())
+	about_me = db.Column(db.Text(500))
 	member_since = db.Column(db.DateTime(), default=datetime.utcnow)
 	role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
 	confirmed = db.Column(db.Boolean, default=False)
