@@ -134,8 +134,8 @@ def user():
 	return render_template('user.html',
 						   user=user,
 						   total_edits=total_edits,
-						   tool_edits=tool_edits[-20:],
-						   category_edits=category_edits[-20:])
+						   tool_edits=tool_edits[-11:],
+						   category_edits=category_edits[-11:])
 
 
 @main.route('/view-user-edits')
