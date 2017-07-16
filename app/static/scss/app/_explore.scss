@@ -11,6 +11,7 @@
 #explore-tree {
 
   font-size: 1.2rem;
+  margin-bottom: 60px;
 
   ul.jqtree-tree li.jqtree-selected>.jqtree-element {
     background: lighten($light-gray, 11%);
@@ -30,7 +31,7 @@
   .jqtree-element {
     padding: 5px 5px 8px 5px;
     border-radius: 5px;
-    cursor: default;
+    //cursor: default;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow-x: hidden;
@@ -38,6 +39,10 @@
     .blurb {
       margin-left: 50px;
       font-size: 0.8em;
+
+      .blurbDisplay {
+        display: none !important;
+      }
     }
   }
 

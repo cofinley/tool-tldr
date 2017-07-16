@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
-	SubmitField
+	SubmitField, HiddenField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from wtforms import ValidationError
 from ..models import Role, User, Permission
@@ -68,3 +68,28 @@ class EditToolPageForm(FlaskForm):
 class TimeTravelForm(FlaskForm):
 	edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
 	submit = SubmitField('Submit')
+
+
+class AddNewToolForm(FlaskForm):
+	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
+	parent_category = StringField("Parent Category", validators=[DataRequired(), Length(1, 64)])
+	parent_category_id = HiddenField()
+	avatar_url = StringField("Avatar URL", validators=[DataRequired(), Length(1, 200)])
+	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
+	created = StringField("Date Created", validators=[DataRequired(), Length(1, 25)])
+	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
+	link = StringField("Project URL", validators=[DataRequired(), Length(1, 200)])
+	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
+	recaptcha = RecaptchaField()
+	submit = SubmitField('Submit')
+
+
+class AddNewCategoryForm(FlaskForm):
+	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
+	parent_category = StringField("Parent Category", validators=[Length(0, 64)])
+	parent_category_id = HiddenField()
+	what = TextAreaField("What", validators=[DataRequired(), Length(1, 200)])
+	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
+	where = TextAreaField("Where", validators=[DataRequired(), Length(1, 200)])
+	submit = SubmitField('Submit')
+
