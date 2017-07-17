@@ -12,15 +12,14 @@
             {{ form.hidden_tag() }}
             {{ wtf.form_errors(form, hiddens="only") }}
 
-            <div class="form-group required">
-                <label class="form-control-label" for="name">Name</label>
-                <input class="form-control" id="name" name="name" required="" type="text" value="">
-            </div>
+            {{ wtf.form_field(form.name) }}
             <div class="form-group">
                 <label class="form-control-label" for="parent_category">Parent Category</label>
-                <input class="form-control" id="parent_category" name="parent_category" type="text" value="" placeholder="Pick a category to the right" disabled>
+                <p class="form-text text-muted">
+                    Pick a category from the tree.
+                </p>
+                <input class="form-control" id="parent_category" name="parent_category" type="text" value="" placeholder="Pick a category from the tree" readonly>
             </div>
-            {{ form.parent_category_id }}
             <div class="form-group required">
                 <label class="form-control-label" for="what">What</label>
                 <p class="form-text text-muted">
@@ -50,7 +49,7 @@
         </form>
         <div class="col-md-7">
             <label>Pick a parent category</label>
-            <div id="explore-tree" data-url="/explore_nodes"></div>
+            <div id="explore-tree" data-url="/explore_nodes?no-link=true"></div>
         </div>
     </div>
 {% endblock %}

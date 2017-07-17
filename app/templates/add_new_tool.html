@@ -13,12 +13,14 @@
             {{ wtf.form_errors(form, hiddens="only") }}
 
             {{ wtf.form_field(form.name) }}
-            <div class="form-group">
+            <div class="form-group required">
                 <label class="form-control-label" for="parent_category">Parent Category</label>
+                <p class="form-text text-muted">
+                    Pick a category from the tree.
+                </p>
                 <input class="form-control" id="parent_category" name="parent_category" type="text" value=""
-                       placeholder="Pick a category to the right" disabled>
+                       placeholder="Pick a category from the tree" readonly>
             </div>
-            {{ form.parent_category_id }}
             {{ wtf.form_field(form.avatar_url) }}
             {{ wtf.form_field(form.env) }}
             {{ wtf.form_field(form.created) }}
@@ -37,7 +39,7 @@
         </form>
         <div class="col-md-7">
             <label>Pick a parent category</label>
-            <div id="explore-tree" data-url="/explore_nodes"></div>
+            <div id="explore-tree" data-url="/explore_nodes?no-link=true"></div>
         </div>
     </div>
 {% endblock %}

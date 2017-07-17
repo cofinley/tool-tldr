@@ -1,7 +1,9 @@
 $('#explore-tree').tree({
     dragAndDrop: false,
-    closedIcon: '+',
-    openedIcon: '-',
+    openedIcon: $('<span class="openedIcon toggler"></span>'),
+    closedIcon: $('<span class="closedIcon toggler"></span>'),
+    // closedIcon: '+',
+    // openedIcon: '-',
     useContextMenu: false,
     autoEscape: false,
     selectable: true
@@ -45,13 +47,10 @@ function getBlurb(id) {
 
 
 function populateFormField(node) {
+    console.log("populating...");
     if ($("#parent_category")) {
-        // Extract category from tree label
-        var pat = RegExp("<a [^>]+>([^<]+)<\/a>");
-        var realName = pat.exec(node.name)[1];
-        $("#parent_category").val(realName);
-        // Set hidden id field to actual id
-        $("#parent_category_id").val(node.id);
+        $("#parent_category").attr("value", node.name);
+        $("#parent_category_id").attr("value", node.id);
     }
 }
 

@@ -34,6 +34,7 @@ def browse_categories():
 @main.route("/explore_nodes")
 def explore_nodes():
 	node_id = request.args.get("node")
+	no_link = request.args.get("no-link", False, type=bool)
 	if node_id:
 		children = models.Category.query.filter_by(parent_category_id=node_id).all()
 	else:
@@ -44,9 +45,11 @@ def explore_nodes():
 
 	# Rename 'name' key as 'label' for jqTree
 	for result in results:
-		label_link = "<a href='/categories?id={}'>{}</a>".format(result["id"], result["name"])
-		result.pop("name")
-		result["label"] = label_link
+		if not no_link:
+			# anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
+			label_link = "<a href='/categories?id={}'>{}</a>".format(result["id"], result["name"])
+			result.pop("name")
+			result["label"] = label_link
 		result["load_on_demand"] = True
 
 	return jsonify(results)
@@ -214,7 +217,7 @@ def view_edits():
 	else:
 		abort(404)
 
-	all = version_class(cls).query.all()
+	all = version_class(cls).query.filter_by(id=id).all()
 	latest_version_id = all[-1].transaction_id
 	first_version_id = all[0].transaction_id
 	pagination = version_class(cls).query.filter_by(id=id)\
@@ -406,6 +409,9 @@ def add_new_tool():
 			"You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.",
 			"danger")
 	form = AddNewToolForm()
+	if form.is_submitted():
+		if form.parent_category.data == "":
+			flash("You must pick a parent category from the tree.", "danger")
 	if form.validate_on_submit():
 		if not current_user.is_authenticated:
 			edit_author = request.remote_addr

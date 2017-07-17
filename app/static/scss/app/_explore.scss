@@ -13,6 +13,48 @@
   font-size: 1.2rem;
   margin-bottom: 60px;
 
+  .toggler {
+    width: 2em;
+    height: 2em;
+    display: inline-block;
+    font-size: 0.8em;
+    text-align: center;
+    border: 0.01em solid transparent;
+    padding: 4pt;
+    border-radius: 4px;
+    position: relative;
+    top: 1px;
+
+    &:hover {
+      border-color: $gray;
+    }
+
+    &::before {
+      font-size: 1.3em;
+      position: relative;
+      top: -3px;
+    }
+  }
+
+  span.openedIcon {
+
+    &::before {
+      content: "\2212";
+    }
+  }
+
+  span.closedIcon {
+
+    &::before {
+      content: "+";
+    }
+  }
+
+  span.jqtree-title {
+    position: relative;
+    top: -2px;
+  }
+
   ul.jqtree-tree li.jqtree-selected>.jqtree-element {
     background: lighten($light-gray, 11%);
     text-shadow: none;

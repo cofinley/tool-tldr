@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
 	SubmitField, HiddenField
-from wtforms.validators import DataRequired, Length, Email, Regexp
+from wtforms.validators import DataRequired, Length, Email, Regexp, URL
 from wtforms import ValidationError
 from ..models import Role, User, Permission
 from flask_login import current_user
@@ -54,11 +54,11 @@ class EditCategoryPageForm(FlaskForm):
 
 class EditToolPageForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
-	avatar_url = StringField("Avatar URL", validators=[DataRequired(), Length(1, 200)])
+	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
 	created = StringField("Date Created", validators=[DataRequired(), Length(1, 25)])
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
-	link = StringField("Project URL", validators=[DataRequired(), Length(1, 200)])
+	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
 	edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
 	recaptcha = RecaptchaField()
@@ -74,11 +74,11 @@ class AddNewToolForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
 	parent_category = StringField("Parent Category", validators=[DataRequired(), Length(1, 64)])
 	parent_category_id = HiddenField()
-	avatar_url = StringField("Avatar URL", validators=[DataRequired(), Length(1, 200)])
+	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
 	created = StringField("Date Created", validators=[DataRequired(), Length(1, 25)])
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
-	link = StringField("Project URL", validators=[DataRequired(), Length(1, 200)])
+	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
 	recaptcha = RecaptchaField()
 	submit = SubmitField('Submit')
