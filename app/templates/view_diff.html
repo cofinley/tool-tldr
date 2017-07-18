@@ -1,43 +1,41 @@
 {% extends "base.html" %}
 {% block title %}{{ newer_data.name }} Diff{% endblock %}
 {% block content %}
-    <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ newer_data.name }}</a>: Diff</h1>
-    <p><a href="/view-edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
-    <blockquote class="blockquote mt-4 mb-4 ml-0" style="font-size: 1.5em">
-        <p class="mt-0" style="margin-bottom: 5px">{{ newer_data.edit_msg }}</p>
-        <footer class="blockquote-footer">
-            Edit by
-            <cite title="Source Title">
-                {% if not is_ip(newer_data.edit_author) %}
-                    <a href="/users?id={{ newer_data.edit_author }}">{{ newer_data.author.username }}</a>
-                {% else %}
-                    <td>{{ newer_data.edit_author }}</td>
-                {% endif %}
-            </cite>
-        </footer>
-    </blockquote>
-    <div class="row">
-      <h2 class="col-md-6 text-center" id="comparison-info">Before ({{ older_time }})</h2>
-      <h2 class="col-md-6 text-center" id="comparison-info">After ({{ newer_time }})</h2>
-      {% for diff in diffs %}
-      <div class="col-sm-6">
-        <div class="card">
-          <h3 class="card-header">{{ diff }}</h3>
-          <div class="card-block">
-              <p class="card-text text-muted">Before</p>
-              <p class="card-wrapped-text card-text pl-3">{{ diffs[diff]["left"]|safe }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="card">
-          <h3 class="card-header">{{ diff }}</h3>
-          <div class="card-block">
-              <p class="card-text text-muted">After</p>
-              <p class="card-wrapped-text card-text pl-3">{{ diffs[diff]["right"]|safe }}</p>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
+	<h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ newer_data.name }}</a>:
+		Diff</h1>
+	<p><a href="/view-edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
+	<blockquote class="blockquote mt-4 mb-4 ml-0" style="font-size: 1.5em">
+		<p class="mt-0" style="margin-bottom: 5px">{{ newer_data.edit_msg }}</p>
+		<footer class="blockquote-footer">
+			Edit by
+			<cite title="Source Title">
+				{% if not is_ip(newer_data.edit_author) %}
+					<a href="/users?id={{ newer_data.edit_author }}">{{ newer_data.author.username }}</a>
+				{% else %}
+					<td>{{ newer_data.edit_author }}</td>
+				{% endif %}
+			</cite>
+		</footer>
+	</blockquote>
+	<div class="row">
+		<h2 class="col-md-6 text-center" id="comparison-info">Before: {{ older_time }}</h2>
+		<h2 class="col-md-6 text-center" id="comparison-info">After: {{ newer_time }}</h2>
+		{% for diff in diffs %}
+			<div class="col-md-12">
+				<div class="card">
+					<h3 class="card-header">{{ diff }}</h3>
+					<div class="row">
+						<div class="card-block col-md-6">
+							<p class="card-text text-muted pl-3">Before</p>
+							<p class="card-text pl-4">{{ diffs[diff]["left"]|safe }}</p>
+						</div>
+						<div class="card-block col-md-6 right-diff">
+							<p class="card-text text-muted pl-3">After</p>
+							<p class="card-text pl-4">{{ diffs[diff]["right"]|safe }}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 {% endblock %}
