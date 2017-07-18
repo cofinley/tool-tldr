@@ -7,9 +7,9 @@ from flask_mail import Mail
 from flask_login import LoginManager
 from config import config
 import flask_whooshalchemyplus
-from flask_bootstrap import Bootstrap
 from sqlalchemy_continuum import make_versioned
 
+from extra_packages.flask_bootstrap4 import Bootstrap
 
 bootstrap = Bootstrap()
 mail = Mail()

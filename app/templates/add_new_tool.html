@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Tool TL;DR - Add New Tool{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Add New Tool</h1>
+    </div>
+    <div class="row">
+        <form class="col-md-5" method="post" role="form">
+            {{ form.hidden_tag() }}
+
+            {{ wtf.form_field(form.name) }}
+            {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
+            {{ wtf.form_field(form.avatar_url) }}
+            {{ wtf.form_field(form.env) }}
+            {{ wtf.form_field(form.created) }}
+            {{ wtf.form_field(form.project_version) }}
+            {{ wtf.form_field(form.link) }}
+            {{ wtf.form_field(form.why) }}
+            {% if not current_user.is_confirmed %}
+                <div class="my-3">
+                    {{ form.recaptcha }}
+                </div>
+            {% endif %}
+            <div class="d-flex justify-content-end mb-5">
+                <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack()">Cancel</button>
+                <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
+            </div>
+        </form>
+        <div class="col-md-7">
+            <label>Pick a parent category</label>
+            <div id="explore-tree" data-url="/explore_nodes?no-link=true"></div>
+        </div>
+    </div>
+{% endblock %}

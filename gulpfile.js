@@ -2,6 +2,7 @@
 var staticPath = "./app/static/";
 
 var jsFileOrder = [
+	staticPath + 'js/app/utils.js',
 	staticPath + 'js/lib/tree.jquery.js',
 	staticPath + 'js/app/explore_tree.js',
 	staticPath + 'js/app/alert.js',

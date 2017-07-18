@@ -1,13 +1,11 @@
-import urllib
 import ipaddress
 from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app
-from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
 from . import main
 from .. import models as models
 from .. import cache, utils, db
-from app.main.forms import EditProfileForm, EditProfileAdminForm, EditCategoryPageForm, EditToolPageForm, TimeTravelForm
+from app.main.forms import *
 from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
 from sqlalchemy_continuum import version_class
@@ -36,6 +34,7 @@ def browse_categories():
 @main.route("/explore_nodes")
 def explore_nodes():
 	node_id = request.args.get("node")
+	no_link = request.args.get("no-link", False, type=bool)
 	if node_id:
 		children = models.Category.query.filter_by(parent_category_id=node_id).all()
 	else:
@@ -46,9 +45,11 @@ def explore_nodes():
 
 	# Rename 'name' key as 'label' for jqTree
 	for result in results:
-		label_link = "<a href='/categories?id={}'>{}</a>".format(result["id"], result["name"])
-		result.pop("name")
-		result["label"] = label_link
+		if not no_link:
+			# anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
+			label_link = "<a href='/categories?id={}'>{}</a>".format(result["id"], result["name"])
+			result.pop("name")
+			result["label"] = label_link
 		result["load_on_demand"] = True
 
 	return jsonify(results)
@@ -165,7 +166,6 @@ def view_user_edits():
 						   edits=edits)
 
 
-
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -217,7 +217,7 @@ def view_edits():
 	else:
 		abort(404)
 
-	all = version_class(cls).query.all()
+	all = version_class(cls).query.filter_by(id=id).all()
 	latest_version_id = all[-1].transaction_id
 	first_version_id = all[0].transaction_id
 	pagination = version_class(cls).query.filter_by(id=id)\
@@ -396,6 +396,77 @@ def undo():
 						   destination_time=destination_time,
 						   diffs=diffs,
 						   current_version=current_version)
+
+
+# CREATE ROUTES
+
+
+@main.route("/add-new-tool", methods=["GET", "POST"])
+def add_new_tool():
+
+	if not current_user.is_authenticated:
+		flash(
+			"You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.",
+			"danger")
+	form = AddNewToolForm()
+	if form.is_submitted():
+		if form.parent_category.data == "":
+			flash("You must pick a parent category from the tree.", "danger")
+	if form.validate_on_submit():
+		if not current_user.is_authenticated:
+			edit_author = request.remote_addr
+		else:
+			edit_author = current_user.id
+		tool = models.Tool(
+			name=form.name.data,
+			parent_category_id=form.parent_category_id.data,
+			avatar_url=form.avatar_url.data,
+			env=form.env.data.lower(),
+			created=form.created.data,
+			project_version=form.project_version.data,
+			link=form.link.data,
+			why=form.why.data,
+			edit_author=edit_author,
+			edit_time=datetime.utcnow()
+		)
+		db.session.add(tool)
+		db.session.commit()
+		flash('This tool has been added.', 'success')
+		return redirect(url_for('.fetch_tool_page', id=tool.id))
+	return render_template('add_new_tool.html', form=form)
+
+
+@main.route("/add-new-category", methods=["GET", "POST"])
+def add_new_category():
+
+	if not current_user.is_authenticated:
+		flash(
+			"You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.",
+			"danger")
+	form = AddNewCategoryForm()
+	if form.validate_on_submit():
+		if not current_user.is_authenticated:
+			edit_author = request.remote_addr
+		else:
+			edit_author = current_user.id
+		if form.parent_category.data == "":
+			parent_category_id = None
+		else:
+			parent_category_id = form.parent_category_id.data
+		category = models.Category(
+			name=form.name.data,
+			parent_category_id=parent_category_id,
+			what=form.what.data,
+			why=form.why.data,
+			where=form.where.data,
+			edit_author=edit_author,
+			edit_time=datetime.utcnow()
+		)
+		db.session.add(category)
+		db.session.commit()
+		flash('This category has been added.', 'success')
+		return redirect(url_for('.fetch_category_page', id=category.id))
+	return render_template('add_new_category.html', form=form)
 
 
 # JINJA FUNCTIONS
