@@ -10,17 +10,9 @@
     <div class="row">
         <form class="col-md-5" method="post" role="form">
             {{ form.hidden_tag() }}
-            {{ wtf.form_errors(form, hiddens="only") }}
 
             {{ wtf.form_field(form.name) }}
-            <div class="form-group required">
-                <label class="form-control-label" for="parent_category">Parent Category</label>
-                <p class="form-text text-muted">
-                    Pick a category from the tree.
-                </p>
-                <input class="form-control" id="parent_category" name="parent_category" type="text" value=""
-                       placeholder="Pick a category from the tree" readonly>
-            </div>
+            {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
             {{ wtf.form_field(form.avatar_url) }}
             {{ wtf.form_field(form.env) }}
             {{ wtf.form_field(form.created) }}

@@ -10,38 +10,13 @@
     <div class="row">
         <form class="col-md-5" method="post" role="form">
             {{ form.hidden_tag() }}
-            {{ wtf.form_errors(form, hiddens="only") }}
 
             {{ wtf.form_field(form.name) }}
-            <div class="form-group">
-                <label class="form-control-label" for="parent_category">Parent Category</label>
-                <p class="form-text text-muted">
-                    Pick a category from the tree.
-                </p>
-                <input class="form-control" id="parent_category" name="parent_category" type="text" value="" placeholder="Pick a category from the tree" readonly>
-            </div>
-            <div class="form-group required">
-                <label class="form-control-label" for="what">What</label>
-                <p class="form-text text-muted">
-                    What is the tl;dr of the category? What do tools in this category let you do?
-                </p>
-                <textarea class="form-control" id="what" name="what" required=""></textarea>
-            </div>
-            <div class="form-group required">
-                <label class="form-control-label" for="why">Why</label>
-                <p class="form-text text-muted">
-                    Why would I need use it? Why would I need to <i>start</i> using it?
-                </p>
-                <textarea class="form-control" id="why" name="why" required=""></textarea>
-            </div>
-            <div class="form-group required">
-                <label class="form-control-label" for="where">Where</label>
-                <p class="form-text text-muted">
-                    Where does it fall in the application space or stack?
-                    Where would I use it in my application?
-                </p>
-                <textarea class="form-control" id="where" name="where" required=""></textarea>
-            </div>
+            {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
+            {{ wtf.form_field(form.what, help_text="What is the tl;dr of the category? What do tools in this category let you do?") }}
+            {{ wtf.form_field(form.why, help_text="Why would I need use it? Why would I need to <i>start</i> using it?") }}
+            {{ wtf.form_field(form.where, help_text="Where does it fall in the application space or stack? Where would I use it in my application?") }}
+
             <div class="d-flex justify-content-end mb-5">
                 <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack()">Cancel</button>
                 <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
