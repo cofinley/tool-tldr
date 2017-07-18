@@ -13,6 +13,7 @@
   }
   .card-text {
     margin-top: 0;
+    overflow-wrap: break-word;
 
     .diff-danger {
       color: #a94442;
@@ -35,9 +36,15 @@
     font-size: 1.2rem;
   }
 
-  .right-diff {
-    border-left: 1px solid $light-gray;
-  }
-
   margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .right-diff {
+    border-left: 1px solid #ddd;
+    padding-left: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
 }
