@@ -5,6 +5,23 @@ from wtforms.validators import DataRequired, Length, Email, Regexp, URL
 from wtforms import ValidationError
 from ..models import Role, User, Permission
 from flask_login import current_user
+from ..utils import build_top_down_list, is_at_or_below_category
+
+
+class RequiredIf(DataRequired):
+	# a validator which makes a field required if
+	# another field is set and has a truthy value
+
+	def __init__(self, other_field_name, *args, **kwargs):
+		self.other_field_name = other_field_name
+		super(RequiredIf, self).__init__(*args, **kwargs)
+
+	def __call__(self, form, field):
+		other_field = form._fields.get(self.other_field_name)
+		if other_field is None:
+			raise Exception('no field named "%s" in form' % self.other_field_name)
+		if bool(other_field.data):
+			super(RequiredIf, self).__call__(form, field)
 
 
 class EditProfileForm(FlaskForm):
@@ -44,16 +61,36 @@ class EditProfileAdminForm(FlaskForm):
 
 
 class EditCategoryPageForm(FlaskForm):
+
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
+	move_parent = BooleanField("Move Page?")
+	parent_category = StringField("Parent Category", validators=[RequiredIf("move_parent"), Length(max=64)])
+	parent_category_id = HiddenField()
 	what = TextAreaField("What", validators=[DataRequired(), Length(1, 200)])
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
 	where = TextAreaField("Where", validators=[DataRequired(), Length(1, 200)])
 	edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
 	submit = SubmitField('Submit')
 
+	def __init__(self, current_category_id, *args, **kwargs):
+		super(EditCategoryPageForm, self).__init__(*args, **kwargs)
+		self.current_category_id = current_category_id
+
+	def validate(self):
+		if not super().validate():
+			return False
+		if self.move_parent.data:
+			if is_at_or_below_category(self.parent_category_id.data, self.current_category_id):
+				self.parent_category_id.errors.append("The current category's parent cannot not be a subcategory or itself.")
+				return False
+		return True
+
 
 class EditToolPageForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
+	move_parent = BooleanField("Move Page")
+	parent_category = StringField("Parent Category", validators=[RequiredIf("move_parent"), Length(max=64)])
+	parent_category_id = HiddenField()
 	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
 	created = StringField("Date Created", validators=[DataRequired(), Length(1, 25)])
@@ -72,7 +109,7 @@ class TimeTravelForm(FlaskForm):
 
 class AddNewToolForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
-	parent_category = StringField("Parent Category", validators=[DataRequired(), Length(1, 64)])
+	parent_category = StringField("Parent Category", validators=[DataRequired(), Length(max=64)])
 	parent_category_id = HiddenField()
 	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
@@ -86,7 +123,7 @@ class AddNewToolForm(FlaskForm):
 
 class AddNewCategoryForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
-	parent_category = StringField("Parent Category", validators=[Length(0, 64)])
+	parent_category = StringField("Parent Category", validators=[Length(max=64)])
 	parent_category_id = HiddenField()
 	what = TextAreaField("What", validators=[DataRequired(), Length(1, 200)])
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])

@@ -2,8 +2,6 @@ $('#explore-tree').tree({
     dragAndDrop: false,
     openedIcon: $('<span class="openedIcon toggler"></span>'),
     closedIcon: $('<span class="closedIcon toggler"></span>'),
-    // closedIcon: '+',
-    // openedIcon: '-',
     useContextMenu: false,
     autoEscape: false,
     selectable: true
@@ -108,3 +106,14 @@ $tree.bind(
         }
     }
 );
+
+
+$tree.bind(
+    'tree.init',
+    function () {
+        // Auto-open root node if it's present
+        var node = $tree.tree('getNodeById', 0);
+        $tree.tree('openNode', node);
+    }
+);
+
