@@ -8,7 +8,7 @@
         <input id="big-search-bar-input" class="form-control" placeholder="Search software tools" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search software tools'">
     </div>
     <div id="categories">
-        <p id="category-title">Categories</p>
+        <p id="category-title">Featured Categories</p>
         <div id="category-columns" class="row col-md-8">
                 {% for category in categories %}
                     <a class="category-list-item col-xl-3 col-lg-4 col-sm-4" href="/categories?id={{ category.id }}">{{ category.name }}</a>
