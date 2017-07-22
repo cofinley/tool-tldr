@@ -34,6 +34,7 @@ def browse_categories():
 @main.route("/explore_nodes")
 def explore_nodes():
 	node_id = request.args.get("node")
+	show_root = request.args.get("show-root")
 	no_link = request.args.get("no-link", False, type=bool)
 	if node_id:
 		children = models.Category.query.filter_by(parent_category_id=node_id).all()
@@ -51,6 +52,11 @@ def explore_nodes():
 			result.pop("name")
 			result["label"] = label_link
 		result["load_on_demand"] = True
+
+	if show_root and not node_id:
+		# Only show root node if explicit param and jqTree has not added a node id param (will recursively repeat otherwise)
+		root = [{"id": 0, "name": "/", "children": results}]
+		return jsonify(root)
 
 	return jsonify(results)
 
@@ -240,9 +246,14 @@ def edit_category_page():
 		flash("You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.", "danger")
 	id = request.args.get("id")
 	category = models.Category.query.get_or_404(id)
-	form = EditCategoryPageForm()
+	form = EditCategoryPageForm(category.id)
 	if form.validate_on_submit():
 		category.name = form.name.data
+		if form.move_parent.data:
+			if int(form.parent_category_id.data) == 0 or form.parent_category.data == "/":
+				category.parent_category_id = None
+			else:
+				category.parent_category_id = form.parent_category_id.data
 		category.what = form.what.data
 		category.why = form.why.data
 		category.where = form.where.data
@@ -257,6 +268,11 @@ def edit_category_page():
 		flash('This category has been updated.', 'success')
 		return redirect(url_for('.fetch_category_page', id=category.id))
 	form.name.data = category.name
+	form.move_parent.data = False
+	if category.parent:
+		form.parent_category.data = category.parent.name
+	else:
+		form.parent_category.data = "/"
 	form.what.data = category.what
 	form.why.data = category.why
 	form.where.data = category.where
@@ -274,6 +290,8 @@ def edit_tool_page():
 
 	if form.validate_on_submit():
 		tool.name = form.name.data
+		if form.move_parent.data:
+			tool.parent_category_id = form.parent_category_id.data
 		tool.avatar_url = form.avatar_url.data
 		tool.env = form.env.data.lower()
 		tool.created = form.created.data
@@ -290,6 +308,7 @@ def edit_tool_page():
 		flash('This tool has been updated.', 'success')
 		return redirect(url_for('.fetch_tool_page', id=tool.id))
 	form.name.data = tool.name
+	form.parent_category.data = tool.category.name
 	form.avatar_url.data = tool.avatar_url
 	form.env.data = tool.env.title()
 	form.created.data = tool.created
@@ -449,7 +468,7 @@ def add_new_category():
 			edit_author = request.remote_addr
 		else:
 			edit_author = current_user.id
-		if form.parent_category.data == "":
+		if form.parent_category.data == "" or form.parent_category.data == "/" or int(form.parent_category_id.data) == 0:
 			parent_category_id = None
 		else:
 			parent_category_id = form.parent_category_id.data

@@ -4,31 +4,33 @@
 {% block title %}Tool TL;DR - Edit {{ category.name }}{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>Edit {{ category.name }}</h1>
-</div>
-<form class="col-md-4" method="post" role="form">
-    {{ form.hidden_tag() }}
-    {{ wtf.form_errors(form, hiddens="only") }}
+	<div class="page-header">
+		<h1>Edit <a href="{{ url_for("main.fetch_category_page", id=category.id) }}">{{ category.name }}</a></h1>
+	</div>
+	<div class="row">
+		<form class="col-md-5" method="post" role="form">
+			{{ form.hidden_tag() }}
+			{{ wtf.form_errors(form, hiddens="only") }}
 
-    {{ wtf.form_field(form.name) }}
-    {{ wtf.form_field(form.what) }}
-    {{ wtf.form_field(form.why) }}
-    {{ wtf.form_field(form.where) }}
-    <div id="edit-message">
-        {{ wtf.form_field(form.edit_msg) }}
-    </div>
-    <div class="d-flex justify-content-end mb-5">
-        <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack()">Cancel</button>
-        <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
-    </div>
-</form>
-
-<script>
-
-    function goBack() {
-        window.history.back();
-    }
-
-</script>
+			{{ wtf.form_field(form.name) }}
+			<div class="mb-3 mt-4">
+				{{ wtf.form_field(form.move_parent, checked=False) }}
+			</div>
+			<div id="optional_parent_field" style="display: none">
+				{{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
+			</div>
+			{{ wtf.form_field(form.what) }}
+			{{ wtf.form_field(form.why) }}
+			{{ wtf.form_field(form.where) }}
+			{{ wtf.form_field(form.edit_msg) }}
+			<div class="d-flex justify-content-end mb-5">
+				<button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack()">Cancel</button>
+				<input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
+			</div>
+		</form>
+		<div id="tree_pane" class="col-md-7" style="display: none">
+			<label>Pick a parent category</label>
+			<div id="explore-tree" data-url="/explore_nodes?no-link=true&show-root=true"></div>
+		</div>
+	</div>
 {% endblock %}

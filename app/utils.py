@@ -4,19 +4,26 @@ from urllib.parse import urlsplit
 from app import models
 
 
-def build_top_down_tree():
-	"""Used for explore page"""
-	cat_dict = {}
-	categories = models.Category.query.all()
-	for category in categories:
-		if category.parent is None:
-			cat_dict[category.name] = {}
-		else:
-			# parent = [cat.name for cat in categories if category.parent_category_id == cat.id][0]
-			parent = models.Category.query.filter_by(id=category.parent_category_id).first().name
-			cat_dict[parent][category.name] = {}
+def build_top_down_list(category_id):
+	"""Used for validating the moving of pages"""
+	top_category = models.Category.query.get(category_id)
+	l = [category_id]
+	for child_category in top_category.children:
+		l += build_top_down_list(child_category.id)
+	return l
 
-	return cat_dict
+
+def is_at_or_below_category(chosen_id, current_id):
+	"""
+	Checks to see if the chosen_id is not the current_id or a child of current_id.
+	This is used in page move validation. A category cannot be its own parent or child.
+	Moving can only go up, not down. Otherwise circular dependencies.
+	
+	:param chosen_id: parent category id picked in form explore tree
+	:param current_id: id of current category
+	:return: bool if the chosen_id is the same or below the current_id
+	"""
+	return int(chosen_id) in build_top_down_list(int(current_id))
 
 
 def build_bottom_up_tree(parent_category_id):
@@ -137,14 +144,18 @@ def find_diff(old, new, type):
 
 	new_name = new.name
 	new_why = new.why
+	new_parent_category_name = new.parent.name
 
 	old_name = old.name
 	old_why = old.why
+	old_parent_category_name = old.parent.name
 
 	if old_name != new_name:
 		diffs["Name"] = ("name", old_name, new_name)
 	if old_why != new_why:
 		diffs["Why"] = ("why", old_why, new_why)
+	if old_parent_category_name != new_parent_category_name:
+		diffs["Parent Category"] = ("parent_category_name", old_parent_category_name, new_parent_category_name)
 
 	return diffs
 
@@ -173,6 +184,7 @@ def overwrite(old, new, type):
 
 	old.name = new.name
 	old.why = new.why
+	old.parent_category_id = new.parent_category_id
 
 	return old
 
