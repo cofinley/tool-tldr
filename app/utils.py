@@ -108,14 +108,18 @@ def find_diff(old, new, type):
 	if type == "category":
 		new_what = new.what
 		new_where = new.where
+		new_parent_category_name = new.parent.name
 
 		old_what = old.what
 		old_where = old.where
+		old_parent_category_name = old.parent.name
 
 		if old_what != new_what:
 			diffs["What"] = ("what", old_what, new_what)
 		if old_where != new_where:
 			diffs["Where"] = ("where", old_where, new_where)
+		if old_parent_category_name != new_parent_category_name:
+			diffs["Parent Category"] = ("parent_category_name", old_parent_category_name, new_parent_category_name)
 
 	else:
 		# Tool
@@ -144,11 +148,11 @@ def find_diff(old, new, type):
 
 	new_name = new.name
 	new_why = new.why
-	new_parent_category_name = new.parent.name
+	new_parent_category_name = new.category.name
 
 	old_name = old.name
 	old_why = old.why
-	old_parent_category_name = old.parent.name
+	old_parent_category_name = old.category.name
 
 	if old_name != new_name:
 		diffs["Name"] = ("name", old_name, new_name)
