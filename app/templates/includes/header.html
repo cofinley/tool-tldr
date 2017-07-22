@@ -1,38 +1,39 @@
 <div id="header" class="d-flex justify-content-between">
-    <div id="logo">
-        <a id="logo-link" href="/"><span class="logo-text-tool">tool</span> <span class="logo-text-tldr">tl;dr</span></a>
-    </div>
-    <div id="nav" class="align-items-end d-flex flex-column">
-        <div id="nav-user-actions" class="d-flex flex-row">
-            {% if current_user.is_authenticated %}
-                <p class="nav-user-text-button"><a class="nav-user-link" href="/users?id={{ current_user.id }}">My Account</a></p>
-                <p class="nav-user-text-button"><a class="nav-user-link" href="/auth/logout">Sign out</a></p>
-            {% else %}
-                <p class="nav-user-text-button"><a class="nav-user-link" href="/auth/login">Log in</a></p>
-                <p class="nav-user-text-button"><a class="nav-user-link" href="/auth/register">Sign up</a></p>
-            {% endif %}
-        </div>
-        <div id="links-and-search" class="d-flex flex-row">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/explore">explore</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-                       aria-expanded="false">add</a>
-                    <div class="dropdown-menu" style="margin-top: -28px">
-                        <a class="dropdown-item" href="/add-new-tool">Tool</a>
-                        <a class="dropdown-item" href="/add-new-category">Category</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">about</a>
-                </li>
-            </ul>
+	<div id="logo">
+		<a id="logo-link" href="/"><span class="logo-text-tool">tool</span> <span class="logo-text-tldr">tl;dr</span></a>
+	</div>
+	<div id="nav" class="align-items-end d-flex flex-column">
+		<div id="nav-user-actions" class="d-flex flex-row">
+			{% if current_user.is_authenticated %}
+				<p class="nav-user-text-button"><a class="nav-user-link" href="/users?id={{ current_user.id }}">My Account</a>
+				</p>
+				<p class="nav-user-text-button"><a class="nav-user-link" href="/auth/logout">Sign out</a></p>
+			{% else %}
+				<p class="nav-user-text-button"><a class="nav-user-link" href="/auth/login">Log in</a></p>
+				<p class="nav-user-text-button"><a class="nav-user-link" href="/auth/register">Sign up</a></p>
+			{% endif %}
+		</div>
+		<div id="links-and-search" class="d-flex flex-row">
+			<ul class="nav">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle add-button" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+					   aria-expanded="false">add</a>
+					<div class="dropdown-menu" style="margin-top: -28px">
+						<a class="dropdown-item" href="/add-new-tool">Tool</a>
+						<a class="dropdown-item" href="/add-new-category">Category</a>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/explore">explore</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">about</a>
+				</li>
+			</ul>
 
-            <div id="search-input-group" class="input-group mb-5">
-                <input id="search-input" class="form-control p-2" placeholder="Search">
-            </div>
-        </div>
-    </div>
+			<div id="search-input-group" class="input-group mb-5">
+				<input id="search-input" class="form-control p-2" placeholder="Search">
+			</div>
+		</div>
+	</div>
 </div>

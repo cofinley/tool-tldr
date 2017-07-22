@@ -6,17 +6,17 @@
 {% block content %}
 <div id="profile-header" class="align-items-md-center d-flex justify-content-between">
     <h1>{{ user.username }}</h1>
-    <p>
+    <div class="align-items-center d-flex flex-row">
+		    {% if current_user.is_administrator() %}
+			    <p class="mr-2"><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+		    {% endif %}
         {% if user == current_user %}
-            <a class="btn btn-secondary" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
+            <a class="btn btn-secondary mr-2" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
         {% endif %}
         {% if current_user.is_administrator() %}
-            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', user_id=user.id) }}">Edit Profile [Admin]</a>
+            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
         {% endif %}
-        {% if current_user.is_administrator() %}
-            <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
-        {% endif %}
-    </p>
+    </div>
 </div>
 <div id="profile-main">
 

@@ -8,9 +8,15 @@ from flask_login import LoginManager
 from config import config
 import flask_whooshalchemyplus
 from sqlalchemy_continuum import make_versioned
+from flask_admin import Admin
+
+
+from .admin.model_views import UserModelView, PageModelView
+from .admin.views import FlaskAdminIndexView
 
 from extra_packages.flask_bootstrap4 import Bootstrap
 
+admin = Admin(index_view=FlaskAdminIndexView(), template_mode="bootstrap3")
 bootstrap = Bootstrap()
 mail = Mail()
 make_versioned()
@@ -27,6 +33,7 @@ def create_app(config_name):
 	app.config.from_object(config[config_name])
 	config[config_name].init_app(app)
 
+	admin.init_app(app)
 	bootstrap.init_app(app)
 	mail.init_app(app)
 	db.init_app(app)
@@ -40,6 +47,12 @@ def create_app(config_name):
 
 	flask_whooshalchemyplus.init_app(app)
 	app.jinja_env.add_extension('jinja2.ext.loopcontrols')
+
+	from .models import User, Category, Tool
+
+	admin.add_view(UserModelView(User, db.session))
+	admin.add_view(PageModelView(Category, db.session))
+	admin.add_view(PageModelView(Tool, db.session))
 
 	from .main import main as main_blueprint
 	app.register_blueprint(main_blueprint)

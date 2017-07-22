@@ -1,7 +1,7 @@
 $(".radio-left").click(function (){
     var leftIndex = $('input[name=inlineRadioOptionsLeft]:checked').index("input[name=inlineRadioOptionsLeft]");
     $(".radio-right").each(function(idx, obj){
-        if (idx > leftIndex){
+        if (idx > leftIndex - 1){
             $(obj).css("visibility", "hidden");
             $(obj).prop("disabled", true);
         }

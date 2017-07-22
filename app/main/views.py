@@ -187,10 +187,11 @@ def edit_profile():
 	return render_template('edit_profile.html', form=form)
 
 
-@main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
+@main.route('/edit-profile-admin', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def edit_profile_admin(id):
+def edit_profile_admin():
+	id = request.args.get("id")
 	user = models.User.query.get_or_404(id)
 	form = EditProfileAdminForm(user=user)
 	if form.validate_on_submit():
@@ -205,7 +206,7 @@ def edit_profile_admin(id):
 	form.username.data = user.username
 	form.confirmed.data = user.confirmed
 	form.role.data = user.role_id
-	return render_template('edit_profile.html', form=form, user=user)
+	return render_template('edit_profile_admin.html', form=form, user=user)
 
 
 # EDIT ROUTES
@@ -486,7 +487,6 @@ def add_new_category():
 		flash('This category has been added.', 'success')
 		return redirect(url_for('.fetch_category_page', id=category.id))
 	return render_template('add_new_category.html', form=form)
-
 
 # JINJA FUNCTIONS
 
