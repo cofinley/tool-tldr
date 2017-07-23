@@ -31,6 +31,7 @@ def browse_categories():
 		category = models.Category.query.get_or_404(category_id)
 	else:
 		category = None
+		category_id = None
 	environment = request.args.get("env")
 	return render_template("explore.html",
 						   id=category_id,
@@ -82,6 +83,14 @@ def load_children_categories(id, no_link):
 @main.route("/explore_nodes")
 def explore_nodes():
 	node_id = request.args.get("node")
+	manual_node_id = request.args.get("manual_node")
+	# `manual_node` id passed in from tool alternatives
+	# At first, it will just be manual id passed as param here
+	# Once user expands a node, `node` will also be added as param
+	# If just `manual_node`, use it as node_id
+	# If both, default to `node`. This prevents infinite recursive loop
+	if manual_node_id and not node_id:
+		node_id = manual_node_id
 	env = request.args.get("env")
 	show_root = request.args.get("show-root")
 	no_link = request.args.get("no-link", False, type=bool)

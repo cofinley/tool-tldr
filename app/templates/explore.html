@@ -12,5 +12,5 @@
 		<a role="button" class="btn btn-secondary btn-sm ml-3" href={{ url_for("main.browse_categories", id=id) }}>Remove Filter</a>
 	</div>
 {% endif %}
-<div id="explore-tree" class="col-11" data-url={{ url_for("main.explore_nodes", node=id, env=environment) }}></div>
+<div id="explore-tree" class="col-11" data-url={{ url_for("main.explore_nodes", manual_node=id, env=environment) }}></div>
 {% endblock %}
