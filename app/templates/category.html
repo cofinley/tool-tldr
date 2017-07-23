@@ -2,9 +2,9 @@
 {% block title %}{{ category.name }}{% endblock %}
 {% block content %}
 
-    <div id="category-top-info" class="align-items-center d-flex justify-content-{% if breadcrumbs|length > 1 %}start{% else %}end{% endif %}">
+    <div id="category-top-info">
         {% if breadcrumbs|length > 1 %}
-            <div id="breadcrumbs">
+            <div id="breadcrumbs" class="mt-4">
             {% for item in breadcrumbs %}
                 {% if not loop.last %}
                     <span class="breadcrumb-item"><a href="/categories?id={{ item.id }}">{{ item.name }}</a></span><span>  /  </span>
@@ -15,67 +15,76 @@
             {% endfor %}
             </div>
         {% endif %}
-        <p id="view-edits-link" class="ml-auto mr-3"><a href="/edit-category?id={{ category.id }}">Edit Page</a></p>
-        <p class="view-edits-link"><a href="/view-edits?type=category&id={{ category.id }}">View Edits</a></p>
+
     </div>
 
-    <div id="category-header">
+    <div id="category-header" class="align-items-center d-flex justify-content">
         <h1 class="display-4">{{ category.name }}</h1>
+		    <p id="view-edits-link" class="ml-auto mr-3"><a href="/edit-category?id={{ category.id }}">Edit Page</a></p>
+		    <p class="view-edits-link"><a href="/view-edits?type=category&id={{ category.id }}">View Edits</a></p>
     </div>
 
-    <div id="category-content" class="d-flex justify-content-between row">
-        <div id="category-content-left" class="col-md-5 ml-3">
-            <div class="category-question-block">
-                <h1 class="category-question-title">What</h1>
+    <div id="category-content">
+        <div id="category-content-left" class="row ml-3">
+            <div class="question-block category-question-block col-md-4">
+                <h1 class="question-title">The What</h1>
+		            <p class="text-muted help-text mb-0">What is the TL;DR of the category? What do tools in this category
+			            let you do?</p>
                 <p>{{ category.what }}</p>
             </div>
-            <div class="category-question-block">
-                <h1 class="category-question-title">Why</h1>
+            <div class="question-block category-question-block col-md-4">
+                <h1 class="question-title">The Why</h1>
+		            <p class="text-muted help-text mb-0">Why would I need use it? Why would I need to <i>start</i> using it?</p>
                 <p>{{ category.why }}</p>
             </div>
-            <div class="category-question-block">
-                <h1 class="category-question-title">Where</h1>
+            <div class="question-block category-question-block col-md-4">
+                <h1 class="question-title">The Where</h1>
+		            <p class="text-muted help-text mb-0">Where does it fall in the application stack? Where would I
+			            use it in my application?</p>
                 <p>{{ category.where }}</p>
             </div>
         </div>
 
-        <div id="category-content-right" class="col-md-6 row">
-        <div class="category-right-block col-lg-6">
-            <h1 class="env-alts-env-title">Subcategories</h1>
-            {% if subcategories %}
-                <ul class="category-content-list">
-                    {% for category in subcategories %}
-                        <li class="alt-list-item"><a href="/categories?id={{ category.id }}">{{ category.name }}</a></li>
-                        {%- if loop.index > 5 %}
-                            <p class="alts-more-link"><a href="#">Show more</a></p>
-                            {% break %}
-                        {% endif %}
-                    {%- endfor %}
-                </ul>
-            {% endif %}
-            {% if not subcategories %}
-                <p class="alt-list-item">No subcategories at this time</p>
-            {% endif %}
-        </div>
+		    <div id="category-content-right" class="justify-content-center row text-center">
+				    <div class="category-right-block col-md-4">
+					    <h1 class="env-alts-env-title">Subcategories</h1>
+					    {% if subcategories %}
+						    <ul class="category-content-list text-left">
+							    {% for category in subcategories %}
+								    <li class="alt-list-item"><a href="/categories?id={{ category.id }}">{{ category.name }}</a></li>
+								    {%- if loop.index > 5 %}
+									    <p class="alts-more-link"><a href="#">Show more</a></p>
+									    {% break %}
+								    {% endif %}
+							    {%- endfor %}
+						    </ul>
+					    {% endif %}
+					    {% if not subcategories %}
+						    <p class="alt-list-item">No subcategories at this time</p>
+					    {% endif %}
+				    </div>
 
-        <div class="category-right-block col-lg-6">
-            <h1 class="env-alts-env-title">Tools</h1>
-            {% if subtools %}
-                <ul class="category-content-list">
-                    {% for tool in subtools %}
-                        <li class="alt-list-item"><a href="/tools?id={{ tool.id }}">{{ tool.name }}</a> ({{ tool.env.title() }})</li>
-                        {%- if loop.index > 5 %}
-                            <p class="alts-more-link"><a href="#">Show more</a></p>
-                            {% break %}
-                        {% endif %}
-                    {%- endfor %}
-                </ul>
-            {% endif %}
+				    <div class="category-right-block col-md-4">
+					    <h1 class="env-alts-env-title">Tools</h1>
+					    {% if subtools %}
+						    <ul class="category-content-list text-left">
+							    {% for tool in subtools %}
+								    <li class="alt-list-item"><a href="/tools?id={{ tool.id }}">{{ tool.name }}</a> ({{ tool.env.title() }})
+								    </li>
+								    {%- if loop.index > 5 %}
+									    <p class="alts-more-link"><a href="#">Show more</a></p>
+									    {% break %}
+								    {% endif %}
+							    {%- endfor %}
+						    </ul>
+					    {% endif %}
 
-           {% if not subtools %}
-                <p class="alt-list-item">No tools at this time</p>
-           {% endif %}
-        </div>
-    </div>
-    </div>
+					    {% if not subtools %}
+						    <p class="alt-list-item">No tools at this time</p>
+					    {% endif %}
+				    </div>
+			    </div>
+		    </div>
+
+
 {% endblock %}

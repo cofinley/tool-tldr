@@ -21,14 +21,21 @@
 }
 
 #category-content {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 
   #category-content-left {
+
+    background-color: #222;
+    color: white;
+    border-radius: 20px;
+    padding: 10px;
+
+    .help-text {
+      color: #808080 !important;
+    }
+
     .category-question-block {
       margin-bottom: 30px;
-      .category-question-title {
-        font-weight: $font-medium;
-      }
     }
   }
 
@@ -38,6 +45,10 @@
         font-weight: $font-medium;
       }
       .category-content-list {
+
+        list-style-position: inside;
+        margin-left: 90px;
+
         .alt-list-item {
           a {
             @include blue-link;

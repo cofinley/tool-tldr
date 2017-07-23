@@ -4,23 +4,25 @@ from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
 from wtforms.validators import DataRequired, Length, Email, Regexp, URL
 from wtforms import ValidationError
 from ..models import Role, User, Permission
-from flask_login import current_user
-from ..utils import build_top_down_list, is_at_or_below_category
+from ..utils import is_at_or_below_category
+from typing import List
 
 
 class RequiredIf(DataRequired):
 	# a validator which makes a field required if
 	# another field is set and has a truthy value
 
-	def __init__(self, other_field_name, *args, **kwargs):
-		self.other_field_name = other_field_name
+	def __init__(self, other_fields: List[str], *args, **kwargs):
+		self.other_fields = other_fields
 		super(RequiredIf, self).__init__(*args, **kwargs)
 
 	def __call__(self, form, field):
-		other_field = form._fields.get(self.other_field_name)
-		if other_field is None:
-			raise Exception('no field named "%s" in form' % self.other_field_name)
-		if bool(other_field.data):
+		fields = []
+		for _field in self.other_fields:
+			fields.append(form._fields.get(_field))
+		if not fields:
+			raise Exception("no field named '%s' in form" % ", ".join(self.other_fields))
+		if any(field.data for field in fields):
 			super(RequiredIf, self).__call__(form, field)
 
 
@@ -63,8 +65,8 @@ class EditProfileAdminForm(FlaskForm):
 class EditCategoryPageForm(FlaskForm):
 
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
-	move_parent = BooleanField("Move Page?")
-	parent_category = StringField("Parent Category", validators=[RequiredIf("move_parent"), Length(max=64)])
+	move_parent = BooleanField("Move page?")
+	parent_category = StringField("Parent Category", validators=[RequiredIf(["move_parent"]), Length(max=64)])
 	parent_category_id = HiddenField()
 	what = TextAreaField("What", validators=[DataRequired(), Length(1, 200)])
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
@@ -88,17 +90,24 @@ class EditCategoryPageForm(FlaskForm):
 
 class EditToolPageForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
-	move_parent = BooleanField("Move Page")
-	parent_category = StringField("Parent Category", validators=[RequiredIf("move_parent"), Length(max=64)])
+
+	move_parent = BooleanField("Move page?")
+	parent_category = StringField("Parent Category", validators=[RequiredIf(["move_parent"]), Length(max=64)])
 	parent_category_id = HiddenField()
-	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
+
+	edit_avatar_url = BooleanField("Change avatar URL?")
+	avatar_url = StringField("Avatar URL", validators=[RequiredIf(["edit_avatar_url"]), URL(), Length(1, 200)])
+
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
 	created = StringField("Date Created", validators=[DataRequired(), Length(1, 25)])
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
+
+	edit_link = BooleanField("Change project URL?")
 	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
+
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
 	edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
-	recaptcha = RecaptchaField()
+	recaptcha = RecaptchaField(validators=[RequiredIf(["edit_avatar_url", "edit_link"])])
 	submit = SubmitField('Submit')
 
 

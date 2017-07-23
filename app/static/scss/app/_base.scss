@@ -32,6 +32,24 @@ body {
             .btn {
                 font-family: $font-stack !important;
             }
+
+            .help-text {
+                font-size: 1.05em !important;
+            }
+
+            .question-block {
+
+                .question-title {
+                    font-weight: $font-medium;
+                }
+
+                & > p {
+                    margin-bottom: 40px;
+                    margin-left: 15px;
+                    font-size: 1.2em;
+                    //max-width: 70%;
+                }
+            }
         }
     }
 

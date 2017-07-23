@@ -20,89 +20,53 @@ $('#collapse-button').click(function() {
   });
 });
 
-var cachedNodes = {};
-
-function getBlurb(id) {
-    // If node id not in cachedNodes, getJson, else do lookup
-    var blurb;
-    if (cachedNodes.hasOwnProperty(id)) {
-        blurb = cachedNodes[id];
+function getBlurbJson(node, callback){
+    var rdata = {id: node.id};
+    if (node.env) {
+        rdata.tool = true;
     }
-    else {
-        $.ajax({
-          dataType: "json",
-          url: "/load_blurb",
-          data: {id: id},
-          async: false
-        })
-            .done(function(response) {
-                blurb = response.blurb;
-                cachedNodes[id] = blurb;
-            });
-    }
-    return blurb;
+    $.getJSON("/load_blurb", rdata, function (data) {
+    }).done(function(data){
+        callback(data);
+    });
 }
 
-
 function populateFormField(node) {
-    console.log("populating...");
     if ($("#parent_category")) {
         $("#parent_category").attr("value", node.name);
         $("#parent_category_id").attr("value", node.id);
     }
 }
 
-var previousNodeClicked;
-
 $tree.bind(
     'tree.select',
-    function(event) {
+    function (event) {
         if (event.node) {
             // node was selected
             var node = event.node;
             var elem = node.element;
-            var $row = $(elem).find("div")[0];
+            var row = $(elem).find("div")[0];
 
             populateFormField(node);
+            $(".blurb").hide();
 
-            if (previousNodeClicked) {
-                var prev;
-                prev = $tree.tree('getNodeById', previousNodeClicked);
-                if (previousNodeClicked !== node.id) {
-                    // Clicked on different id after the previous one, hide previous
-                    $(prev.element).find(".blurb").first().hide();
-                }
-                else {
-                    // Same id clicked, keep showing
-                    $(prev.element).find(".blurb").first().show();
-                }
-            }
-
-            previousNodeClicked = node.id;
-
-            // Find element count, if less than two, that means blurb hasn't been created yet
-            var count = $($row).find("span").length;
-
-            if (count < 2) {
-                // Blurb element not yet created
-                var blurb = getBlurb(node.id);
+            var count =$(row).find(".blurb").length;
+            console.log(count);
+            if (count === 0){
                 var span = document.createElement("span");
+                getBlurbJson(node, function(data){
+                    span.textContent = data.blurb;
+                    $(span).attr("title", data.blurb);
+                });
                 span.className = "blurb";
-                span.textContent = blurb;
-                $(span).attr("title", blurb);
-                $(span).appendTo($row);
+                $(span).appendTo(row);
             }
             else {
-                // Blurb already there, just hidden
-                $($($row).children()[2]).show();
+                $($(row).find(".blurb")[0]).show();
             }
         }
         else {
-            // event.node is null
-            // a node was deselected
-            // e.previous_node contains the deselected node
-            // Hide blurb if deselected
-            $(event.previous_node.element).find(".blurb").first().hide();
+            $(".blurb").hide();
         }
     }
 );

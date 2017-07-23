@@ -26,32 +26,69 @@ def index():
 
 @main.route("/explore")
 def browse_categories():
-	title = "Explore"
+	category_id = request.args.get("id")
+	if category_id:
+		category = models.Category.query.get_or_404(category_id)
+	else:
+		category = None
+	environment = request.args.get("env")
 	return render_template("explore.html",
-						   title=title)
+						   id=category_id,
+						   category=category,
+						   environment=environment)
 
 
-@main.route("/explore_nodes")
-def explore_nodes():
-	node_id = request.args.get("node")
-	show_root = request.args.get("show-root")
-	no_link = request.args.get("no-link", False, type=bool)
-	if node_id:
-		children = models.Category.query.filter_by(parent_category_id=node_id).all()
+def load_children_tools(id, env):
+
+	if env:
+		child_tools = models.Tool.query.filter_by(parent_category_id=id, env=env).all()
+	else:
+		child_tools = models.Tool.query.filter_by(parent_category_id=id).all()
+	cols = ["id", "name", "env"]
+	results = [{col: getattr(child, col) for col in cols} for child in child_tools]
+
+	for result in results:
+		if env:
+			label_link = "<a href='/tools?id={}'>{}</a>".format(result["id"], result["name"])
+		else:
+			label_link = "<a href='/tools?id={}'>{}</a> ({})".format(result["id"], result["name"],
+																 result["env"].title())
+		result.pop("name")
+		result["label"] = label_link
+
+	return results
+
+
+def load_children_categories(id, no_link):
+	if id:
+		children = models.Category.query.filter_by(parent_category_id=id).all()
 	else:
 		children = models.Category.query.filter_by(parent_category_id=None).all()
 
 	cols = ["id", "name"]
 	results = [{col: getattr(child, col) for col in cols} for child in children]
-
-	# Rename 'name' key as 'label' for jqTree
 	for result in results:
 		if not no_link:
 			# anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
 			label_link = "<a href='/categories?id={}'>{}</a>".format(result["id"], result["name"])
 			result.pop("name")
 			result["label"] = label_link
+
 		result["load_on_demand"] = True
+
+	return results
+
+
+@main.route("/explore_nodes")
+def explore_nodes():
+	node_id = request.args.get("node")
+	env = request.args.get("env")
+	show_root = request.args.get("show-root")
+	no_link = request.args.get("no-link", False, type=bool)
+
+	results = load_children_categories(node_id, no_link)
+	if not no_link:
+		results += load_children_tools(node_id, env)
 
 	if show_root and not node_id:
 		# Only show root node if explicit param and jqTree has not added a node id param (will recursively repeat otherwise)
@@ -64,7 +101,11 @@ def explore_nodes():
 @main.route("/load_blurb")
 def load_blurb():
 	id = request.args.get("id")
-	blurb = models.Category.query.get(id).what
+	tool = request.args.get("tool")
+	if tool:
+		blurb = ""
+	else:
+		blurb = models.Category.query.get(id).what
 	result = {"blurb": blurb}
 
 	return jsonify(result)
@@ -309,6 +350,9 @@ def edit_tool_page():
 		flash('This tool has been updated.', 'success')
 		return redirect(url_for('.fetch_tool_page', id=tool.id))
 	form.name.data = tool.name
+	form.edit_link.data = False
+	form.edit_avatar_url.data = False
+	form.parent_category_id.data = tool.parent_category_id
 	form.parent_category.data = tool.category.name
 	form.avatar_url.data = tool.avatar_url
 	form.env.data = tool.env.title()

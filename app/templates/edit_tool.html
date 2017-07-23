@@ -17,18 +17,28 @@
 			<div class="mb-3 mt-4">
 				{{ wtf.form_field(form.move_parent, checked=False) }}
 			</div>
-			<div id="optional_parent_field" style="display: none">
+			<div id="optional_parent_field" class="initially-hidden-field">
 				{{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
 			</div>
-	    {{ wtf.form_field(form.avatar_url) }}
+			<div class="mb-3 mt-4">
+				{{ wtf.form_field(form.edit_avatar_url, checked=False) }}
+			</div>
+			<div id="avatar-url-field" class="initially-hidden-field">
+		    {{ wtf.form_field(form.avatar_url) }}
+			</div>
 	    {{ wtf.form_field(form.env) }}
 	    {{ wtf.form_field(form.created) }}
 	    {{ wtf.form_field(form.project_version) }}
-	    {{ wtf.form_field(form.link) }}
+			<div class="mb-3 mt-4">
+				{{ wtf.form_field(form.edit_link, checked=False) }}
+			</div>
+			<div id="project-url-field" class="initially-hidden-field">
+		    {{ wtf.form_field(form.link) }}
+			</div>
 	    {{ wtf.form_field(form.why) }}
 	    {{ wtf.form_field(form.edit_msg) }}
 	    {% if not current_user.is_confirmed %}
-	        <div class="my-3">
+	        <div id="edit-tool-recaptcha" class="my-3 initially-hidden-field">
 	          {{ form.recaptcha }}
 	        </div>
 	    {% endif %}

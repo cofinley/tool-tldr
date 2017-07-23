@@ -16,7 +16,7 @@
 			<div class="mb-3 mt-4">
 				{{ wtf.form_field(form.move_parent, checked=False) }}
 			</div>
-			<div id="optional_parent_field" style="display: none">
+			<div class="initially-hidden-field">
 				{{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
 			</div>
 			{{ wtf.form_field(form.what) }}
