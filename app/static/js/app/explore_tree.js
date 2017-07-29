@@ -53,7 +53,7 @@ $tree.bind(
             $("li.jqtree_common").not($(elem)).removeClass("jqtree-selected");
 
             var count =$(row).find(".blurb").length;
-            if (count === 0){
+            if ((count === 0) && (node.id !== 0)){
                 var span = document.createElement("span");
                 getBlurbJson(node, function(data){
                     span.textContent = data.blurb;

@@ -1,5 +1,5 @@
 $("#move_parent").change(function(){
-    $("#optional_parent_field").toggle();
+    $(".initially-hidden-field").toggle();
     $("#tree-pane").toggle();
 });
 
