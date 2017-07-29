@@ -3,7 +3,8 @@ var staticPath = "./app/static/";
 
 var jsFileOrder = [
 	staticPath + 'js/app/utils.js',
-	staticPath + 'js/lib/tree.jquery.js',
+    staticPath + 'js/lib/tree.jquery.js',
+	staticPath + 'js/lib/auto-complete.min.js',
 	staticPath + 'js/app/explore_tree.js',
 	staticPath + 'js/app/alert.js',
 	staticPath + 'js/app/autocomplete.js',
@@ -19,6 +20,7 @@ var sass = require('gulp-sass');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+var purify = require('gulp-purifycss');
 
 // Lint Task, only lint my js files
 gulp.task('lint', function () {
@@ -39,6 +41,7 @@ gulp.task('minify-css', ['sass'], function () {
 		.pipe(gulp.dest(staticPath + 'dist'))
 		.pipe(rename('all.min.css'))
         .pipe(cleanCSS({level: {1: {specialComments: 0}}}))
+        .pipe(purify([staticPath + 'js/**/*.js', './app/templates/**/*.html']))
         .pipe(gulp.dest(staticPath + 'dist'));
 });
 
@@ -55,6 +58,7 @@ gulp.task('scripts', function () {
 //Watch task
 gulp.task('watch', function () {
 	gulp.watch(staticPath + 'js/**/*.js', ['lint', 'scripts']);
+    gulp.watch(staticPath + 'css/**/*.css', ['minify-css']);
     gulp.watch(staticPath + 'scss/**/*.scss', ['sass', 'minify-css']);
 });
 

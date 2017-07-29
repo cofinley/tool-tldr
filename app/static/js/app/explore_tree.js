@@ -48,10 +48,11 @@ $tree.bind(
             var row = $(elem).find("div")[0];
 
             populateFormField(node);
+            // Reset state
             $(".blurb").hide();
+            $("li.jqtree_common").not($(elem)).removeClass("jqtree-selected");
 
             var count =$(row).find(".blurb").length;
-            console.log(count);
             if (count === 0){
                 var span = document.createElement("span");
                 getBlurbJson(node, function(data){

@@ -164,14 +164,15 @@ def fetch_tool_page():
 
 @main.route("/search")
 def search_tools():
-	search_query = request.args.get("term")
+	search_query = request.args.get("q")
 	results = []
 	queried_tools = models.Tool.query.whoosh_search(search_query, like=True).all()
 	for tool in queried_tools:
-		results.append({"label": tool.name, "type": "tool", "id": tool.id})
+		results.append({"label": tool.name, "type": "t", "id": tool.id})
 	search_categories = models.Category.query.whoosh_search(search_query, like=True).all()
 	for category in search_categories:
-		results.append({"label": category.name, "type": "category", "id": category.id})
+		results.append({"label": category.name, "type": "c", "id": category.id})
+
 	return jsonify(results)
 
 

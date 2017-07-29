@@ -3,7 +3,7 @@
 {% block content %}
 	<div id="tool-header" class="align-items-center d-flex justify-content-end">
 		<h1 id="tool-heading" class="display-4">{{ tool.name }}</h1>
-		<p id="view-edits-link" class="ml-auto mr-3"><a href="/edit-tool?id={{ tool.id }}">Edit Page</a></p>
+		<a id="edit-tool-button" role="button" class="btn btn-lg btn-primary ml-auto mr-3" href="/edit-tool?id={{ tool.id }}">Edit Page</a>
 		<p id="view-edits-link" class="mr-3"><a href="/view-edits?type=tool&id={{ tool.id }}">View Edits</a></p>
 	</div>
 	<div id="tool-content" class="row justify-content-between">

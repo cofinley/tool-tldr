@@ -63,13 +63,13 @@
         }
 
         .add-button {
-          background-color: $blue;
+          background-color: $dark-gray;
           color: white !important;
           border-radius: 5px;
         }
 
         .dropdown-item:active {
-          background: $blue;
+          background: $dark-gray;
         }
 
         .dropdown-toggle::after {
@@ -80,7 +80,6 @@
       #search-input-group {
         width: 220px;
         height: 35px;
-        font-weight: 600;
         font-size: 1.4em;
 
         #search-input {

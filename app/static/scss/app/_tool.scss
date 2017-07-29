@@ -6,10 +6,18 @@
 }
 
 #tool-header {
-  font-size: 1.5em;
+  font-size: 1.3em;
 
   a {
     @include blue-link;
+  }
+
+  #edit-tool-button {
+    color: white;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -126,8 +134,8 @@
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
   #tool-right-content {
-    position: relative;
-    top: -40px;
+    //position: relative;
+    //top: -40px;
     order: 1;
   }
 }
