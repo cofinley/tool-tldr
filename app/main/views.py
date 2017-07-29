@@ -11,9 +11,15 @@ from flask_login import login_required, current_user
 from sqlalchemy_continuum import version_class
 
 
+def make_cache_key(*args, **kwargs):
+	path = request.path
+	args = str(hash(frozenset(request.args.items())))
+	return path + args
+
+
 @main.route("/")
 @main.route("/index")
-@cache.cached(timeout=50)
+@cache.cached(key_prefix=make_cache_key)
 def index():
 	categories = models.Category.query.filter_by(parent=None).all()
 	show_more = False
@@ -25,6 +31,7 @@ def index():
 
 
 @main.route("/explore")
+@cache.cached(key_prefix=make_cache_key)
 def browse_categories():
 	category_id = request.args.get("id")
 	if category_id:
@@ -39,7 +46,10 @@ def browse_categories():
 						   environment=environment)
 
 
+@cache.cached(key_prefix=make_cache_key)
 def load_children_tools(id, env):
+
+	# Used for explore tree
 
 	if env:
 		child_tools = models.Tool.query.filter_by(parent_category_id=id, env=env).all()
@@ -60,6 +70,7 @@ def load_children_tools(id, env):
 	return results
 
 
+@cache.memoize()
 def load_children_categories(id, no_link):
 	if id:
 		children = models.Category.query.filter_by(parent_category_id=id).all()
@@ -68,19 +79,22 @@ def load_children_categories(id, no_link):
 
 	cols = ["id", "name"]
 	results = [{col: getattr(child, col) for col in cols} for child in children]
+	cleaned_results = []
 	for result in results:
+		cleaned_result = {"id": result["id"], "load_on_demand": True}
 		if not no_link:
 			# anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
 			label_link = "<a href='/categories?id={}'>{}</a>".format(result["id"], result["name"])
-			result.pop("name")
-			result["label"] = label_link
+			cleaned_result["label"] = label_link
+		else:
+			cleaned_result["name"] = result["name"]
+		cleaned_results.append(cleaned_result)
 
-		result["load_on_demand"] = True
-
-	return results
+	return cleaned_results
 
 
 @main.route("/explore_nodes")
+@cache.cached(key_prefix=make_cache_key)
 def explore_nodes():
 	node_id = request.args.get("node")
 	manual_node_id = request.args.get("manual_node")
@@ -108,19 +122,21 @@ def explore_nodes():
 
 
 @main.route("/load_blurb")
+@cache.cached(key_prefix=make_cache_key)
 def load_blurb():
 	id = request.args.get("id")
 	tool = request.args.get("tool")
 	if tool:
 		blurb = ""
 	else:
-		blurb = models.Category.query.get(id).what
+		blurb = models.Category.query.get_or_404(id).what
 	result = {"blurb": blurb}
 
 	return jsonify(result)
 
 
 @main.route("/categories")
+@cache.cached(key_prefix=make_cache_key)
 def fetch_category_page():
 	id = request.args.get("id")
 	category = models.Category.query.get_or_404(id)
@@ -136,6 +152,7 @@ def fetch_category_page():
 
 
 @main.route("/tools")
+@cache.cached(key_prefix=make_cache_key)
 def fetch_tool_page():
 	id = request.args.get("id")
 	tool = models.Tool.query.get_or_404(id)
@@ -163,6 +180,7 @@ def fetch_tool_page():
 
 
 @main.route("/search")
+@cache.cached(key_prefix=make_cache_key)
 def search_tools():
 	search_query = request.args.get("q")
 	results = []
@@ -249,7 +267,7 @@ def edit_profile_admin():
 		user.email = form.email.data
 		user.username = form.username.data
 		user.confirmed = form.confirmed.data
-		user.role = models.Role.query.get(form.role.data)
+		user.role = models.Role.query.get_or_404(form.role.data)
 		db.session.add(user)
 		flash('The profile has been updated.', 'success')
 		return redirect(url_for('.user', id=user.id))
@@ -274,6 +292,9 @@ def view_edits():
 		cls = models.Tool
 	else:
 		abort(404)
+
+	# Check to make sure id exists first, otherwise 404
+	cls.query.get_or_404(id)
 
 	all = version_class(cls).query.filter_by(id=id).all()
 	latest_version_id = all[-1].transaction_id
@@ -375,6 +396,7 @@ def edit_tool_page():
 
 
 @main.route("/view-diff")
+@cache.cached(key_prefix=make_cache_key)
 def view_diff():
 
 	id = request.args.get("id")
@@ -385,14 +407,21 @@ def view_diff():
 	elif type == "tool":
 		cls = models.Tool
 	else:
-		abort(403)
+		abort(404)
 
-	# Version numbers
-	newer_version = int(request.args.get("newer"))
-	older_version = int(request.args.get("older"))
+	# Version
+	try:
+		newer_version = int(request.args.get("newer"))
+	except ValueError:
+		# Int not entered
+		abort(404)
+	try:
+		older_version = int(request.args.get("older"))
+	except ValueError:
+		abort(404)
 
-	newer_data = version_class(cls).query.get((id, newer_version))
-	older_data = version_class(cls).query.get((id, older_version))
+	newer_data = version_class(cls).query.get_or_404((id, newer_version))
+	older_data = version_class(cls).query.get_or_404((id, older_version))
 
 	diffs = utils.find_diff(older_data, newer_data, type)
 	for key in diffs:
@@ -423,7 +452,7 @@ def undo():
 		cls = models.Tool
 		return_route = '.fetch_tool_page'
 	else:
-		abort(403)
+		abort(404)
 
 	# Make sure user hasn't made more than three reverts within past 24 hours
 	if not current_user.is_authenticated:
@@ -431,6 +460,7 @@ def undo():
 	else:
 		edit_author = current_user.id
 
+	# Enforce three-revision rule
 	if utils.check_if_three_edits(edit_author, cls.query.get_or_404(id).versions):
 		flash("You have already reverted this page three times within a 24 hour period. Try again later.", "warning")
 		return redirect(url_for('main.view_edits', id=id, type=type))
@@ -442,6 +472,7 @@ def undo():
 	current_time = current_version.edit_time.strftime('%d %B %Y, %H:%M')
 	destination_time = destination_version.edit_time.strftime('%d %B %Y, %H:%M')
 
+	# Create diff
 	diffs = utils.find_diff(current_version, destination_version, type)
 	for key in diffs:
 		diffs[key] = utils.gen_diff_html(diffs[key][1], diffs[key][2])
@@ -544,12 +575,13 @@ def add_new_category():
 
 # JINJA FUNCTIONS
 
+
 @main.context_processor
 def utility_processor():
 	# IP validator
-	def is_ip(input):
+	def is_ip(arg):
 		try:
-			ipaddress.ip_address(str(input))
+			ipaddress.ip_address(str(arg))
 			return True
 		except ValueError:
 			return False

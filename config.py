@@ -17,6 +17,7 @@ class Config:
 	ADMIN = os.environ.get('TOOL_TLDR_ADMIN')
 	CACHE_TYPE = "redis"
 	CACHE_REDIS_URL = "redis://localhost:6379"
+	CACHE_DEFAULT_TIMEOUT = 50
 	EDITS_PER_PAGE = 20
 	ALTS_PER_LIST = 10
 
