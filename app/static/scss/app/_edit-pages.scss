@@ -1,3 +1,10 @@
 .initially-hidden-field {
 	display: none;
 }
+
+#tree-pane {
+
+	 .jqtree-title {
+			color: $dark-gray !important;
+	 }
+}

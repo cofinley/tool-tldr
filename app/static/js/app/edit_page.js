@@ -1,6 +1,6 @@
 $("#move_parent").change(function(){
-    $("#optional_parent_field").toggle();
-    $("#tree_pane").toggle();
+    $(".initially-hidden-field").toggle();
+    $("#tree-pane").toggle();
 });
 
 $("#edit_avatar_url").change(function(){

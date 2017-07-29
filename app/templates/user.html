@@ -7,9 +7,9 @@
 <div id="profile-header" class="align-items-md-center d-flex justify-content-between">
     <h1>{{ user.username }}</h1>
     <div class="align-items-center d-flex flex-row">
-		    {% if current_user.is_administrator() %}
-			    <p class="mr-2"><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
-		    {% endif %}
+        {% if current_user.is_administrator() %}
+            <p class="mr-2"><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+        {% endif %}
         {% if user == current_user %}
             <a class="btn btn-secondary mr-2" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
         {% endif %}
@@ -38,83 +38,81 @@
             </ul>
         </div>
 
-        <div class="col-sm-9">
+        <div id="recent-activity" class="col-sm-9">
 
             <h2 class="profile-info-header">Recent Activity</h2>
 
+            <input id="tab1" type="radio" name="tabs" checked>
+            <label for="tab1">Tool Edits</label>
 
-            <ul class="nav nav-tabs" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#tool-edits" role="tab">Tool Edits</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#category-edits" role="tab">Category Edits</a>
-              </li>
-            </ul>
+            <input id="tab2" type="radio" name="tabs">
+            <label for="tab2">Category Edits</label>
 
-            <div class="tab-content">
-                <div class="tab-pane active" id="tool-edits" role="tabpanel">
+            <section id="tool-edits">
+
+                <table class="table table-striped">
+
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Tool Name (at the time)</th>
+                            <th>Edit Message</th>
+                        </tr>
+                    </thead>
+
                     {% if tool_edits %}
-
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Edit</th>
-                                <th>Tool Name (at the time)</th>
-                                <th>Edit Message</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                        <tbody>
                             {% for tool_edit in tool_edits|sort(attribute="edit_time", reverse=True) %}
                                 <tr>
                                     <td>
                                         <a href="/view-diff?id={{ tool_edit.id }}&type=tool&newer={{ tool_edit.transaction_id }}&older={{ tool_edit.previous.transaction_id }}"
-                                           title="{{ tool_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
-                                            {{ tool_edit.edit_time.strftime('%B %d, %Y') }}
+                                            title="{{ tool_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
+                                                    {{ tool_edit.edit_time.strftime('%B %d, %Y') }}
                                         </a>
                                     </td>
-                                    <td><a href="/tools?id={{ tool_edit.id }}">{{ tool_edit.name }}</a>
-                                    </td>
+                                    <td><a href="/tools?id={{ tool_edit.id }}">{{ tool_edit.name }}</a></td>
                                     <td>{{ tool_edit.edit_msg }}</td>
                                 </tr>
                             {% endfor %}
-                            </tbody>
-                        </table>
-                        <a href="/view-user-edits?id={{ user.id }}&type=tool" class="btn btn-secondary" role="button" aria-pressed="true">View All</a>
-                    {% endif %}
-                </div>
+                        </tbody>
+		                {% endif %}
+                </table>
 
-                <div class="tab-pane" id="category-edits" role="tabpanel">
+		            <a href="/view-user-edits?id={{ user.id }}&type=tool" class="btn btn-secondary {% if not tool_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
+            </section>
+
+            <section id="category-edits">
+
+                <table class="table table-striped">
+
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Category Name (at the time)</th>
+                            <th>Edit Message</th>
+                        </tr>
+                    </thead>
+
                     {% if category_edits %}
-
-
-                        <table class="table table-striped">
-                            <thead>
+                        <tbody>
+                            {% for category_edit in category_edits|sort(attribute="edit_time", reverse=True) %}
                             <tr>
-                                <th>Edit</th>
-                                <th>Category Name (at the time)</th>
-                                <th>Edit Message</th>
+                                <td>
+                                    <a href="/view-diff?id={{ category_edit.id }}&type=category&newer={{ category_edit.transaction_id }}&older={{ category_edit.previous.transaction_id }}"
+                                        title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
+                                                    {{ category_edit.edit_time.strftime('%B %d, %Y') }}
+                                    </a>
+                                </td>
+                                <td><a href="/categories?id={{ category_edit.id }}">{{ category_edit.name }}</a></td>
+                                <td>{{ category_edit.edit_msg }}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                                {% for category_edit in category_edits|sort(attribute="edit_time", reverse=True) %}
-                                    <tr>
-                                        <td>
-                                            <a href="/view-diff?id={{ category_edit.id }}&type=category&newer={{ category_edit.transaction_id }}&older={{ category_edit.previous.transaction_id }}"
-                                               title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
-                                                {{ category_edit.edit_time.strftime('%B %d, %Y') }}
-                                            </a>
-                                        </td>
-                                        <td><a href="/categories?id={{ category_edit.id }}">{{ category_edit.name }}</a></td>
-                                        <td>{{ category_edit.edit_msg }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        <a href="/view-user-edits?id={{ user.id }}&type=category" class="btn btn-secondary" role="button" aria-pressed="true">View All</a>
-                    {% endif %}
-                </div>
-            </div>
+                            {% endfor %}
+                        </tbody>
+		                {% endif %}
+                </table>
+
+		            <a href="/view-user-edits?id={{ user.id }}&type=category" class="btn btn-secondary {% if not category_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
+            </section>
         </div>
     </div>
 </div>

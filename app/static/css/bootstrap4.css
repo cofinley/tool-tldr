@@ -3811,6 +3811,7 @@ tbody.collapse.show {
   content: "Browse";
 }
 
+
 .nav {
   display: -webkit-box;
   display: -webkit-flex;
@@ -3830,10 +3831,12 @@ tbody.collapse.show {
   text-decoration: none;
 }
 
+/*!
 .nav-link.disabled {
   color: #636c72;
   cursor: not-allowed;
 }
+
 
 .nav-tabs {
   border-bottom: 1px solid #ddd;
@@ -3899,6 +3902,7 @@ tbody.collapse.show {
   text-align: center;
 }
 
+
 .tab-content > .tab-pane {
   display: none;
 }
@@ -3906,6 +3910,7 @@ tbody.collapse.show {
 .tab-content > .active {
   display: block;
 }
+*/
 
 /*!
 .navbar {
