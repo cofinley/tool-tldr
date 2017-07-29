@@ -1,5 +1,11 @@
 function autoCompleteAjax(selector) {
 
+    var bigSize = true;
+
+    if (selector === "#search-input") {
+        bigSize = false;
+    }
+
     var xhr;
     new autoComplete({
         selector: selector,
@@ -17,7 +23,20 @@ function autoCompleteAjax(selector) {
             item = obj.label;
             search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
             var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-            return '<div class="autocomplete-suggestion" data-id="' + obj.id + '" data-type="' + obj.type + '">' + item.replace(re, "<b>$1</b>") + '</div>';
+
+            var className = 'autocomplete-suggestion';
+            if (bigSize) {
+                className += ' autocomplete-suggestion-big';
+            }
+
+            var suggestionDiv = document.createElement('div');
+            suggestionDiv.setAttribute('class', className);
+            suggestionDiv.setAttribute('data-id', obj.id);
+            suggestionDiv.setAttribute('data-type', obj.type);
+            suggestionDiv.setAttribute('data-val', obj.label);
+            suggestionDiv.innerHTML = item.replace(re, "<b>$1</b>");
+
+            return suggestionDiv.outerHTML;
         },
         onSelect: function (e) {
             var itemData = e.srcElement.dataset;

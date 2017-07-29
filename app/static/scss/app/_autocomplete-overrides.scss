@@ -18,3 +18,25 @@
 .autocomplete-big {
     font-size: 1.3em;
 }
+
+
+.autocomplete-suggestions {
+    margin-top: -5px;
+    padding-top: 5px;
+    z-index: auto;
+
+    .autocomplete-suggestion {
+        font-size: 0.98em;
+        font-weight: 400;
+        padding: 0.2em 0 0.2em 0.5em;
+
+        &:first-child {
+            margin-top: -2px;
+        }
+    }
+
+    .autocomplete-suggestion-big {
+        font-size: 1.4rem;
+        padding: 0.45em 0 .4em .75em;
+    }
+}
