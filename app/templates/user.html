@@ -38,7 +38,7 @@
             </ul>
         </div>
 
-        <div class="col-sm-9">
+        <div id="recent-activity" class="col-sm-9">
 
             <h2 class="profile-info-header">Recent Activity</h2>
 
@@ -49,15 +49,18 @@
             <label for="tab2">Category Edits</label>
 
             <section id="tool-edits">
-                {% if tool_edits %}
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Edit</th>
-                                <th>Tool Name (at the time)</th>
-                                <th>Edit Message</th>
-                            </tr>
-                        </thead>
+
+                <table class="table table-striped">
+
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Tool Name (at the time)</th>
+                            <th>Edit Message</th>
+                        </tr>
+                    </thead>
+
+                    {% if tool_edits %}
                         <tbody>
                             {% for tool_edit in tool_edits|sort(attribute="edit_time", reverse=True) %}
                                 <tr>
@@ -72,21 +75,25 @@
                                 </tr>
                             {% endfor %}
                         </tbody>
-                    </table>
-                    <a href="/view-user-edits?id={{ user.id }}&type=tool" class="btn btn-secondary" role="button" aria-pressed="true">View All</a>
-                {% endif %}
+		                {% endif %}
+                </table>
+
+		            <a href="/view-user-edits?id={{ user.id }}&type=tool" class="btn btn-secondary {% if not tool_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
             </section>
 
             <section id="category-edits">
-                {% if category_edits %}
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Edit</th>
-                                <th>Category Name (at the time)</th>
-                                <th>Edit Message</th>
-                            </tr>
-                        </thead>
+
+                <table class="table table-striped">
+
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Category Name (at the time)</th>
+                            <th>Edit Message</th>
+                        </tr>
+                    </thead>
+
+                    {% if category_edits %}
                         <tbody>
                             {% for category_edit in category_edits|sort(attribute="edit_time", reverse=True) %}
                             <tr>
@@ -101,9 +108,10 @@
                             </tr>
                             {% endfor %}
                         </tbody>
-                    </table>
-                    <a href="/view-user-edits?id={{ user.id }}&type=category" class="btn btn-secondary" role="button" aria-pressed="true">View All</a>
-                {% endif %}
+		                {% endif %}
+                </table>
+
+		            <a href="/view-user-edits?id={{ user.id }}&type=category" class="btn btn-secondary {% if not category_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
             </section>
         </div>
     </div>
