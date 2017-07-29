@@ -26,7 +26,7 @@
 			<div id="avatar-url-field" class="initially-hidden-field">
 		    {{ wtf.form_field(form.avatar_url) }}
 			</div>
-	    {{ wtf.form_field(form.env) }}
+	    {{ wtf.form_field(form.env, help_text="What environment is this tool used? Usually, this is a programming lanugage.") }}
 	    {{ wtf.form_field(form.created) }}
 	    {{ wtf.form_field(form.project_version) }}
 			<div class="mb-3 mt-4">
@@ -35,7 +35,7 @@
 			<div id="project-url-field" class="initially-hidden-field">
 		    {{ wtf.form_field(form.link) }}
 			</div>
-	    {{ wtf.form_field(form.why) }}
+	    {{ wtf.form_field(form.why, help_text="Why use this tool over an alternative?") }}
 	    {{ wtf.form_field(form.edit_msg) }}
 	    {% if not current_user.is_confirmed %}
 	        <div id="edit-tool-recaptcha" class="my-3 initially-hidden-field">
@@ -52,12 +52,4 @@
 		<div id="explore-tree" data-url="/explore_nodes?no-link=true"></div>
 	</div>
 </div>
-
-<script>
-
-    function goBack() {
-        window.history.back();
-    }
-
-</script>
 {% endblock %}

@@ -5,7 +5,7 @@
 
 {% block content %}
 	<div class="page-header">
-		<h1>Edit <a href="{{ url_for("main.fetch_category_page", id=category.id) }}">{{ category.name }}</a></h1>
+		<h1>Edit <a href="{{ url_for("main.fetch_category_page", category_id=category.id) }}">{{ category.name }}</a></h1>
 	</div>
 	<div class="row">
 		<form class="col-md-5" method="post" role="form">
@@ -19,9 +19,10 @@
 			<div class="initially-hidden-field">
 				{{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
 			</div>
-			{{ wtf.form_field(form.what) }}
-			{{ wtf.form_field(form.why) }}
-			{{ wtf.form_field(form.where) }}
+			{{ wtf.form_field(form.what, help_text="What is the tl;dr of the category? What do tools in this category let you do?") }}
+			{{ wtf.form_field(form.why, help_text="Why would I need use it? Why would I need to <i>start</i> using it?") }}
+			{{ wtf.form_field(form.where, help_text="Where does it fall in the application space or stack? Where would I use it in my application?") }}
+
 			{{ wtf.form_field(form.edit_msg) }}
 			<div class="d-flex justify-content-end mb-5">
 				<button type="button" class="btn btn-danger mr-auto" onclick="goBack()">Cancel</button>

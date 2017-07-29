@@ -3,7 +3,7 @@
 {% block title %}Tool TL;DR - Time Travel {{ name }}{% endblock %}
 {% block content %}
     <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ name }}</a>: Time Travel</h1>
-    <p><a href="/view-edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
+    <p><a href="/{{ type }}/{{ id }}/edits">Back to edits</a></p>
     <div class="my-5">
         <form class="col-md-5" method="post" role="form">
             {{ form.hidden_tag() }}
@@ -38,9 +38,4 @@
       </div>
       {% endfor %}
     </div>
-    <script>
-        function goBack() {
-            window.history.back();
-        }
-    </script>
 {% endblock %}

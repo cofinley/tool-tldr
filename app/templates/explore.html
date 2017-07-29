@@ -3,7 +3,7 @@
 
 {% block content %}
 <div id="explore-header" class="d-flex justify-content-between align-items-center">
-	<h1 id="explore-title" class="display-4">Explore{% if category %} - <a href={{ url_for("main.fetch_category_page", id=id) }}>{{ category.name }}</a>{% endif %}</h1>
+	<h1 id="explore-title" class="display-4">Explore{% if category %} - <a href={{ url_for("main.fetch_category_page", category_id=id) }}>{{ category.name }}</a>{% endif %}</h1>
     <button id="collapse-button" type="button" class="btn btn-secondary">Collapse All</button>
 </div>
 {% if environment %}

@@ -5,7 +5,7 @@
 	<div id="nav" class="align-items-end d-flex flex-column">
 		<div id="nav-user-actions" class="d-flex flex-row">
 			{% if current_user.is_authenticated %}
-				<p class="nav-user-text-button"><a class="nav-user-link" href="/users?id={{ current_user.id }}">My Account</a>
+				<p class="nav-user-text-button"><a class="nav-user-link" href="/users/{{ current_user.id }}">My Account</a>
 				</p>
 				<p class="nav-user-text-button"><a class="nav-user-link" href="/auth/logout">Sign out</a></p>
 			{% else %}

@@ -41,10 +41,10 @@ function autoCompleteAjax(selector) {
         onSelect: function (e) {
             var itemData = e.srcElement.dataset;
             if (itemData.type === 't') {
-                window.location.href = window.location.origin + '/tools?id=' + itemData.id;
+                window.location.href = window.location.origin + '/tools/' + itemData.id;
             }
             else if (itemData.type === 'c') {
-                window.location.href = window.location.origin + '/categories?id=' + itemData.id;
+                window.location.href = window.location.origin + '/categories/' + itemData.id;
             }
         }
     });

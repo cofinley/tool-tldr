@@ -3,23 +3,44 @@
 {% block content %}
 	<h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ newer_data.name }}</a>:
 		Diff</h1>
-	<p><a href="/view-edits?type={{ type }}&id={{ id }}">Back to edits</a></p>
-	<blockquote class="blockquote mt-4 mb-4 ml-0" style="font-size: 1.5em">
-		<p class="mt-0" style="margin-bottom: 5px">{{ newer_data.edit_msg }}</p>
-		<footer class="blockquote-footer">
-			Edit by
-			<cite title="Source Title">
-				{% if not is_ip(newer_data.edit_author) %}
-					<a href="/users?id={{ newer_data.edit_author }}">{{ newer_data.author.username }}</a>
-				{% else %}
-					<td>{{ newer_data.edit_author }}</td>
-				{% endif %}
-			</cite>
-		</footer>
-	</blockquote>
+	<p><a href="/{{ type }}/{{ id }}/edits">Back to edits</a></p>
 	<div class="row">
-		<h2 class="col-md-6 text-center" id="comparison-info">Before: {{ older_time }}</h2>
-		<h2 class="col-md-6 text-center" id="comparison-info">After: {{ newer_time }}</h2>
+		<div class="col-md-6">
+			<h2 class="text-center" id="comparison-info">Before: {{ older_time }}</h2>
+			<div class="w-100">
+				<blockquote class="blockquote">
+					<p class="mt-0" style="margin-bottom: 5px">{{ older_data.edit_msg }}</p>
+					<footer class="blockquote-footer">
+						Edit by
+						<cite title="Source Title">
+							{% if not is_ip(older_data.edit_author) %}
+								<a href="/users/{{ older_data.edit_author }}">{{ older_data.author.username }}</a>
+							{% else %}
+								<td>{{ older_data.edit_author }}</td>
+							{% endif %}
+						</cite>
+					</footer>
+				</blockquote>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<h2 class="text-center" id="comparison-info">After: {{ newer_time }}</h2>
+			<div class="w-100">
+				<blockquote class="blockquote">
+					<p class="mt-0" style="margin-bottom: 5px">{{ newer_data.edit_msg }}</p>
+					<footer class="blockquote-footer">
+						Edit by
+						<cite title="Source Title">
+							{% if not is_ip(newer_data.edit_author) %}
+								<a href="/users/{{ newer_data.edit_author }}">{{ newer_data.author.username }}</a>
+							{% else %}
+								<td>{{ newer_data.edit_author }}</td>
+							{% endif %}
+						</cite>
+					</footer>
+				</blockquote>
+			</div>
+		</div>
 		{% for diff in diffs %}
 			<div class="col-md-12">
 				<div class="card">

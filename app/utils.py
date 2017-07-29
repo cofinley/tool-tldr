@@ -105,14 +105,20 @@ def find_diff(old, new, type):
 
 	diffs = {}
 
-	if type == "category":
+	if type == "categories":
 		new_what = new.what
 		new_where = new.where
-		new_parent_category_name = new.parent.name
+		if new.parent:
+			new_parent_category_name = new.parent.name
+		else:
+			new_parent_category_name = ""
 
 		old_what = old.what
 		old_where = old.where
-		old_parent_category_name = old.parent.name
+		if old.parent:
+			old_parent_category_name = old.parent.name
+		else:
+			old_parent_category_name = ""
 
 		if old_what != new_what:
 			diffs["What"] = ("what", old_what, new_what)
@@ -146,20 +152,21 @@ def find_diff(old, new, type):
 		if old_link != new_link:
 			diffs["Project URL"] = ("link", old_link, new_link)
 
+		new_parent_category_name = new.category.name
+		old_parent_category_name = old.category.name
+		if old_parent_category_name != new_parent_category_name:
+			diffs["Parent Category"] = ("parent_category_name", old_parent_category_name, new_parent_category_name)
+
 	new_name = new.name
 	new_why = new.why
-	new_parent_category_name = new.category.name
 
 	old_name = old.name
 	old_why = old.why
-	old_parent_category_name = old.category.name
 
 	if old_name != new_name:
 		diffs["Name"] = ("name", old_name, new_name)
 	if old_why != new_why:
 		diffs["Why"] = ("why", old_why, new_why)
-	if old_parent_category_name != new_parent_category_name:
-		diffs["Parent Category"] = ("parent_category_name", old_parent_category_name, new_parent_category_name)
 
 	return diffs
 
@@ -174,7 +181,7 @@ def overwrite(old, new, type):
 	:return: old model with overwritten data supplied by new 
 	"""
 
-	if type == "category":
+	if type == "categories":
 		old.what = new.what
 		old.where = new.where
 

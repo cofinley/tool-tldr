@@ -2,7 +2,7 @@
 {% import "_macros.html" as macros %}
 {% block title %}{{ current_version.name }} edits{% endblock %}
 {% block content %}
-    <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ current_version.name }}</a>: Edits</h1>
+    <h1><a href="/{{ type }}/{{ id }}">{{ current_version.name }}</a>: Edits</h1>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -11,7 +11,12 @@
                         Comparisons
                     </div>
                     <div class="ml-5">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="compareTwo('{{ type }}', '{{ id }}')" style="cursor: pointer">Compare Selected</button>
+                        <button type="button"
+                                class="btn btn-secondary btn-sm"
+                                {% if not previous_versions %}disabled{% endif %}
+                                onclick="compareTwo('{{ type }}', '{{ id }}')"
+                                style="cursor: pointer">Compare Selected
+                        </button>
                     </div>
                 </th>
                 <th>Edit Time</th>
@@ -24,12 +29,12 @@
             <tr>
                 <td class="comparisons-td">
                     {% if current_version.transaction_id < latest_version_id %}
-                        <a href="/view-diff?id={{ id }}&type={{ type }}&older={{ current_version.transaction_id }}&newer={{ latest_version_id }}">Current</a> |
+                        <a href="edits/diff/{{ current_version.transaction_id }}/{{ latest_version_id }}">Current</a> |
                     {% else %}
                         Current |
                     {% endif %}
                     {% if previous_versions %}
-                        <a href="/view-diff?id={{ id }}&type={{ type }}&older={{ current_version.previous.transaction_id }}&newer={{ current_version.transaction_id }}">Previous</a>
+                        <a href="edits/diff/{{ current_version.previous.transaction_id }}/{{ current_version.transaction_id }}">Previous</a>
                     {% else %}
                         Previous
                     {% endif %}
@@ -46,7 +51,7 @@
                 </td>
                 <td>{{ current_version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
                 {% if not is_ip(current_version.edit_author) %}
-                    <td><a href="/users?id={{ current_version.author.id }}">{{ current_version.author.username }}</a></td>
+                    <td><a href="/users/{{ current_version.author.id }}">{{ current_version.author.username }}</a></td>
                 {% else %}
                     <td>{{ current_version.edit_author }}</td>
                 {% endif %}
@@ -56,11 +61,11 @@
             {% for version in previous_versions|sort(attribute="transaction_id", reverse=True) %}
                 <tr>
                     <td class="comparisons-td">
-                        <a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version.transaction_id }}&newer={{ latest_version_id }}">Current</a> |
+                        <a href="edits/diff/{{ version.transaction_id }}/{{ latest_version_id }}">Current</a> |
                         {% if version.transaction_id == first_version_id %}
                             Previous
                         {% else %}
-                            <a href="/view-diff?id={{ id }}&type={{ type }}&older={{ version.previous.transaction_id }}&newer={{ version.transaction_id }}">Previous</a>
+                            <a href="edits/diff/{{ version.previous.transaction_id }}/{{ version.transaction_id }}">Previous</a>
                         {% endif %}
                         <div class="form-check form-check-inline ml-5">
                           <label class="form-check-label">
@@ -81,16 +86,20 @@
                     </td>
                     <td>{{ version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
                     {% if not is_ip(version.edit_author) %}
-                        <td><a href="/users?id={{ version.author.id }}">{{ version.author.username }}</td>
+                        <td><a href="/users/{{ version.author.id }}">{{ version.author.username }}</td>
                     {% else %}
                         <td>{{ version.edit_author }}</td>
                     {% endif %}
                     <td>{{ version.edit_msg }}</td>
-                    <td><a class="btn btn-sm btn-secondary" href="/time-travel?id={{ id }}&type={{ type }}&target_version={{ version.transaction_id }}" role="button" title="Time travel to this edit in time. This will make a new, overwriting edit.">Time Travel</a></td>
+                    <td><a class="btn btn-sm btn-secondary" href="edit/time-travel/{{ version.transaction_id }}" role="button" title="Time travel to this edit in time. This will make a new, overwriting edit.">Time Travel</a></td>
                 </tr>
             {% endfor %}
     </table>
     <div class="pagination">
-     {{ macros.edits_pagination_widget(pagination, '.view_edits', id=id, type=type) }}
+      {% if type == "tools" %}
+	     {{ macros.edits_pagination_widget(pagination, '.view_tool_edits', id=id, type=type) }}
+      {% elif type == "categories "%}
+		    {{ macros.edits_pagination_widget(pagination, '.view_category_edits', id=id, type=type) }}
+      {% endif %}
     </div>
 {% endblock %}

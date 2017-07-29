@@ -18,7 +18,6 @@ def make_cache_key(*args, **kwargs):
 
 
 @main.route("/")
-@main.route("/index")
 @cache.cached(key_prefix=make_cache_key)
 def index():
 	categories = models.Category.query.filter_by(parent=None).all()
@@ -60,9 +59,9 @@ def load_children_tools(id, env):
 
 	for result in results:
 		if env:
-			label_link = "<a href='/tools?id={}'>{}</a>".format(result["id"], result["name"])
+			label_link = "<a href='/tools/{}'>{}</a>".format(result["id"], result["name"])
 		else:
-			label_link = "<a href='/tools?id={}'>{}</a> ({})".format(result["id"], result["name"],
+			label_link = "<a href='/tools/{}'>{}</a> ({})".format(result["id"], result["name"],
 																 result["env"].title())
 		result.pop("name")
 		result["label"] = label_link
@@ -84,7 +83,7 @@ def load_children_categories(id, no_link):
 		cleaned_result = {"id": result["id"], "load_on_demand": True}
 		if not no_link:
 			# anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
-			label_link = "<a href='/categories?id={}'>{}</a>".format(result["id"], result["name"])
+			label_link = "<a href='/categories/{}'>{}</a>".format(result["id"], result["name"])
 			cleaned_result["label"] = label_link
 		else:
 			cleaned_result["name"] = result["name"]
@@ -135,11 +134,10 @@ def load_blurb():
 	return jsonify(result)
 
 
-@main.route("/categories")
+@main.route("/categories/<int:category_id>")
 @cache.cached(key_prefix=make_cache_key)
-def fetch_category_page():
-	id = request.args.get("id")
-	category = models.Category.query.get_or_404(id)
+def fetch_category_page(category_id):
+	category = models.Category.query.get_or_404(category_id)
 	subcategories = category.children
 	subtools = category.tools.all()
 	category_tree = utils.build_bottom_up_tree(category.id)
@@ -151,11 +149,10 @@ def fetch_category_page():
 						   breadcrumbs=category_tree)
 
 
-@main.route("/tools")
+@main.route("/tools/<int:tool_id>")
 @cache.cached(key_prefix=make_cache_key)
-def fetch_tool_page():
-	id = request.args.get("id")
-	tool = models.Tool.query.get_or_404(id)
+def fetch_tool_page(tool_id):
+	tool = models.Tool.query.get_or_404(tool_id)
 
 	alts_for_this_env = models.Tool.query\
 		.filter_by(parent_category_id=tool.parent_category_id)\
@@ -197,13 +194,12 @@ def search_tools():
 # USER ROUTES
 
 
-@main.route('/users')
-def user():
-	id = request.args.get("id")
-	user = models.User.query.get_or_404(id)
+@main.route('/users/<int:user_id>')
+def user(user_id):
+	user = models.User.query.get_or_404(user_id)
 
-	tool_edits = version_class(models.Tool).query.filter_by(edit_author=id).all()
-	category_edits = version_class(models.Category).query.filter_by(edit_author=id).all()
+	tool_edits = version_class(models.Tool).query.filter_by(edit_author=user_id).all()
+	category_edits = version_class(models.Category).query.filter_by(edit_author=user_id).all()
 
 	total_edits = len(tool_edits) + len(category_edits)
 
@@ -214,29 +210,27 @@ def user():
 						   category_edits=category_edits[-11:])
 
 
-@main.route('/view-user-edits')
-def view_user_edits():
-	id = request.args.get("id")
-	type = request.args.get("type")
-	page = request.args.get("page", 1, type=int)
+@main.route("/users/<int:id>/edits/<page_type>", defaults={'page_number': 1})
+@main.route("/users/<int:id>/edits/<page_type>/<int:page_number>")
+def view_user_edits(id, page_type, page_number):
 
 	user = models.User.query.get_or_404(id)
 
-	if type == "category":
+	if page_type == "categories":
 		cls = models.Category
-	elif type == "tool":
+	elif page_type == "tools":
 		cls = models.Tool
 	else:
 		abort(404)
 
 	pagination = version_class(cls).query.filter_by(edit_author=id) \
 		.order_by(version_class(cls).transaction_id.desc()) \
-		.paginate(page, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
+		.paginate(page_number, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
 	edits = list(reversed(pagination.items))
 
 	return render_template("view_user_edits.html",
 						   user=user,
-						   type=type,
+						   type=page_type,
 						   pagination=pagination,
 						   edits=edits)
 
@@ -250,7 +244,7 @@ def edit_profile():
 		current_user.about_me = form.about_me.data
 		db.session.add(current_user)
 		flash('Your profile has been updated.', 'success')
-		return redirect(url_for('.user', id=current_user.id))
+		return redirect(url_for('.user', user_id=current_user.id))
 	form.name.data = current_user.name
 	form.about_me.data = current_user.about_me
 	return render_template('edit_profile.html', form=form)
@@ -270,7 +264,7 @@ def edit_profile_admin():
 		user.role = models.Role.query.get_or_404(form.role.data)
 		db.session.add(user)
 		flash('The profile has been updated.', 'success')
-		return redirect(url_for('.user', id=user.id))
+		return redirect(url_for('.user', user_id=user.id))
 	form.email.data = user.email
 	form.username.data = user.username
 	form.confirmed.data = user.confirmed
@@ -281,31 +275,28 @@ def edit_profile_admin():
 # EDIT ROUTES
 
 
-@main.route("/view-edits")
-def view_edits():
-	page = request.args.get("page", 1, type=int)
-	type = request.args.get("type")
-	id = request.args.get("id")
-	if type == "category":
-		cls = models.Category
-	elif type == "tool":
+def render_edits(page_type, page_id, page_number):
+
+	if page_type == "tools":
 		cls = models.Tool
+	elif page_type == "categories":
+		cls = models.Category
 	else:
 		abort(404)
 
 	# Check to make sure id exists first, otherwise 404
-	cls.query.get_or_404(id)
+	cls.query.get_or_404(page_id)
 
-	all = version_class(cls).query.filter_by(id=id).all()
+	all = version_class(cls).query.filter_by(id=page_id).all()
 	latest_version_id = all[-1].transaction_id
 	first_version_id = all[0].transaction_id
-	pagination = version_class(cls).query.filter_by(id=id)\
-		.order_by(version_class(cls).transaction_id.desc())\
-		.paginate(page, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
+	pagination = version_class(cls).query.filter_by(id=page_id) \
+		.order_by(version_class(cls).transaction_id.desc()) \
+		.paginate(page_number, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
 	versions = list(reversed(pagination.items))
 	return render_template("view_edits.html",
-						   id=id,
-						   type=type,
+						   id=page_id,
+						   type=page_type,
 						   pagination=pagination,
 						   latest_version_id=latest_version_id,
 						   first_version_id=first_version_id,
@@ -313,12 +304,25 @@ def view_edits():
 						   previous_versions=versions[:-1])
 
 
-@main.route("/edit-category", methods=["GET", "POST"])
-def edit_category_page():
+@main.route("/tools/<int:id>/edits", defaults={'page_number': 1})
+@main.route("/tools/<int:id>/edits/<int:page_number>")
+def view_tool_edits(id, page_number):
+
+	return render_edits(page_type="tools", page_id=id, page_number=page_number)
+
+
+@main.route("/categories/<int:id>/edits", defaults={'page_number': 1})
+@main.route("/categories/<int:id>/edits/<int:page_number>")
+def view_category_edits(id, page_number):
+
+	return render_edits(page_type="categories", page_id=id, page_number=page_number)
+
+
+@main.route("/categories/<int:category_id>/edit", methods=["GET", "POST"])
+def edit_category_page(category_id):
 	if not current_user.is_authenticated:
 		flash("You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.", "danger")
-	id = request.args.get("id")
-	category = models.Category.query.get_or_404(id)
+	category = models.Category.query.get_or_404(category_id)
 	form = EditCategoryPageForm(category.id)
 	if form.validate_on_submit():
 		category.name = form.name.data
@@ -339,7 +343,7 @@ def edit_category_page():
 		category.edit_author = edit_author
 		db.session.add(category)
 		flash('This category has been updated.', 'success')
-		return redirect(url_for('.fetch_category_page', id=category.id))
+		return redirect(url_for('.fetch_category_page', category_id=category.id))
 	form.name.data = category.name
 	form.move_parent.data = False
 	if category.parent:
@@ -353,12 +357,11 @@ def edit_category_page():
 	return render_template('edit_category.html', form=form, category=category)
 
 
-@main.route("/edit-tool", methods=["GET", "POST"])
-def edit_tool_page():
+@main.route("/tools/<int:tool_id>/edit", methods=["GET", "POST"])
+def edit_tool_page(tool_id):
 	if not current_user.is_authenticated:
 		flash("You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.", "danger")
-	id = request.args.get("id")
-	tool = models.Tool.query.get_or_404(id)
+	tool = models.Tool.query.get_or_404(tool_id)
 	form = EditToolPageForm()
 
 	if form.validate_on_submit():
@@ -379,7 +382,7 @@ def edit_tool_page():
 			edit_author = current_user.id
 		tool.edit_author = edit_author
 		flash('This tool has been updated.', 'success')
-		return redirect(url_for('.fetch_tool_page', id=tool.id))
+		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
 	form.name.data = tool.name
 	form.edit_link.data = False
 	form.edit_avatar_url.data = False
@@ -395,35 +398,19 @@ def edit_tool_page():
 	return render_template('edit_tool.html', form=form, tool=tool)
 
 
-@main.route("/view-diff")
-@cache.cached(key_prefix=make_cache_key)
-def view_diff():
+def render_diff(page_type, page_id, older, newer):
 
-	id = request.args.get("id")
-	type = request.args.get("type")
-
-	if type == "category":
-		cls = models.Category
-	elif type == "tool":
+	if page_type == "tools":
 		cls = models.Tool
+	elif page_type == "categories":
+		cls = models.Category
 	else:
 		abort(404)
 
-	# Version
-	try:
-		newer_version = int(request.args.get("newer"))
-	except ValueError:
-		# Int not entered
-		abort(404)
-	try:
-		older_version = int(request.args.get("older"))
-	except ValueError:
-		abort(404)
+	newer_data = version_class(cls).query.get_or_404((page_id, newer))
+	older_data = version_class(cls).query.get_or_404((page_id, older))
 
-	newer_data = version_class(cls).query.get_or_404((id, newer_version))
-	older_data = version_class(cls).query.get_or_404((id, older_version))
-
-	diffs = utils.find_diff(older_data, newer_data, type)
+	diffs = utils.find_diff(older_data, newer_data, page_type)
 	for key in diffs:
 		diffs[key] = utils.gen_diff_html(diffs[key][1], diffs[key][2])
 
@@ -431,26 +418,39 @@ def view_diff():
 	newer_time = newer_data.edit_time.strftime('%d %B %Y, %H:%M')
 
 	return render_template("view_diff.html",
-						   id=id,
-						   type=type,
+						   id=page_id,
+						   type=page_type,
+						   older_data=older_data,
 						   newer_data=newer_data,
 						   older_time=older_time,
 						   newer_time=newer_time,
 						   diffs=diffs)
 
 
-@main.route("/time-travel", methods=["GET", "POST"])
-def undo():
+@main.route("/tools/<int:tool_id>/edits/diff/<int:older>/<int:newer>")
+@cache.cached(key_prefix=make_cache_key)
+def view_tool_diff(tool_id, newer, older):
 
-	id = request.args.get("id")
-	type = request.args.get("type")
+	return render_diff(page_type="tools", page_id=tool_id, older=older, newer=newer)
 
-	if type == "category":
+
+@main.route("/categories/<int:category_id>/edits/diff/<int:older>/<int:newer>")
+@cache.cached(key_prefix=make_cache_key)
+def view_category_diff(category_id, newer, older):
+
+	return render_diff(page_type="categories", page_id=category_id, older=older, newer=newer)
+
+
+def render_time_travel(page_type, page_id, target_version_id):
+
+	if page_type == "categories":
 		cls = models.Category
-		return_route = '.fetch_category_page'
-	elif type == "tool":
+		return_route = url_for('main.fetch_category_page', category_id=page_id)
+		three_revision_route = "main.view_category_edits"
+	elif page_type == "tools":
 		cls = models.Tool
-		return_route = '.fetch_tool_page'
+		return_route = url_for('main.fetch_tool_page', tool_id=page_id)
+		three_revision_route = "main.view_tool_edits"
 	else:
 		abort(404)
 
@@ -461,19 +461,19 @@ def undo():
 		edit_author = current_user.id
 
 	# Enforce three-revision rule
-	if utils.check_if_three_edits(edit_author, cls.query.get_or_404(id).versions):
+	if utils.check_if_three_edits(edit_author, cls.query.get_or_404(page_id).versions):
 		flash("You have already reverted this page three times within a 24 hour period. Try again later.", "warning")
-		return redirect(url_for('main.view_edits', id=id, type=type))
+		return redirect(url_for(three_revision_route, id=page_id))
 
-	version = request.args.get("target_version")
-	destination_version = version_class(cls).query.get_or_404((id, version))
-	current_version = cls.query.get_or_404(id)
+	# version = request.args.get("target_version")
+	destination_version = version_class(cls).query.get_or_404((page_id, target_version_id))
+	current_version = cls.query.get_or_404(page_id)
 
 	current_time = current_version.edit_time.strftime('%d %B %Y, %H:%M')
 	destination_time = destination_version.edit_time.strftime('%d %B %Y, %H:%M')
 
 	# Create diff
-	diffs = utils.find_diff(current_version, destination_version, type)
+	diffs = utils.find_diff(current_version, destination_version, page_type)
 	for key in diffs:
 		diffs[key] = utils.gen_diff_html(diffs[key][1], diffs[key][2])
 
@@ -483,24 +483,36 @@ def undo():
 	form = TimeTravelForm()
 	if form.validate_on_submit():
 		# Overwrite entire current state with destination edit state
-		current_version = utils.overwrite(current_version, destination_version, type)
+		current_version = utils.overwrite(current_version, destination_version, page_type)
 		current_version.edit_msg = form.edit_msg.data
 		current_version.edit_time = datetime.utcnow()
 		current_version.edit_author = edit_author
 		db.session.commit()
-		flash('This {} has been updated.'.format(type), 'success')
-		return redirect(url_for(return_route, id=id))
+		flash('This {} has been updated.'.format(page_type), 'success')
+		return redirect(return_route)
 
 	form.edit_msg.data = "Time travel back to {} from {}".format(current_time, destination_time)
-	return render_template("undo.html",
-						   id=id,
-						   type=type,
+	return render_template("time_travel.html",
+						   id=page_id,
+						   type=page_type,
 						   name=current_version.name,
 						   form=form,
 						   current_time=current_time,
 						   destination_time=destination_time,
 						   diffs=diffs,
 						   current_version=current_version)
+
+
+@main.route("/tools/<int:tool_id>/edit/time-travel/<int:target_version_id>", methods=["GET", "POST"])
+def tool_time_travel(tool_id, target_version_id):
+
+	return render_time_travel(page_type="tools", page_id=tool_id, target_version_id=target_version_id)
+
+
+@main.route("/categories/<int:tool_id>/edit/time-travel/<int:target_version_id>", methods=["GET", "POST"])
+def category_time_travel(tool_id, target_version_id):
+
+	return render_time_travel(page_type="categories", page_id=tool_id, target_version_id=target_version_id)
 
 
 # CREATE ROUTES
@@ -537,7 +549,7 @@ def add_new_tool():
 		db.session.add(tool)
 		db.session.commit()
 		flash('This tool has been added.', 'success')
-		return redirect(url_for('.fetch_tool_page', id=tool.id))
+		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
 	return render_template('add_new_tool.html', form=form)
 
 
@@ -570,8 +582,9 @@ def add_new_category():
 		db.session.add(category)
 		db.session.commit()
 		flash('This category has been added.', 'success')
-		return redirect(url_for('.fetch_category_page', id=category.id))
+		return redirect(url_for('.fetch_category_page', category_id=category.id))
 	return render_template('add_new_category.html', form=form)
+
 
 # JINJA FUNCTIONS
 

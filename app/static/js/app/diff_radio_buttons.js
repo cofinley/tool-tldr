@@ -29,5 +29,5 @@ $(".radio-right").click(function (){
 function compareTwo (type, id) {
     var older = $('input[name=inlineRadioOptionsLeft]:checked').val();
     var newer = $('input[name=inlineRadioOptionsRight]:checked').val();
-    window.location.href = window.location.origin + "/view-diff?type=" + type + "&id=" + id + "&older=" + older + "&newer=" + newer;
+    window.location.href = window.location.origin + "/" + type + "/" + id + "/edits/diff/" + older + "/" + newer;
 }

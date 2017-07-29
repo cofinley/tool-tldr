@@ -65,12 +65,12 @@
                             {% for tool_edit in tool_edits|sort(attribute="edit_time", reverse=True) %}
                                 <tr>
                                     <td>
-                                        <a href="/view-diff?id={{ tool_edit.id }}&type=tool&newer={{ tool_edit.transaction_id }}&older={{ tool_edit.previous.transaction_id }}"
+                                        <a href="/tools/{{ tool_edit.id }}/edits/diff/{{ tool_edit.previous.transaction_id }}/{{ tool_edit.transaction_id }}"
                                             title="{{ tool_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
                                                     {{ tool_edit.edit_time.strftime('%B %d, %Y') }}
                                         </a>
                                     </td>
-                                    <td><a href="/tools?id={{ tool_edit.id }}">{{ tool_edit.name }}</a></td>
+                                    <td><a href="/tools/{{ tool_edit.id }}">{{ tool_edit.name }}</a></td>
                                     <td>{{ tool_edit.edit_msg }}</td>
                                 </tr>
                             {% endfor %}
@@ -78,7 +78,7 @@
 		                {% endif %}
                 </table>
 
-		            <a href="/view-user-edits?id={{ user.id }}&type=tool" class="btn btn-secondary {% if not tool_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
+		            <a href="/users/{{ user.id }}/edits/tools" class="btn btn-secondary {% if not tool_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
             </section>
 
             <section id="category-edits">
@@ -98,12 +98,12 @@
                             {% for category_edit in category_edits|sort(attribute="edit_time", reverse=True) %}
                             <tr>
                                 <td>
-                                    <a href="/view-diff?id={{ category_edit.id }}&type=category&newer={{ category_edit.transaction_id }}&older={{ category_edit.previous.transaction_id }}"
+                                    <a href="/categories/{{ category_edit.id }}/edits/diff/{{ category_edit.previous.transaction_id }}/{{ category_edit.transaction_id }}"
                                         title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
                                                     {{ category_edit.edit_time.strftime('%B %d, %Y') }}
                                     </a>
                                 </td>
-                                <td><a href="/categories?id={{ category_edit.id }}">{{ category_edit.name }}</a></td>
+                                <td><a href="/categories/{{ category_edit.id }}">{{ category_edit.name }}</a></td>
                                 <td>{{ category_edit.edit_msg }}</td>
                             </tr>
                             {% endfor %}
@@ -111,7 +111,7 @@
 		                {% endif %}
                 </table>
 
-		            <a href="/view-user-edits?id={{ user.id }}&type=category" class="btn btn-secondary {% if not category_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
+		            <a href="/users/{{ user.id }}/edits/categories" class="btn btn-secondary {% if not category_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
             </section>
         </div>
     </div>

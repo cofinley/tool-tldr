@@ -2,8 +2,16 @@
   font-weight: $font-medium;
 }
 
-.diff-msg {
-  font-size: 1.1em;
+blockquote {
+  margin: 0 auto 2rem auto !important;
+  max-width: 60%;
+  word-wrap: break-word;
+  display: table;
+
+  footer {
+    display: table-row;
+    float: right;
+  }
 }
 
 .card {

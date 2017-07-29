@@ -7,7 +7,7 @@
             <div id="breadcrumbs" class="mt-4">
             {% for item in breadcrumbs %}
                 {% if not loop.last %}
-                    <span class="breadcrumb-item"><a href="/categories?id={{ item.id }}">{{ item.name }}</a></span><span>  /  </span>
+                    <span class="breadcrumb-item"><a href="/categories/{{ item.id }}">{{ item.name }}</a></span><span>  /  </span>
                 {% endif %}
                 {% if loop.last %}
                     <span class="breadcrumb-item">{{ item.name }}</span>
@@ -20,12 +20,12 @@
 
     <div id="category-header" class="align-items-center d-flex justify-content">
         <h1 class="display-4">{{ category.name }}</h1>
-		    <a role="button" class="btn btn-lg btn-primary ml-auto mr-3" href="/edit-category?id={{ category.id }}">Edit Page</a>
-		    <p class="view-edits-link"><a href="/view-edits?type=category&id={{ category.id }}">View Edits</a></p>
+		    <a role="button" class="btn btn-lg btn-primary ml-auto mr-3" href="/categories/{{ category.id }}/edit">Edit Page</a>
+		    <p class="view-edits-link"><a href="/categories/{{ category.id }}/edits">View Edits</a></p>
     </div>
 
     <div id="category-content">
-        <div id="category-content-left" class="row ml-3">
+        <div id="category-content-top" class="row">
             <div class="question-block category-question-block col-md-4">
                 <h1 class="question-title">The What</h1>
 		            <p class="text-muted help-text mb-0">What is the TL;DR of the category? What do tools in this category
@@ -45,13 +45,13 @@
             </div>
         </div>
 
-		    <div id="category-content-right" class="justify-content-center row text-center mb-5">
-				    <div class="category-right-block col-md-4">
+		    <div id="category-content-bottom" class="justify-content-center row text-center mb-5">
+				    <div class="category-bottom-block col-md-4">
 					    <h1 class="env-alts-env-title">Subcategories</h1>
 					    {% if subcategories %}
 						    <ul class="category-content-list text-left">
 							    {% for category in subcategories %}
-								    <li class="alt-list-item"><a href="/categories?id={{ category.id }}">{{ category.name }}</a></li>
+								    <li class="alt-list-item"><a href="/categories/{{ category.id }}">{{ category.name }}</a></li>
 								    {%- if loop.index > 5 %}
 									    <p class="alts-more-link"><a href="#">Show more</a></p>
 									    {% break %}
@@ -60,16 +60,16 @@
 						    </ul>
 					    {% endif %}
 					    {% if not subcategories %}
-						    <p class="alt-list-item">No subcategories at this time</p>
+						    <p class="alt-list-item text-muted"><i>No subcategories added yet</i></p>
 					    {% endif %}
 				    </div>
 
-				    <div class="category-right-block col-md-4">
+				    <div class="category-bottom-block col-md-4">
 					    <h1 class="env-alts-env-title">Tools</h1>
 					    {% if subtools %}
 						    <ul class="category-content-list text-left">
 							    {% for tool in subtools %}
-								    <li class="alt-list-item"><a href="/tools?id={{ tool.id }}">{{ tool.name }}</a> ({{ tool.env.title() }})
+								    <li class="alt-list-item"><a href="/tools/{{ tool.id }}">{{ tool.name }}</a> ({{ tool.env.title() }})
 								    </li>
 								    {%- if loop.index > 5 %}
 									    <p class="alts-more-link"><a href="#">Show more</a></p>
@@ -80,7 +80,7 @@
 					    {% endif %}
 
 					    {% if not subtools %}
-						    <p class="alt-list-item">No tools at this time</p>
+						    <p class="alt-list-item text-muted"><i>No tools added yet</i></p>
 					    {% endif %}
 				    </div>
 			    </div>

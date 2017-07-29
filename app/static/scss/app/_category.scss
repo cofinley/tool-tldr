@@ -7,6 +7,8 @@
   }
 
   #breadcrumbs {
+    font-size: 1.3em;
+
     .breadcrumb-item {
       a {
         @include blue-link;
@@ -23,40 +25,39 @@
 #category-content {
   font-size: 1.3rem;
 
-  #category-content-left {
+  #category-content-top {
 
     background-color: #222;
     color: white;
     border-radius: 20px;
-    padding: 10px;
+    padding: 15px;
 
     .help-text {
       color: #9c9c9c !important;
     }
-
-    .category-question-block {
-      margin-bottom: 30px;
-    }
   }
 
-  #category-content-right {
-    .category-right-block {
+  #category-content-bottom {
+    .category-bottom-block {
       .env-alts-env-title {
         font-weight: $font-medium;
       }
       .category-content-list {
 
         list-style-position: inside;
-        margin-left: 90px;
+        display: table;
+        margin: auto;
+        padding: 0;
 
-        .alt-list-item {
-          a {
-            @include blue-link;
-          }
-        }
       }
     }
   }
 }
 
+.alt-list-item {
+  font-size: 1.2em;
 
+  a {
+    @include blue-link;
+  }
+}
