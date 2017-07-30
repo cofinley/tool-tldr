@@ -34,6 +34,11 @@ def test():
 
 
 @app.cli.command()
+def create_db():
+	db.create_all()
+
+
+@app.cli.command()
 def deploy():
 	"""Run deployment tasks."""
 	from flask_migrate import upgrade
