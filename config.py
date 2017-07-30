@@ -4,7 +4,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
-	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 	SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 	SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -48,7 +47,8 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
-	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+	'sqlite:///' + os.path.join(basedir, 'app.db')
 
 
 config = {
