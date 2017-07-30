@@ -15,8 +15,7 @@ class Config:
 	MAIL_SUBJECT_PREFIX = '[Tool TL;DR]'
 	MAIL_SENDER = "connor.finley5@gmail.com"
 	ADMIN = os.environ.get('TOOL_TLDR_ADMIN')
-	CACHE_TYPE = "redis"
-	CACHE_REDIS_URL = "redis://localhost:6379"
+	CACHE_TYPE = "filesystem"
 	CACHE_DEFAULT_TIMEOUT = 50
 	EDITS_PER_PAGE = 20
 	ALTS_PER_LIST = 10
@@ -49,7 +48,6 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
 	'sqlite:///' + os.path.join(basedir, 'app.db')
-	CACHE_TYPE = "filesystem"
 
 
 config = {
