@@ -12,6 +12,10 @@ class Config:
 	RECAPTCHA_USE_SSL = True
 	RECAPTCHA_PUBLIC_KEY = "6Lfn1icUAAAAAMefI3wT1KHDA6fcgThmbVMqv4MB"
 	RECAPTCHA_PRIVATE_KEY = "6Lfn1icUAAAAAFjb_GazZxvWwQqEam7FpkCiUALA"
+	MAIL_SERVER = 'smtp.googlemail.com'
+	MAIL_PORT = 587
+	MAIL_USE_TLS = True
+	MAIL_USE_SSL = False
 	MAIL_SUBJECT_PREFIX = '[Tool TL;DR]'
 	MAIL_SENDER = "connor.finley5@gmail.com"
 	ADMIN = os.environ.get('TOOL_TLDR_ADMIN')
@@ -28,13 +32,7 @@ class Config:
 
 class DevelopmentConfig(Config):
 	DEBUG = True
-	MAIL_SERVER = 'smtp.googlemail.com'
-	MAIL_PORT = 587
-	MAIL_USE_TLS = True
-	MAIL_USE_SSL = False
-	# MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 	MAIL_USERNAME = "connor.finley5@gmail.com"
-	# MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 	MAIL_PASSWORD = "neqdrsuqmozajhyo"
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
 	'sqlite:///' + os.path.join(basedir, 'app-dev.db')
@@ -49,6 +47,9 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
 	'sqlite:///' + os.path.join(basedir, 'app.db')
+	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+	MAIL_SENDER = os.environ.get('MAIL_SENDER')
+	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
 
 config = {
