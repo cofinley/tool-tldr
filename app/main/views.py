@@ -134,6 +134,12 @@ def load_blurb():
 	return jsonify(result)
 
 
+@main.route("/about")
+@cache.cached()
+def get_about():
+	return render_template("about.html")
+
+
 @main.route("/categories/<int:category_id>")
 @cache.cached(key_prefix=make_cache_key)
 def fetch_category_page(category_id):

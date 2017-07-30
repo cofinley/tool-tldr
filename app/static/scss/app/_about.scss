@@ -1,0 +1,22 @@
+.about-text {
+	font-size: 1.3em;
+	line-height: 1.5;
+
+	p {
+		text-indent: 10px;
+		margin-left: 10px;
+	}
+
+	#know-img {
+		width: 400px;
+	}
+
+	img {
+		display: block;
+		margin: auto;
+	}
+
+	h3 {
+		font-weight: $font-medium;
+	}
+}

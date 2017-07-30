@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+
+	<h1 class="display-4">About</h1>
+	<div class="about-text">
+		<span><b>TL;DR: it's a wiki for any kind of software tool. Good luck and have fun.</b></span>
+		<div class="row">
+			<div class="col-md-6">
+				<p><i>Tool TL;DR</i> was created to help people of all levels of expertise get a grasp of the growing software
+					tool landscape. Whether you're a beginner who doesn't know what's out there or a senior dev who just wants a
+					quick rundown of the hot, new framework/library/tool, you will find answers here. The explanations are not
+					comprehensive by any means (hence the name), but they provide a quick, clear, and helpful description without
+					having to dig through the docs. And, if you feel like a particular description could be improved, feel free to
+					edit! <i>Tool TL;DR</i> is, and will always be, a community-first place.</p>
+			</div>
+			<div class="col-md-6 align-self-center">
+				<img src="{{ url_for('static', filename='img/0days.png') }}"/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<h2>Organization</h2>
+				<p>The wiki is broken down by categories and tools. The tools fit into the appropriate categories (i.e. Eclipse
+					would fall under the <i>IDE</i> category). Categories can also be subcategories of other categories to improve
+					organization. For instance, <i>jQuery</i> might fall under the <i>Front-end</i> category which might go in the
+					<i>Web Development</i> category. The organization is determined by the community: you can rearrange the
+					structure to find a better fit for a tool or category if it needs a more suitable home.</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<h2>Format</h2>
+				<h3 class="text-muted">Categories</h3>
+				<p>Categories have three main parts: the <b>what</b>, <b>why</b>, and <b>where</b>.</p>
+				<h4 class="text-muted">What</h4>
+				<p>The <i>what</i> is pretty self-explanatory. It should provide the TL;DR of the category and explain what the
+					category's tools do.</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<h4 class="text-muted">Why</h4>
+				<p>The <i>why</i> asks why the category of tools is needed in the first place. For those just starting out, this
+					can be valuable when you don't know what you don't know. It also aims to answer why someone would need to <i>start</i>
+					using the type of tool. Again, for those exploring the landscape for the first time, this can provide a great explanation
+					to a question that they didn't even know they might have. For example, caching is invaluable for a web
+					application, but a beginner might not know that they need it for reducing redundant trips to get data or
+					images, thereby saving money and improving site load time by reducing bandwidth.</p>
+			</div>
+			<div class="col-md-6 align-self-center">
+				<img id="know-img" src="{{ url_for('static', filename='img/know.svg') }}" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<h4 class="text-muted">Where</h4>
+				<p>The <i>where</i> is a little different. It asks where in an application the type of tool would go. For
+					example,
+					the <i>Web Server</i> category would describe tools that go in front of an <i>Application Server</i> and would
+					be the first in line to handle incoming web traffic. In another case, the <i>MVC Framework</i> category would
+					house tools such as AngularJS, and would be found in the front-end as HTML and Javascript,
+					running in the browser and not the server. The <i>where</i> question exists simply to <b>help people create a
+					mental image of all the pieces in the puzzle.</b></p>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
