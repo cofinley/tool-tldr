@@ -41,6 +41,7 @@ def create_app(config_name):
 
 	cache_config = {
 		"CACHE_TYPE": app.config["CACHE_TYPE"],
+		"CACHE_DIR": app.config["CACHE_DIR"],
 		"CACHE_DEFAULT_TIMEOUT": app.config["CACHE_DEFAULT_TIMEOUT"]
 	}
 	cache.init_app(app, config=cache_config)

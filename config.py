@@ -16,6 +16,7 @@ class Config:
 	MAIL_SENDER = "connor.finley5@gmail.com"
 	ADMIN = os.environ.get('TOOL_TLDR_ADMIN')
 	CACHE_TYPE = "filesystem"
+	CACHE_DIR = "/tmp/website_cache"
 	CACHE_DEFAULT_TIMEOUT = 50
 	EDITS_PER_PAGE = 20
 	ALTS_PER_LIST = 10
