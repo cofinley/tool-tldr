@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ newer_data.name }} Diff{% endblock %}
 {% block content %}
-	<h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ newer_data.name }}</a>:
+	<h1><a href="/{{ type }}/{{ id }}">{{ newer_data.name }}</a>:
 		Diff</h1>
 	<p><a href="/{{ type }}/{{ id }}/edits">Back to edits</a></p>
 	<div class="row">
