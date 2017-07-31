@@ -241,6 +241,9 @@ def view_user_edits(id, page_type, page_number):
 						   edits=edits)
 
 
+
+
+
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -324,6 +327,17 @@ def view_category_edits(id, page_number):
 	return render_edits(page_type="categories", page_id=id, page_number=page_number)
 
 
+def create_temp_user():
+	ip = request.remote_addr
+	temp_user = models.User(email="",
+							username=ip,
+							password="",
+							role_id=models.Role.query.filter_by(name="Anonymous").first().id)
+	db.session.add(temp_user)
+	db.session.commit()
+	return temp_user
+
+
 @main.route("/categories/<int:category_id>/edit", methods=["GET", "POST"])
 def edit_category_page(category_id):
 	if not current_user.is_authenticated:
@@ -343,7 +357,7 @@ def edit_category_page(category_id):
 		category.edit_msg = form.edit_msg.data
 		category.edit_time = datetime.utcnow()
 		if not current_user.is_authenticated:
-			edit_author = request.remote_addr
+			edit_author = create_temp_user().id
 		else:
 			edit_author = current_user.id
 		category.edit_author = edit_author
@@ -383,7 +397,7 @@ def edit_tool_page(tool_id):
 		tool.edit_msg = form.edit_msg.data
 		tool.edit_time = datetime.utcnow()
 		if not current_user.is_authenticated:
-			edit_author = request.remote_addr
+			edit_author = create_temp_user().id
 		else:
 			edit_author = current_user.id
 		tool.edit_author = edit_author
@@ -462,7 +476,7 @@ def render_time_travel(page_type, page_id, target_version_id):
 
 	# Make sure user hasn't made more than three reverts within past 24 hours
 	if not current_user.is_authenticated:
-		edit_author = request.remote_addr
+		edit_author = create_temp_user().id
 	else:
 		edit_author = current_user.id
 
@@ -537,7 +551,7 @@ def add_new_tool():
 			flash("You must pick a parent category from the tree.", "danger")
 	if form.validate_on_submit():
 		if not current_user.is_authenticated:
-			edit_author = request.remote_addr
+			edit_author = create_temp_user().id
 		else:
 			edit_author = current_user.id
 		tool = models.Tool(
@@ -569,7 +583,7 @@ def add_new_category():
 	form = AddNewCategoryForm()
 	if form.validate_on_submit():
 		if not current_user.is_authenticated:
-			edit_author = request.remote_addr
+			edit_author = create_temp_user().id
 		else:
 			edit_author = current_user.id
 		if form.parent_category.data == "" or form.parent_category.data == "/" or int(form.parent_category_id.data) == 0:

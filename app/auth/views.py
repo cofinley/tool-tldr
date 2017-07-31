@@ -47,14 +47,30 @@ def logout():
     return redirect(url_for('main.index'))
 
 
+def check_temp_user():
+    ip = request.remote_addr
+    is_user = User.query.filter_by(username=ip).first()
+    return is_user
+
+
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
+
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(email=form.email.data,
-                    username=form.username.data,
-                    password=form.password.data,
-					role_id=models.Role.query.filter_by(name="Registered").first().id)
+
+        temp_user = check_temp_user()
+        if temp_user:
+            user = temp_user
+            user.email = form.email.data
+            user.username = form.username.data
+            user.password = form.password.data
+            user.role_id = models.Role.query.filter_by(name="Registered").first().id
+        else:
+            user = User(email=form.email.data,
+                        username=form.username.data,
+                        password=form.password.data,
+                        role_id=models.Role.query.filter_by(name="Registered").first().id)
         db.session.add(user)
         db.session.commit()
         token = user.generate_confirmation_token()

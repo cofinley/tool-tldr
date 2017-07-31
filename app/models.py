@@ -222,6 +222,7 @@ class Role(db.Model):
 	@staticmethod
 	def insert_roles():
 		roles = {
+			"Anonymous": (Permission.CREATE | Permission.CHANGE_LINKS, True),
 			"Registered": (Permission.CREATE | Permission.CHANGE_LINKS, True),
 			"Confirmed": (Permission.CREATE |
 						  Permission.CHANGE_LINKS |
