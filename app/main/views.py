@@ -329,13 +329,17 @@ def view_category_edits(id, page_number):
 
 def create_temp_user():
 	ip = request.remote_addr
-	temp_user = models.User(email="",
-							username=ip,
-							password="",
-							role_id=models.Role.query.filter_by(name="Anonymous").first().id)
-	db.session.add(temp_user)
-	db.session.commit()
-	return temp_user
+	existing_temp_user = models.User.query.filter_by(username=ip).first()
+	if not existing_temp_user:
+		new_temp_user = models.User(email="",
+								username=ip,
+								password="",
+								role_id=models.Role.query.filter_by(name="Anonymous").first().id)
+		db.session.add(new_temp_user)
+		db.session.commit()
+		return new_temp_user
+	else:
+		return existing_temp_user
 
 
 @main.route("/categories/<int:category_id>/edit", methods=["GET", "POST"])
