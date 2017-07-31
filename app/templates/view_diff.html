@@ -13,11 +13,7 @@
 					<footer class="blockquote-footer">
 						Edit by
 						<cite title="Source Title">
-							{% if not is_ip(older_data.edit_author) %}
-								<a href="/users/{{ older_data.edit_author }}">{{ older_data.author.username }}</a>
-							{% else %}
-								<td>{{ older_data.edit_author }}</td>
-							{% endif %}
+							<a href="/users/{{ older_data.edit_author }}">{{ older_data.author.username }}</a>
 						</cite>
 					</footer>
 				</blockquote>
@@ -31,11 +27,7 @@
 					<footer class="blockquote-footer">
 						Edit by
 						<cite title="Source Title">
-							{% if not is_ip(newer_data.edit_author) %}
-								<a href="/users/{{ newer_data.edit_author }}">{{ newer_data.author.username }}</a>
-							{% else %}
-								<td>{{ newer_data.edit_author }}</td>
-							{% endif %}
+							<a href="/users/{{ newer_data.edit_author }}">{{ newer_data.author.username }}</a>
 						</cite>
 					</footer>
 				</blockquote>

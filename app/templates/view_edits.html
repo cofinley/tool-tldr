@@ -50,11 +50,7 @@
                     </div>
                 </td>
                 <td>{{ current_version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
-                {% if not is_ip(current_version.edit_author) %}
-                    <td><a href="/users/{{ current_version.author.id }}">{{ current_version.author.username }}</a></td>
-                {% else %}
-                    <td>{{ current_version.edit_author }}</td>
-                {% endif %}
+                <td><a href="/users/{{ current_version.author.id }}">{{ current_version.author.username }}</a></td>
                 <td>{{ current_version.edit_msg }}</td>
                 <td></td>
             </tr>
@@ -85,11 +81,7 @@
                         {% endif %}
                     </td>
                     <td>{{ version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
-                    {% if not is_ip(version.edit_author) %}
-                        <td><a href="/users/{{ version.author.id }}">{{ version.author.username }}</td>
-                    {% else %}
-                        <td>{{ version.edit_author }}</td>
-                    {% endif %}
+                    <td><a href="/users/{{ version.author.id }}">{{ version.author.username }}</td>
                     <td>{{ version.edit_msg }}</td>
                     <td><a class="btn btn-sm btn-secondary" href="edit/time-travel/{{ version.transaction_id }}" role="button" title="Time travel to this edit in time. This will make a new, overwriting edit.">Time Travel</a></td>
                 </tr>

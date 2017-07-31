@@ -604,18 +604,3 @@ def add_new_category():
 		flash('This category has been added.', 'success')
 		return redirect(url_for('.fetch_category_page', category_id=category.id))
 	return render_template('add_new_category.html', form=form)
-
-
-# JINJA FUNCTIONS
-
-
-@main.context_processor
-def utility_processor():
-	# IP validator
-	def is_ip(arg):
-		try:
-			ipaddress.ip_address(str(arg))
-			return True
-		except ValueError:
-			return False
-	return dict(is_ip=is_ip)
