@@ -39,6 +39,16 @@ def create_db():
 
 
 @app.cli.command()
+def insert_roles():
+	Role.insert_roles()
+
+
+@app.cli.command()
+def drop_db():
+	db.drop_all()
+
+
+@app.cli.command()
 def deploy():
 	"""Run deployment tasks."""
 	from flask_migrate import upgrade
