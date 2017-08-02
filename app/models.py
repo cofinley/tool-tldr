@@ -19,6 +19,7 @@ class Tool(db.Model):
 	name = db.Column(db.String(64))
 	avatar_url = db.Column(db.String(200))
 	parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
+	is_active = db.Column(db.Boolean, default=True)
 	env = db.Column(db.String(64))
 	created = db.Column(db.String(25))
 	project_version = db.Column(db.String(10))
@@ -27,6 +28,7 @@ class Tool(db.Model):
 	edit_msg = db.Column(db.String(100), default="Initial edit")
 	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
 	edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
+	is_time_travel_edit = db.Column(db.Boolean, default=False)
 
 	def __repr__(self):
 		return "<Tool %d: %r>" % (self.id, self.name)
@@ -49,6 +51,7 @@ class Category(db.Model):
 	edit_msg = db.Column(db.String(100), default="Initial edit")
 	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
 	edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
+	is_time_travel_edit = db.Column(db.Boolean, default=False)
 
 	def __repr__(self):
 		return "<Category %d: %r>" % (self.id, self.name)

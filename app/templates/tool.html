@@ -89,6 +89,10 @@
 							<td class="tool-metadata-value">{{ tool.project_version }}</td>
 						</tr>
 						<tr class="tool-metadata-row">
+							<td class="tool-metadata-name">Active</td>
+							<td class="tool-metadata-value">{% if tool.is_active %}Yes{% else %}No{% endif %}</td>
+						</tr>
+						<tr class="tool-metadata-row">
 							<td class="tool-metadata-name">Project URL</td>
 							<td class="tool-metadata-value"><a id="tool-link" href="{{ tool.link }}" target="_blank">{{ link }}</a>
 							</td>
