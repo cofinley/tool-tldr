@@ -13,3 +13,26 @@ $(".add-button").hover(function(){
        }
    }, 1000);
 });
+
+
+$("#search-input").keyup(function(event) {
+    if ($(".autocomplete-suggestion.selected").length > 0) {
+        if (event.keyCode === 13) {
+            var dataset = $(".autocomplete-suggestion.selected")[0].dataset;
+            var id = dataset.id;
+            var type = dataset.type === 't' ? 'tools' : 'categories';
+            window.location.href = window.location.origin + "/" + type + "/" + id;
+        }
+    }
+});
+
+$("#big-search-bar-input").keyup(function (event) {
+    if ($(".autocomplete-suggestion-big.selected").length > 0) {
+        if (event.keyCode === 13) {
+            var dataset = $(".autocomplete-suggestion-big.selected")[0].dataset;
+            var id = dataset.id;
+            var type = dataset.type === 't' ? 'tools' : 'categories';
+            window.location.href = window.location.origin + "/" + type + "/" + id;
+        }
+    }
+});

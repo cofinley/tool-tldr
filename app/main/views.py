@@ -1,5 +1,5 @@
 import ipaddress
-from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app
+from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app, session
 from datetime import datetime
 
 from . import main
@@ -241,9 +241,6 @@ def view_user_edits(id, page_type, page_number):
 						   edits=edits)
 
 
-
-
-
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -366,7 +363,10 @@ def edit_category_page(category_id):
 			edit_author = current_user.id
 		category.edit_author = edit_author
 		db.session.add(category)
+		# Remove any trailing flash messages (usually IP warning)
+		session.pop('_flashes', None)
 		flash('This category has been updated.', 'success')
+		cache.clear()
 		return redirect(url_for('.fetch_category_page', category_id=category.id))
 	form.name.data = category.name
 	form.move_parent.data = False
@@ -405,7 +405,9 @@ def edit_tool_page(tool_id):
 		else:
 			edit_author = current_user.id
 		tool.edit_author = edit_author
+		session.pop('_flashes', None)
 		flash('This tool has been updated.', 'success')
+		cache.clear()
 		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
 	form.name.data = tool.name
 	form.edit_link.data = False
@@ -572,7 +574,9 @@ def add_new_tool():
 		)
 		db.session.add(tool)
 		db.session.commit()
+		session.pop('_flashes', None)
 		flash('This tool has been added.', 'success')
+		cache.clear()
 		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
 	return render_template('add_new_tool.html', form=form)
 
@@ -605,6 +609,8 @@ def add_new_category():
 		)
 		db.session.add(category)
 		db.session.commit()
+		session.pop('_flashes', None)
 		flash('This category has been added.', 'success')
+		cache.clear()
 		return redirect(url_for('.fetch_category_page', category_id=category.id))
 	return render_template('add_new_category.html', form=form)
