@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
 	SubmitField, HiddenField
-from wtforms.validators import DataRequired, Length, Email, Regexp, URL
+from wtforms.validators import DataRequired, InputRequired, Length, Email, Regexp, URL
 from wtforms import ValidationError
 from ..models import Role, User, Permission
 from ..utils import is_at_or_below_category
@@ -101,6 +101,8 @@ class EditToolPageForm(FlaskForm):
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
 	created = StringField("Date Created", validators=[DataRequired(), Length(1, 25)])
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
+	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
+							coerce=lambda x: x == "True")
 
 	edit_link = BooleanField("Change project URL?")
 	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
@@ -124,6 +126,8 @@ class AddNewToolForm(FlaskForm):
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
 	created = StringField("Date Created", validators=[DataRequired(), Length(1, 25)])
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
+	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
+							coerce=lambda x: x == "True", default="True")
 	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
 	recaptcha = RecaptchaField()

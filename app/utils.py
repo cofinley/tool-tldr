@@ -1,7 +1,8 @@
 from difflib import ndiff
 from datetime import timedelta, datetime
 from urllib.parse import urlsplit
-from app import models
+from sqlalchemy_continuum import version_class
+from app import models, db
 
 
 def build_top_down_list(category_id):
@@ -200,19 +201,18 @@ def overwrite(old, new, type):
 	return old
 
 
-def check_if_three_edits(user, versions):
+def check_if_three_time_travels(edit_author: int, model_class, page_id: int) -> bool:
 	"""
 	Look at all versions, check if provided user shows up three or more times in the past 24 hours.
-	:param user: user id (ip address if anon, user id if registered)
-	:param versions: sqlalchemy-continuum version table
-	:return: bool if user shows up three or more times for a page
+	:param edit_author: user id
+	:param model_class: categories or tools class
+	:param page_id: id of the page
+	:return: bool if user has made 3 or more time travels alraedy
 	"""
-	version_in_last_24_hours = [v for v in versions if datetime.utcnow()-timedelta(hours=24) <=
-													   v.edit_time <=
-													   datetime.utcnow()]
-	user_count = 0
-	for version in version_in_last_24_hours:
-		if user == version.edit_author:
-			user_count += 1
 
-	return user_count >= 3
+	versions = db.session.query(version_class(model_class)).filter_by(id=page_id, edit_author=edit_author, is_time_travel_edit=True).all()
+	time_travels_in_last_24_hours = [v for v in versions if datetime.utcnow()-timedelta(hours=24) <=
+														    v.edit_time <=
+														    datetime.utcnow()]
+	db.session.close()
+	return len(time_travels_in_last_24_hours) >= 3

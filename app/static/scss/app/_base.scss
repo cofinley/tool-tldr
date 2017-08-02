@@ -21,17 +21,12 @@ body {
                 }
             }
 
-            input {
-                font-family: $font-stack;
+            input, select, textarea, .btn {
+                font-family: $font-stack !important;
             }
 
             textarea {
-                font-family: $font-stack;
                 height: 260px;
-            }
-
-            .btn {
-                font-family: $font-stack !important;
             }
 
             .help-text {

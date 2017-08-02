@@ -29,6 +29,7 @@
 	    {{ wtf.form_field(form.env, help_text="In what environment is this tool used? Usually, this is a programming lanugage.") }}
 	    {{ wtf.form_field(form.created) }}
 	    {{ wtf.form_field(form.project_version) }}
+	    {{ wtf.form_field(form.is_active) }}
 			<div class="mb-3 mt-4">
 				{{ wtf.form_field(form.edit_link, checked=False) }}
 			</div>

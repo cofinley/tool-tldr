@@ -396,6 +396,7 @@ def edit_tool_page(tool_id):
 		tool.env = form.env.data.lower()
 		tool.created = form.created.data
 		tool.project_version = form.project_version.data
+		tool.is_active = form.is_active.data
 		tool.link = form.link.data
 		tool.why = form.why.data
 		tool.edit_msg = form.edit_msg.data
@@ -418,6 +419,7 @@ def edit_tool_page(tool_id):
 	form.env.data = tool.env.title()
 	form.created.data = tool.created
 	form.project_version.data = tool.project_version
+	form.is_active.data = tool.is_active
 	form.link.data = tool.link
 	form.why.data = tool.why
 	form.edit_msg.data = ""
@@ -487,11 +489,11 @@ def render_time_travel(page_type, page_id, target_version_id):
 		edit_author = current_user.id
 
 	# Enforce three-revision rule
-	if utils.check_if_three_edits(edit_author, cls.query.get_or_404(page_id).versions):
+	if utils.check_if_three_time_travels(edit_author, cls, page_id):
 		flash("You have already reverted this page three times within a 24 hour period. Try again later.", "warning")
 		return redirect(url_for(three_revision_route, id=page_id))
 
-	# version = request.args.get("target_version")
+	# Load whole states of current and destination
 	destination_version = version_class(cls).query.get_or_404((page_id, target_version_id))
 	current_version = cls.query.get_or_404(page_id)
 
@@ -513,6 +515,7 @@ def render_time_travel(page_type, page_id, target_version_id):
 		current_version.edit_msg = form.edit_msg.data
 		current_version.edit_time = datetime.utcnow()
 		current_version.edit_author = edit_author
+		current_version.is_time_travel_edit = True
 		db.session.commit()
 		flash('This {} has been updated.'.format(page_type), 'success')
 		return redirect(return_route)
@@ -567,6 +570,7 @@ def add_new_tool():
 			env=form.env.data.lower(),
 			created=form.created.data,
 			project_version=form.project_version.data,
+			is_active=form.is_active.data,
 			link=form.link.data,
 			why=form.why.data,
 			edit_author=edit_author,
