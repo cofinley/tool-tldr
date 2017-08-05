@@ -7,7 +7,7 @@ def promote_roles():
 	registered_users = models.User.query.filter_by(role_id=registered_role_id).all()
 	promotable_users = [u for u in registered_users
 							   if (utils.is_over_x_hours_ago(t=u.member_since, hours=96))
-							   and ((u.category_edits.count() + u.tool_edits.count()) >= 1)]
+							   and ((u.category_edits.count() + u.tool_edits.count()) >= 10)]
 
 	confirmed_role_id = models.Role.query.filter_by(name="Confirmed").first().id
 	for user in promotable_users:
