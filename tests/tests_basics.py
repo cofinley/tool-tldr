@@ -1,8 +1,10 @@
 import unittest
+from datetime import datetime, timedelta
 from flask import current_app
 from app import create_app, db, utils
 
 
+@unittest.skip
 class BasicsTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app("testing")
@@ -22,8 +24,21 @@ class BasicsTestCase(unittest.TestCase):
         self.assertTrue(current_app.config["TESTING"])
 
 
-def test_bottom_up_tree():
-    parent_id = 18
-    parent_list = utils.build_bottom_up_tree(parent_id)
-    for i, parent in enumerate(parent_list):
-        print((" " * 2 * i), parent.name)
+class UtilsTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.hours = 24
+
+    def test_is_in_last_x_hours(self):
+        t = datetime.utcnow() - timedelta(hours=1)
+        print(t)
+        self.assertTrue(utils.is_within_last_x_hours(t, self.hours))
+
+    def test_is_over_x_hours_ago(self):
+        t = datetime.utcnow() - timedelta(hours=25)
+        print(t)
+        self.assertTrue(utils.is_over_x_hours_ago(t, self.hours))
+
+
+if __name__ == "__main__":
+    unittest.main()
