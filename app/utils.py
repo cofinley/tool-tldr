@@ -201,6 +201,14 @@ def overwrite(old, new, type):
 	return old
 
 
+def is_within_last_x_hours(t: datetime, hours: int) -> bool:
+	return (datetime.utcnow() - timedelta(hours=hours)) <= t <= datetime.utcnow()
+
+
+def is_over_x_hours_ago(t: datetime, hours: int) -> bool:
+	return t < (datetime.utcnow() - timedelta(hours=hours))
+
+
 def check_if_three_time_travels(edit_author: int, model_class, page_id: int) -> bool:
 	"""
 	Look at all versions, check if provided user shows up three or more times in the past 24 hours.
@@ -210,9 +218,9 @@ def check_if_three_time_travels(edit_author: int, model_class, page_id: int) -> 
 	:return: bool if user has made 3 or more time travels alraedy
 	"""
 
-	versions = db.session.query(version_class(model_class)).filter_by(id=page_id, edit_author=edit_author, is_time_travel_edit=True).all()
-	time_travels_in_last_24_hours = [v for v in versions if datetime.utcnow()-timedelta(hours=24) <=
-														    v.edit_time <=
-														    datetime.utcnow()]
+	versions = db.session.query(version_class(model_class)).filter_by(id=page_id,
+																	  edit_author=edit_author,
+																	  is_time_travel_edit=True).all()
+	time_travels_in_last_24_hours = [v for v in versions if is_within_last_x_hours(v.edit_time, 24)]
 	db.session.close()
 	return len(time_travels_in_last_24_hours) >= 3

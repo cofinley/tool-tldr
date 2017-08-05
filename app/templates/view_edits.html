@@ -15,7 +15,7 @@
                                 class="btn btn-secondary btn-sm"
                                 {% if not previous_versions %}disabled{% endif %}
                                 onclick="compareTwo('{{ type }}', '{{ id }}')"
-                                style="cursor: pointer">Compare Selected
+                                style="cursor: {% if not previous_versions %}not-allowed{% else %}pointer{% endif %}">Compare Selected
                         </button>
                     </div>
                 </th>
