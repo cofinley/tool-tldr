@@ -1,5 +1,6 @@
 from difflib import ndiff
 from datetime import timedelta, datetime
+from typing import List
 from urllib.parse import urlsplit
 from sqlalchemy_continuum import version_class
 from app import models, db
@@ -27,8 +28,13 @@ def is_at_or_below_category(chosen_id, current_id):
 	return int(chosen_id) in build_top_down_list(int(current_id))
 
 
-def build_bottom_up_tree(parent_category_id):
-	"""Used for tool page"""
+def build_bottom_up_tree(parent_category_id: int) -> List:
+	"""
+	Used for tool page hierarchy tree.
+	
+	:param parent_category_id: parent category id int
+	:return List of categories
+	"""
 	parent_list = []
 
 	while parent_category_id is not None:

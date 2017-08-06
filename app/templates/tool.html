@@ -27,7 +27,7 @@
 								<ul class="env-alts-list">
 									{% for alt in env_alts %}
 										<li><a href="/tools/{{ alt.id }}">{{ alt.name }}</a></li>
-										{%- if loop.last %}
+										{%- if loop.index == 7 %}
 											<p class="alts-more-link"><a
 															href={{ url_for("main.browse_categories", id=tree[-1].id, env=tool.env) }}>More
 												for {{ tool.env.title() }}...</a></p>
@@ -43,7 +43,7 @@
 								<ul class="env-alts-list">
 									{% for alt in other_alts %}
 										<li><a href="/tools/{{ alt.id }}">{{ alt.name }}</a> ({{ alt.env.title() }})</li>
-										{%- if loop.last %}
+										{%- if loop.index == 7 %}
 											<p class="alts-more-link"><a href={{ url_for("main.browse_categories", id=tree[-1].id) }}>More for
 												all environments...</a></p>
 											{% break %}
@@ -70,9 +70,12 @@
 						<tr class="tool-metadata-row ">
 							<td class="tool-metadata-name">Hierarchy</td>
 							<td class="tool-metadata-value">
-								{% for parent in tree %}
-									<p class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a
-													href="/categories/{{ parent.id }}">{{ parent.name }}</a></p>
+								{% if tree | length > 3 %}
+									<span class="tool-parents">...</span>
+								{% endif %}
+								{% for parent in tree[-3:] %}
+									<span class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a
+													href="/categories/{{ parent.id }}">{{ parent.name }}</a></span>
 								{% endfor %}
 							</td>
 						</tr>
@@ -82,7 +85,7 @@
 						</tr>
 						<tr class="tool-metadata-row">
 							<td class="tool-metadata-name">Created</td>
-							<td class="tool-metadata-value">{{ tool.created }}</td>
+							<td class="tool-metadata-value">{{ tool.created.strftime("%Y-%m-%d") }}</td>
 						</tr>
 						<tr class="tool-metadata-row">
 							<td class="tool-metadata-name">Version</td>

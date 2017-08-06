@@ -8,14 +8,17 @@
         <h1>Add New Tool</h1>
     </div>
     <div class="row">
-        <form class="col-md-5" method="post" role="form">
+        <form class="col-md-4" method="post" role="form">
             {{ form.hidden_tag() }}
 
             {{ wtf.form_field(form.name) }}
             {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
             {{ wtf.form_field(form.avatar_url) }}
             {{ wtf.form_field(form.env, help_text="In what environment is this tool used? Usually, this is a programming lanugage.") }}
-            {{ wtf.form_field(form.created) }}
+		        <div class="form-group required">
+			        <label for="created" class="col-form-label">Date Created</label>
+			        <input class="form-control" id="created" name="created" placeholder="" required type="date" value="">
+		        </div>
             {{ wtf.form_field(form.project_version) }}
             {{ wtf.form_field(form.is_active) }}
             {{ wtf.form_field(form.link) }}

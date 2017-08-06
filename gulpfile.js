@@ -20,7 +20,6 @@ var sass = require('gulp-sass');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
-var purify = require('gulp-purifycss');
 
 // Lint Task, only lint my js files
 gulp.task('lint', function () {
@@ -41,7 +40,6 @@ gulp.task('minify-css', ['sass'], function () {
 		.pipe(gulp.dest(staticPath + 'dist'))
 		.pipe(rename('all.min.css'))
         .pipe(cleanCSS({level: {1: {specialComments: 0}}}))
-        .pipe(purify([staticPath + 'js/**/*.js', './app/templates/**/*.html']))
         .pipe(gulp.dest(staticPath + 'dist'));
 });
 

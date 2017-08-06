@@ -170,7 +170,8 @@ def fetch_tool_page(tool_id):
 		.filter(models.Tool.env != tool.env)\
 		.all()[:current_app.config['ALTS_PER_LIST']]
 
-	category_tree = utils.build_bottom_up_tree(tool.parent_category_id)
+	# Get four levels up in tree
+	category_tree = utils.build_bottom_up_tree(tool.parent_category_id)[-4:]
 
 	project_link = utils.get_hostname(tool.link)
 
@@ -427,7 +428,7 @@ def edit_tool_page(tool_id):
 		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
 	form.name.data = tool.name
 	form.env.data = tool.env.title()
-	form.created.data = tool.created
+	form.created.data = datetime.strftime(tool.created, "%Y-%m-%d")
 	form.project_version.data = tool.project_version
 	form.is_active.data = tool.is_active
 	form.avatar_url.data = tool.avatar_url

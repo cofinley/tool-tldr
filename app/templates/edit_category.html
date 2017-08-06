@@ -8,7 +8,7 @@
 		<h1>Edit <a href="{{ url_for("main.fetch_category_page", category_id=category.id) }}">{{ category.name }}</a></h1>
 	</div>
 	<div class="row">
-		<form class="col-md-5" method="post" role="form">
+		<form class="col-md-4" method="post" role="form">
 			{{ form.hidden_tag() }}
 			{{ wtf.form_errors(form, hiddens="only") }}
 
@@ -27,8 +27,8 @@
 
 			{{ wtf.form_field(form.edit_msg) }}
 			<div class="d-flex justify-content-end mb-5">
-				<button type="button" class="btn btn-danger mr-auto" onclick="goBack()">Cancel</button>
-				<input class="btn btn-success" id="submit" name="submit" type="submit" value="Submit">
+				<button type="button" class="btn btn-danger mr-auto form-button" onclick="goBack()">Cancel</button>
+				<input class="btn btn-success form-button" id="submit" name="submit" type="submit" value="Submit">
 			</div>
 		</form>
 		<div id="tree-pane" class="col-md-7" style="display: none">
