@@ -571,7 +571,11 @@ def add_new_tool():
 		flash(
 			"You must log in or sign up to add new pages.")
 		return redirect(url_for("auth.login"))
-	form = AddNewToolForm()
+	if current_user.is_confirmed:
+		form = AddNewToolFormConfirmed()
+	else:
+		form = AddNewToolForm()
+
 	if form.is_submitted():
 		if form.parent_category.data == "":
 			flash("You must pick a parent category from the tree.", "danger")
@@ -599,7 +603,9 @@ def add_new_tool():
 		flash('This tool has been added.', 'success')
 		cache.clear()
 		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
-	return render_template('add_new_tool.html', form=form)
+	return render_template('add_new_tool.html',
+						   form=form,
+						   is_confirmed=current_user.is_confirmed)
 
 
 @main.route("/add-new-category", methods=["GET", "POST"])

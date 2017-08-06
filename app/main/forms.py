@@ -138,7 +138,13 @@ class AddNewToolForm(FlaskForm):
 							coerce=lambda x: x == "True", default="True")
 	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
+	recaptcha = RecaptchaField()
 	submit = SubmitField('Submit')
+
+
+class AddNewToolFormConfirmed(AddNewToolForm):
+	# Remove recaptcha requirement
+	recaptcha = None
 
 
 class AddNewCategoryForm(FlaskForm):

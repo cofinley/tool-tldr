@@ -20,9 +20,12 @@
             {{ wtf.form_field(form.is_active) }}
             {{ wtf.form_field(form.link) }}
             {{ wtf.form_field(form.why, help_text="Why use this tool over an alternative?") }}
-            <div class="d-flex justify-content-end mb-5">
-                <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack()">Cancel</button>
-                <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
+	          {% if not is_confirmed %}
+	            {{ form.recaptcha }}
+	          {% endif %}
+            <div class="d-flex justify-content-end mb-5 mt-3">
+                <button type="button" class="btn btn-outline-danger mr-auto form-button" onclick="goBack()">Cancel</button>
+                <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
             </div>
         </form>
         <div id="tree-pane" class="col-md-7">
