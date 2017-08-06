@@ -2,21 +2,21 @@
 {% block title %}{{ category.name }}{% endblock %}
 {% block content %}
 
-    <div id="category-top-info">
-        {% if breadcrumbs|length > 1 %}
-            <div id="breadcrumbs" class="mt-4">
-            {% for item in breadcrumbs %}
-                {% if not loop.last %}
-                    <span class="breadcrumb-item"><a href="/categories/{{ item.id }}">{{ item.name }}</a></span><span>  /  </span>
-                {% endif %}
-                {% if loop.last %}
-                    <span class="breadcrumb-item">{{ item.name }}</span>
-                {% endif %}
-            {% endfor %}
-            </div>
-        {% endif %}
+		{% if breadcrumbs|length > 1 %}
+		    <div id="category-top-info">
 
-    </div>
+	          <div id="breadcrumbs" class="mt-4">
+	          {% for item in breadcrumbs %}
+	              {% if not loop.last %}
+	                  <span class="breadcrumb-item"><a href="/categories/{{ item.id }}">{{ item.name }}</a></span><span>  /  </span>
+	              {% endif %}
+	              {% if loop.last %}
+	                  <span class="breadcrumb-item">{{ item.name }}</span>
+	              {% endif %}
+	          {% endfor %}
+	          </div>
+				</div>
+		{% endif %}
 
     <div id="category-header" class="align-items-center d-flex justify-content">
         <h1 class="display-4">{{ category.name }}</h1>

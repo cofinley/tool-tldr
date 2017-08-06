@@ -14,32 +14,26 @@
 	    {{ wtf.form_errors(form, hiddens="only") }}
 
 	    {{ wtf.form_field(form.name) }}
-			<div class="mb-3 mt-4">
-				{{ wtf.form_field(form.move_parent, checked=False) }}
-			</div>
-			<div id="optional_parent_field" class="initially-hidden-field">
-				{{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
-			</div>
-			<div class="mb-3 mt-4">
-				{{ wtf.form_field(form.edit_avatar_url, checked=False) }}
-			</div>
-			<div id="avatar-url-field" class="initially-hidden-field">
-		    {{ wtf.form_field(form.avatar_url) }}
-			</div>
+			{% if is_confirmed %}
+				<div class="mb-3 mt-4">
+						{{ wtf.form_field(form.move_parent, checked=False) }}
+					</div>
+					<div id="optional_parent_field" class="initially-hidden-field">
+						{{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
+					</div>
+			{% endif %}
+
+	    {{ wtf.form_field(form.avatar_url) }}
+
 	    {{ wtf.form_field(form.env, help_text="In what environment is this tool used? Usually, this is a programming lanugage.") }}
 	    {{ wtf.form_field(form.created) }}
 	    {{ wtf.form_field(form.project_version) }}
 	    {{ wtf.form_field(form.is_active) }}
-			<div class="mb-3 mt-4">
-				{{ wtf.form_field(form.edit_link, checked=False) }}
-			</div>
-			<div id="project-url-field" class="initially-hidden-field">
-		    {{ wtf.form_field(form.link) }}
-			</div>
+	    {{ wtf.form_field(form.link) }}
 	    {{ wtf.form_field(form.why, help_text="Why use this tool over an alternative?") }}
 	    {{ wtf.form_field(form.edit_msg) }}
-	    {% if not current_user.is_confirmed %}
-	        <div id="edit-tool-recaptcha" class="my-3 initially-hidden-field">
+	    {% if not is_confirmed %}
+	        <div id="edit-tool-recaptcha" class="my-3">
 	          {{ form.recaptcha }}
 	        </div>
 	    {% endif %}
@@ -48,9 +42,11 @@
 	        <input class="btn btn-success" id="submit" name="submit" type="submit" value="Submit">
 	    </div>
 	</form>
-	<div id="tree-pane" class="col-md-7" style="display: none">
-		<label>Pick a parent category</label>
-		<div id="explore-tree" data-url="/explore_nodes?no-link=true"></div>
-	</div>
+	{% if is_confirmed %}
+		<div id="tree-pane" class="col-md-7" style="display: none">
+			<label>Pick a parent category</label>
+			<div id="explore-tree" data-url="/explore_nodes?no-link=true"></div>
+		</div>
+	{% endif %}
 </div>
 {% endblock %}

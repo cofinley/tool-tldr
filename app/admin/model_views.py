@@ -5,7 +5,7 @@ from flask import request, redirect, url_for
 
 class MyModelView(ModelView):
 	def is_accessible(self):
-		return current_user.is_administrator()
+		return current_user.is_administrator
 
 	def inaccessible_callback(self, name, **kwargs):
 		# redirect to login page if user doesn't have access

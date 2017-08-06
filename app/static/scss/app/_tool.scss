@@ -31,12 +31,13 @@
 
   #tool-left-content {
 
+    &>.tool-question-block > h1 {
+      margin-top: 0;
+    }
+
     .tool-question-block {
 
       .env-alts-section {
-        //margin-left: 15px;
-        //float: left;
-        //margin-right: 100px;
 
         .env-alts-env-title {
           font-weight: $font-medium;

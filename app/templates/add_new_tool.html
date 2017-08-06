@@ -20,11 +20,6 @@
             {{ wtf.form_field(form.is_active) }}
             {{ wtf.form_field(form.link) }}
             {{ wtf.form_field(form.why, help_text="Why use this tool over an alternative?") }}
-            {% if not current_user.is_confirmed %}
-                <div class="my-3">
-                    {{ form.recaptcha }}
-                </div>
-            {% endif %}
             <div class="d-flex justify-content-end mb-5">
                 <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack()">Cancel</button>
                 <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
