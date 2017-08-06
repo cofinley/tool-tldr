@@ -21,7 +21,7 @@ class Tool(db.Model):
 	parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
 	is_active = db.Column(db.Boolean, default=True)
 	env = db.Column(db.String(64))
-	created = db.Column(db.String(25))
+	created = db.Column(db.DateTime())
 	project_version = db.Column(db.String(10))
 	link = db.Column(db.String(200))
 	why = db.Column(db.String(200))

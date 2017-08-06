@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
-	SubmitField, HiddenField
+	SubmitField, HiddenField, DateTimeField
 from wtforms.validators import DataRequired, InputRequired, Length, Email, Regexp, URL
 from wtforms import ValidationError
 from ..models import Role, User
@@ -94,7 +94,7 @@ class EditToolPageForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
 
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
-	created = StringField("Date Created", validators=[DataRequired(), Length(1, 25)])
+	created = DateTimeField("Date Created", validators=[DataRequired()], format="%Y-%m-%d")
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
 	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
 							coerce=lambda x: x == "True")
@@ -132,7 +132,7 @@ class AddNewToolForm(FlaskForm):
 	parent_category_id = HiddenField()
 	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
-	created = StringField("Date Created", validators=[DataRequired(), Length(1, 25)])
+	created = DateTimeField("Date Created", validators=[DataRequired()], format="%Y-%m-%d")
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
 	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
 							coerce=lambda x: x == "True", default="True")

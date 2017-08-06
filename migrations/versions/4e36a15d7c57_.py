@@ -1,4 +1,4 @@
-"""empty message
+"""Add is_active column to tools
 
 Revision ID: 4e36a15d7c57
 Revises: f172984d4569

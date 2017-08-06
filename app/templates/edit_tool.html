@@ -26,7 +26,11 @@
 	    {{ wtf.form_field(form.avatar_url) }}
 
 	    {{ wtf.form_field(form.env, help_text="In what environment is this tool used? Usually, this is a programming lanugage.") }}
-	    {{ wtf.form_field(form.created) }}
+			<div class="form-group required">
+				<label for="created" class="col-form-label">Date Created</label>
+				<input class="form-control" id="created" name="created" placeholder="" required type="date"
+				       value="{{ form.created.data }}">
+			</div>
 	    {{ wtf.form_field(form.project_version) }}
 	    {{ wtf.form_field(form.is_active) }}
 	    {{ wtf.form_field(form.link) }}
@@ -38,8 +42,8 @@
 	        </div>
 	    {% endif %}
 	    <div class="d-flex justify-content-end mb-5">
-	        <button type="button" class="btn btn-danger mr-auto" onclick="goBack()">Cancel</button>
-	        <input class="btn btn-success" id="submit" name="submit" type="submit" value="Submit">
+	        <button type="button" class="btn btn-danger mr-auto form-button" onclick="goBack()">Cancel</button>
+	        <input class="btn btn-success form-button" id="submit" name="submit" type="submit" value="Submit">
 	    </div>
 	</form>
 	{% if is_confirmed %}
