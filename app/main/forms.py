@@ -62,9 +62,9 @@ class EditProfileAdminForm(FlaskForm):
 class EditCategoryPageForm(FlaskForm):
 
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
-	what = TextAreaField("What", validators=[DataRequired(), Length(1, 200)])
-	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
-	where = TextAreaField("Where", validators=[DataRequired(), Length(1, 200)])
+	what = TextAreaField("What", validators=[DataRequired(), Length(1, 250)])
+	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 250)])
+	where = TextAreaField("Where", validators=[DataRequired(), Length(1, 250)])
 	edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
 	submit = SubmitField('Submit')
 
@@ -103,7 +103,7 @@ class EditToolPageForm(FlaskForm):
 	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	recaptcha = RecaptchaField()
 
-	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
+	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 250)])
 	edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
 	submit = SubmitField('Submit')
 
@@ -137,7 +137,7 @@ class AddNewToolForm(FlaskForm):
 	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
 							coerce=lambda x: x == "True", default="True")
 	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
-	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
+	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 250)])
 	recaptcha = RecaptchaField()
 	submit = SubmitField('Submit')
 
@@ -151,8 +151,8 @@ class AddNewCategoryForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
 	parent_category = StringField("Parent Category", validators=[Length(max=64)])
 	parent_category_id = HiddenField()
-	what = TextAreaField("What", validators=[DataRequired(), Length(1, 200)])
-	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 200)])
-	where = TextAreaField("Where", validators=[DataRequired(), Length(1, 200)])
+	what = TextAreaField("What", validators=[DataRequired(), Length(1, 250)])
+	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 250)])
+	where = TextAreaField("Where", validators=[DataRequired(), Length(1, 250)])
 	submit = SubmitField('Submit')
 

@@ -170,7 +170,8 @@ def fetch_tool_page(tool_id):
 		.filter(models.Tool.env != tool.env)\
 		.all()[:current_app.config['ALTS_PER_LIST']]
 
-	category_tree = utils.build_bottom_up_tree(tool.parent_category_id)
+	# Get four levels up in tree
+	category_tree = utils.build_bottom_up_tree(tool.parent_category_id)[-4:]
 
 	project_link = utils.get_hostname(tool.link)
 

@@ -25,15 +25,17 @@ class Helper:
 			next(tsvin, None)
 
 			for row in tsvin:
-				id, name, parent_category_id, what, why, where, version = row
+				id, name, parent_category_id, what, why, where, edit_msg, edit_time, edit_author, is_time_travel_edit = row
 				parent_category_id = int(parent_category_id) if (parent_category_id != "") else None
 				c = models.Category(
 					id=int(id),
 					name=name,
 					parent_category_id=parent_category_id,
-					what="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.",
-					why="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.",
-					where="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec."
+					what="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.",
+					why="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.",
+					where="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.",
+					edit_time=datetime.strptime(edit_time, "%Y-%m-%d %H:%M:%S.%f"),
+					edit_author=edit_author
 				)
 				db.session.add(c)
 			db.session.commit()
@@ -45,7 +47,7 @@ class Helper:
 			next(tsvin, None)  # skip header
 
 			for row in tsvin:
-				id, name, avatar_url, parent_category_id, env, created, project_version, link, why, version = row
+				id, name, avatar_url, parent_category_id, is_active, env, created, project_version, link, why, edit_msg, edit_time, edit_author, is_time_travel_edit = row
 				parent_category_id = int(parent_category_id) if (parent_category_id != "") else None
 				t = models.Tool(
 					id=int(id),
@@ -56,7 +58,9 @@ class Helper:
 					created=datetime.utcnow(),
 					project_version=project_version,
 					link=link,
-					why="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec."
+					why="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.",
+					edit_time=datetime.strptime(edit_time, "%Y-%m-%d %H:%M:%S.%f"),
+					edit_author=edit_author
 				)
 				db.session.add(t)
 			db.session.commit()
