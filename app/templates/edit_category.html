@@ -8,7 +8,7 @@
 		<h1>Edit <a href="{{ url_for("main.fetch_category_page", category_id=category.id) }}">{{ category.name }}</a></h1>
 	</div>
 	<div class="row">
-		<form class="col-md-5" method="post" role="form">
+		<form class="col-md-4" method="post" role="form">
 			{{ form.hidden_tag() }}
 			{{ wtf.form_errors(form, hiddens="only") }}
 
