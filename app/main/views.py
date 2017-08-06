@@ -535,6 +535,7 @@ def render_time_travel(page_type, page_id, target_version_id):
 		current_version.edit_author = edit_author
 		current_version.is_time_travel_edit = True
 		db.session.commit()
+		cache.clear()
 		flash('This {} has been updated.'.format(page_type), 'success')
 		return redirect(return_route)
 
