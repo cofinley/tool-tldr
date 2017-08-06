@@ -26,6 +26,6 @@
             {% endfor %}
     </table>
     <div class="pagination">
-        {{ macros.edits_pagination_widget(pagination, '.view_user_edits', user_id=user.id, page_type=type) }}
+        {{ macros.edits_pagination_widget(pagination, '.view_user_edits', id=user.id, type=type) }}
     </div>
 {% endblock %}
