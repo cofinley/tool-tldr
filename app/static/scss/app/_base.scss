@@ -12,6 +12,14 @@ body {
                 font-weight: $font-medium;
             }
 
+            .btn-lg {
+                padding: .5rem 1rem !important;
+            }
+
+            .form-button {
+                cursor: pointer;
+            }
+
             h1 {
                 font-weight: 500;
 
@@ -31,6 +39,7 @@ body {
 
             .help-text {
                 font-size: 1.05em !important;
+                margin-left: 10px;
             }
 
             .question-block {

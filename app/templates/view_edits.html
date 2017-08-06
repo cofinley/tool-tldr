@@ -81,7 +81,7 @@
                         {% endif %}
                     </td>
                     <td>{{ version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
-                    <td><a href="/users/{{ version.author.id }}">{{ version.author.username }}</td>
+		                <td><a href="/users/{{ version.author.id }}">{{ version.author.username }}</a></td>
                     <td>{{ version.edit_msg }}</td>
                     <td><a class="btn btn-sm btn-secondary" href="edit/time-travel/{{ version.transaction_id }}" role="button" title="Time travel to this edit in time. This will make a new, overwriting edit.">Time Travel</a></td>
                 </tr>

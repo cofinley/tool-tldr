@@ -344,14 +344,20 @@ def edit_category_page(category_id):
 	if not current_user.is_authenticated:
 		flash("You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.", "danger")
 	category = models.Category.query.get_or_404(category_id)
-	form = EditCategoryPageForm(category.id)
+
+	if current_user.is_confirmed:
+		form = EditCategoryPageFormConfirmed(category.id)
+	else:
+		form = EditCategoryPageForm()
+
 	if form.validate_on_submit():
 		category.name = form.name.data
-		if form.move_parent.data:
-			if int(form.parent_category_id.data) == 0 or form.parent_category.data == "/":
-				category.parent_category_id = None
-			else:
-				category.parent_category_id = form.parent_category_id.data
+		if current_user.is_confirmed:
+			if form.move_parent.data:
+				if int(form.parent_category_id.data) == 0 or form.parent_category.data == "/":
+					category.parent_category_id = None
+				else:
+					category.parent_category_id = form.parent_category_id.data
 		category.what = form.what.data
 		category.why = form.why.data
 		category.where = form.where.data
@@ -369,16 +375,20 @@ def edit_category_page(category_id):
 		cache.clear()
 		return redirect(url_for('.fetch_category_page', category_id=category.id))
 	form.name.data = category.name
-	form.move_parent.data = False
-	if category.parent:
-		form.parent_category.data = category.parent.name
-	else:
-		form.parent_category.data = "/"
+	if current_user.is_confirmed:
+		form.move_parent.data = False
+		if category.parent:
+			form.parent_category.data = category.parent.name
+		else:
+			form.parent_category.data = "/"
 	form.what.data = category.what
 	form.why.data = category.why
 	form.where.data = category.where
 	form.edit_msg.data = ""
-	return render_template('edit_category.html', form=form, category=category)
+	return render_template('edit_category.html',
+						   form=form,
+						   category=category,
+						   is_confirmed=current_user.is_confirmed)
 
 
 @main.route("/tools/<int:tool_id>/edit", methods=["GET", "POST"])
@@ -386,44 +396,51 @@ def edit_tool_page(tool_id):
 	if not current_user.is_authenticated:
 		flash("You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.", "danger")
 	tool = models.Tool.query.get_or_404(tool_id)
-	form = EditToolPageForm()
+
+	if current_user.is_confirmed:
+		form = EditToolPageFormConfirmed()
+	else:
+		form = EditToolPageForm()
 
 	if form.validate_on_submit():
 		tool.name = form.name.data
-		if form.move_parent.data:
-			tool.parent_category_id = form.parent_category_id.data
 		tool.avatar_url = form.avatar_url.data
+		tool.link = form.link.data
+		if current_user.is_authenticated:
+			edit_author = current_user.id
+			if current_user.is_confirmed:
+				if form.move_parent.data:
+					tool.parent_category_id = form.parent_category_id.data
+		else:
+			edit_author = create_temp_user().id
 		tool.env = form.env.data.lower()
 		tool.created = form.created.data
 		tool.project_version = form.project_version.data
 		tool.is_active = form.is_active.data
-		tool.link = form.link.data
 		tool.why = form.why.data
 		tool.edit_msg = form.edit_msg.data
 		tool.edit_time = datetime.utcnow()
-		if not current_user.is_authenticated:
-			edit_author = create_temp_user().id
-		else:
-			edit_author = current_user.id
 		tool.edit_author = edit_author
 		session.pop('_flashes', None)
 		flash('This tool has been updated.', 'success')
 		cache.clear()
 		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
 	form.name.data = tool.name
-	form.edit_link.data = False
-	form.edit_avatar_url.data = False
-	form.parent_category_id.data = tool.parent_category_id
-	form.parent_category.data = tool.category.name
-	form.avatar_url.data = tool.avatar_url
 	form.env.data = tool.env.title()
 	form.created.data = tool.created
 	form.project_version.data = tool.project_version
 	form.is_active.data = tool.is_active
+	form.avatar_url.data = tool.avatar_url
 	form.link.data = tool.link
+	if current_user.is_confirmed:
+		form.parent_category_id.data = tool.parent_category_id
+		form.parent_category.data = tool.category.name
 	form.why.data = tool.why
 	form.edit_msg.data = ""
-	return render_template('edit_tool.html', form=form, tool=tool)
+	return render_template('edit_tool.html',
+						   form=form,
+						   tool=tool,
+						   is_confirmed=current_user.is_confirmed)
 
 
 def render_diff(page_type, page_id, older, newer):
@@ -552,9 +569,13 @@ def add_new_tool():
 
 	if not current_user.is_authenticated:
 		flash(
-			"You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.",
-			"danger")
-	form = AddNewToolForm()
+			"You must log in or sign up to add new pages.")
+		return redirect(url_for("auth.login"))
+	if current_user.is_confirmed:
+		form = AddNewToolFormConfirmed()
+	else:
+		form = AddNewToolForm()
+
 	if form.is_submitted():
 		if form.parent_category.data == "":
 			flash("You must pick a parent category from the tree.", "danger")
@@ -582,7 +603,9 @@ def add_new_tool():
 		flash('This tool has been added.', 'success')
 		cache.clear()
 		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
-	return render_template('add_new_tool.html', form=form)
+	return render_template('add_new_tool.html',
+						   form=form,
+						   is_confirmed=current_user.is_confirmed)
 
 
 @main.route("/add-new-category", methods=["GET", "POST"])
@@ -590,8 +613,8 @@ def add_new_category():
 
 	if not current_user.is_authenticated:
 		flash(
-			"You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.",
-			"danger")
+			"You must log in or sign up to add new pages.")
+		return redirect(url_for("auth.login"))
 	form = AddNewCategoryForm()
 	if form.validate_on_submit():
 		if not current_user.is_authenticated:

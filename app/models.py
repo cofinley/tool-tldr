@@ -157,6 +157,7 @@ class User(db.Model, UserMixin):
 		return self.role is not None and \
 			   (self.role.permissions & permissions) == permissions
 
+	@property
 	def is_administrator(self):
 		return self.can(Permission.ADMINISTER)
 
@@ -193,7 +194,16 @@ class AnonymousUser(AnonymousUserMixin):
 	def can(self, permissions):
 		return False
 
+	@property
 	def is_administrator(self):
+		return False
+
+	@property
+	def is_authenticated(self):
+		return False
+
+	@property
+	def is_confirmed(self):
 		return False
 
 login_manager.anonymous_user = AnonymousUser
@@ -225,7 +235,7 @@ class Role(db.Model):
 	@staticmethod
 	def insert_roles():
 		roles = {
-			"Anonymous": (Permission.CREATE | Permission.CHANGE_LINKS, True),
+			"Anonymous": (Permission.CHANGE_LINKS, True),
 			"Registered": (Permission.CREATE | Permission.CHANGE_LINKS, True),
 			"Confirmed": (Permission.CREATE |
 						  Permission.CHANGE_LINKS |
@@ -250,4 +260,5 @@ class Role(db.Model):
 	def __repr__(self):
 		return "<Role %r>" % self.name
 
+# Configure mappers for SQLAlchemy-Continuum
 sa.orm.configure_mappers()
