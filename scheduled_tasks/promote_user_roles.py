@@ -1,23 +1,30 @@
 import os
+from sqlalchemy_continuum import version_class
 from app import db, models, create_app, utils
+
+DAYS = 4
+EDITS = 10
 
 
 def promote_roles():
 	registered_role_id = models.Role.query.filter_by(name="Registered").first().id
-	registered_users = models.User.query.filter_by(role_id=registered_role_id).all()
-	promotable_users = [u for u in registered_users
-							   if (utils.is_over_x_hours_ago(t=u.member_since, hours=96))
-							   and ((u.category_edits.count() + u.tool_edits.count()) >= 10)]
-
 	confirmed_role_id = models.Role.query.filter_by(name="Confirmed").first().id
-	for user in promotable_users:
-		user.role_id = confirmed_role_id
-		db.session.add(user)
-		db.session.commit()
+	registered_users = models.User.query.filter_by(role_id=registered_role_id).all()
+	for u in registered_users:
+		tool_edits = version_class(models.Tool).query.filter_by(edit_author=u.id).all()
+		category_edits = version_class(models.Category).query.filter_by(edit_author=u.id).all()
+		total_edits = len(tool_edits) + len(category_edits)
+
+		if utils.is_over_x_hours_ago(t=u.member_since, hours=DAYS*24) and total_edits >= EDITS:
+			u.role_id = confirmed_role_id
+			db.session.add(u)
+			db.session.commit()
 
 
 if __name__ == "__main__":
-	blueprint = create_app(os.getenv('FLASK_CONFIG') or "default")
+	config = os.getenv('FLASK_CONFIG') or "default"
+	print("Config:", config)
+	blueprint = create_app(config)
 	ctx = blueprint.test_request_context()
 	ctx.push()
 
