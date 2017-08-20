@@ -1,0 +1,138 @@
+#tagline {
+  font-weight: $font-light;
+  font-size: 1.25em;
+  margin: 60px auto 50px auto;
+  max-width: 320px;
+}
+
+#big-search {
+  margin: 0 auto;
+
+  #big-search-bar-input {
+    font-family: $font-stack;
+    font-weight: 400;
+    color: $dark-gray;
+    padding: .75rem 1.1rem !important;
+    font-size: 0.9rem;
+  }
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: lightgray;
+}
+
+#categories {
+  margin-top: 60px;
+
+  #category-title {
+    font-weight: $font-medium;
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  #category-columns {
+    font-size: 1.3em;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+
+    .category-list-item {
+      font-size: 1rem;
+    }
+  }
+  a {
+    margin: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #show-more {
+    text-align: center;
+  }
+}
+
+@media (min-width: 340px) {
+  #big-search {
+    #big-search-bar-input {
+      font-size: 1.1rem;
+    }
+  }
+
+  #categories {
+    #category-columns {
+      .category-list-item {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+  #tagline {
+    font-size: 1.5rem;
+    max-width: 400px;
+    margin: 90px auto 60px auto;
+  }
+
+  #big-search {
+    #big-search-bar-input {
+      font-size: 1.4rem;
+    }
+  }
+
+  #categories {
+    margin-top: 80px;
+
+    #category-columns {
+      .category-list-item {
+        font-size: 1.3rem;
+      }
+    }
+  }
+
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+  #categories {
+    #category-columns {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+
+  #tagline {
+    font-size: 1.75em;
+  }
+
+  #categories {
+    #category-columns {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1800px) {
+  #categories {
+    #category-columns {
+      width: 72%;
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+  }
+}
+
+// Super large devices (4K, 2000px and up)
+@media (min-width: 2000px) {
+  #categories {
+    #category-columns {
+      width: 50%;
+    }
+  }
+}

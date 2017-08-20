@@ -36,3 +36,20 @@ $("#big-search-bar-input").keyup(function (event) {
         }
     }
 });
+
+$("#hamburguesa img").click(function(){
+    $("#nav-menu-arrow-up").toggle();
+    $("#nav-menu").toggle();
+});
+
+$("#show-add-options").click(function(){
+    $("#nav-menu-pages").animate({
+        right: '+=' + 200 + 'px'
+    });
+});
+
+$("#hide-add-options").click(function () {
+    $("#nav-menu-pages").animate({
+        right: '+=' + -200 + 'px'
+    });
+});

@@ -1,65 +1,118 @@
 body {
-    font-family: $font-stack;
+	font-family: $font-stack;
 
-    .page {
-        width: 100%;
+	.page {
+		width: 100%;
 
-        .content {
-            width: $content-width;
-            margin: auto;
+		.content {
+			width: 95%;
+			margin: auto;
 
-            b {
-                font-weight: $font-medium;
-            }
+			b {
+				font-weight: $font-medium;
+			}
 
-            .btn-lg {
-                padding: .5rem 1rem !important;
-            }
+			.btn-lg {
+				padding: .5rem 1rem !important;
+			}
 
-            .form-button {
-                cursor: pointer;
-            }
+			.form-button {
+				cursor: pointer;
+			}
 
-            h1 {
-                font-weight: 500;
+			h1 {
+				font-weight: 500;
 
-                &.display-4 {
-                    font-weight: $font-light;
-                    font-size: 3.5rem;
-                }
-            }
+				&.display-4 {
+					font-weight: $font-light;
+					font-size: 3rem;
+					margin-bottom: 25px;
+					margin-top: 30px;
+				}
+			}
 
-            input, select, textarea, .btn {
-                font-family: $font-stack !important;
-            }
+			input, select, textarea, .btn {
+				font-family: $font-stack !important;
+			}
 
-            textarea {
-                height: 150px;
-            }
+			textarea {
+				height: 150px;
+			}
 
-            .help-text {
-                font-size: 1.05em !important;
-                margin-left: 10px;
-            }
+			.help-text {
+				font-size: 1.05em !important;
+				margin-left: 10px;
+			}
 
-            .question-block {
+			.question-block {
 
-                .question-title {
-                    font-weight: $font-medium;
-                }
+				.question-title {
+					font-weight: $font-medium;
+				}
 
-                & > p {
-                    margin-bottom: 40px;
-                    margin-left: 15px;
-                    font-size: 1.2em;
-                    //max-width: 70%;
-                }
-            }
-        }
-    }
+				& > p {
+					margin-bottom: 40px;
+					margin-left: 15px;
+					font-size: 1.2em;
+					//max-width: 70%;
+				}
+			}
+		}
 
-    a {
-        @include blue-link;
-    }
+		.stretch-width-to-content {
+			width: intrinsic; /* Safari/WebKit uses a non-standard name */
+			width: -moz-max-content; /* Firefox/Gecko */
+			width: -webkit-max-content; /* Chrome */
+		}
+
+		.arrow-up {
+			width: 0;
+			height: 0;
+			border-style: solid;
+			border-width: 0 10px 17.3px 10px;
+			border-color: transparent transparent $dark-gray transparent;
+		}
+	}
+
+	a {
+		@include blue-link;
+	}
 }
 
+@media (min-width: 340px) {}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+	body {
+		.page {
+			.content {
+				width: $content-width;
+			}
+		}
+	}
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+	body {
+		.page {
+			.content {
+				h1.display-4 {
+					margin-top: 0.67em;
+					margin-bottom: 0.67em;
+				}
+			}
+		}
+	}
+
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+
+}

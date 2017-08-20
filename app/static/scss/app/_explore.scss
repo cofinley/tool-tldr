@@ -15,8 +15,9 @@
 
 #explore-tree {
 
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   margin-bottom: 60px;
+  padding-left: 0;
 
   .toggler {
     width: 2em;
@@ -78,7 +79,6 @@
   .jqtree-element {
     padding: 5px 5px 8px 5px;
     border-radius: 5px;
-    //cursor: default;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow-x: hidden;
@@ -95,7 +95,7 @@
 
   .jqtree-toggler {
     cursor: pointer;
-    margin-left: 5px;
+    margin-left: 0;
   }
 
   span {
@@ -104,3 +104,26 @@
     }
   }
 }
+
+@media (min-width: 340px) {}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  #explore-tree {
+    font-size: 1.5rem;
+    padding-left: 15px;
+
+    .jqtree-toggler {
+      margin-left: 5px;
+    }
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {}

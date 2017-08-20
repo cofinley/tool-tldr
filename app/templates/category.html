@@ -18,26 +18,28 @@
 				</div>
 		{% endif %}
 
-    <div id="category-header" class="align-items-center d-flex justify-content">
+    <div id="category-header">
         <h1 class="display-4">{{ category.name }}</h1>
-		    <a role="button" class="btn btn-lg btn-primary ml-auto mr-3" href="/categories/{{ category.id }}/edit">Edit Page</a>
-		    <p class="view-edits-link"><a href="/categories/{{ category.id }}/edits">View Edits</a></p>
+		    <div id="edit-buttons">
+			    <a role="button" class="btn btn-lg btn-primary ml-auto mr-3" href="/categories/{{ category.id }}/edit">Edit Page</a>
+			    <span class="view-edits-link stretch-width-to-content"><a href="/categories/{{ category.id }}/edits">View Edits</a></span>
+		    </div>
     </div>
 
     <div id="category-content">
         <div id="category-content-top" class="row">
-            <div class="question-block category-question-block col-md-4">
+            <div class="question-block category-question-block col-lg-4">
                 <h1 class="question-title">The What</h1>
 		            <p class="text-muted help-text mb-0">What is the TL;DR of the category? What do tools in this category
 			            let you do?</p>
                 <p>{{ category.what }}</p>
             </div>
-            <div class="question-block category-question-block col-md-4">
+            <div class="question-block category-question-block col-lg-4">
                 <h1 class="question-title">The Why</h1>
 		            <p class="text-muted help-text mb-0">Why would I need use it? Why would I need to <i>start</i> using it?</p>
                 <p>{{ category.why }}</p>
             </div>
-            <div class="question-block category-question-block col-md-4">
+            <div class="question-block category-question-block col-lg-4">
                 <h1 class="question-title">The Where</h1>
 		            <p class="text-muted help-text mb-0">Where does it fall in the application stack? Where would I
 			            use it in my application?</p>

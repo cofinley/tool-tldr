@@ -1,109 +1,241 @@
 #header {
-  width: $header-width;
-  height: 80px;
-  margin: 0 auto;
-  border-bottom: 1px solid lightgray;
+	//width: $header-width;
+	width: 100%;
+	height: 55px;
+	margin: 0 auto;
+	border-bottom: 1px solid lightgray;
 
-  #logo {
+	#logo-svg {
+		width: 13em;
+		margin-bottom: -7px;
+	}
 
-    font-style: italic;
-    font-weight: $font-heaviest;
-    font-size: 5em;
-    margin-top: -1px;
-    text-shadow:
-      -2px -2px 0 #fff,
-      2px -2px 0 #fff,
-      -2px 2px 0 #fff,
-      2px 2px 0 #fff;
+	#nav {
+		display: none !important;
+		margin-bottom: 4px;
 
-    #logo-link {
-      text-decoration: none;
-      -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-       -khtml-user-select: none; /* Konqueror HTML */
-         -moz-user-select: none; /* Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none; /* Non-prefixed version, currently
-                                    supported by Chrome and Opera */
-    }
+		#nav-user-actions {
+			font-size: 1.1em;
+			.nav-user-text-button {
+				margin-left: 15px;
 
-    .logo-text-tool {
-      color: $dark-gray;
+				.nav-user-link {
+					@include blue-link;
+				}
+			}
+		}
 
-    }
-    .logo-text-tldr {
-      color: $red;
-    }
-  }
+		#links-and-search {
 
-  #nav {
-    height: 105px;
+			.nav {
+				font-weight: $font-heavy;
+				font-size: 1.4em;
+				margin-top: -2px;
 
-    #nav-user-actions {
-      .nav-user-text-button {
-        margin-left: 15px;
+				.nav-link {
+					margin-right: 10px;
+					padding: 0.2em 0.5em;
+					@include dark-link;
+				}
 
-        .nav-user-link {
-          @include blue-link;
-        }
-      }
-    }
+				.add-button {
+					background-color: $dark-gray;
+					color: white !important;
+					border-radius: 5px;
+				}
 
-    #links-and-search {
+				.dropdown-item:active {
+					background: $dark-gray;
+				}
 
-      .nav {
-        font-weight: $font-heavy;
-        font-size: 1.4em;
-        margin-top: -2px;
+				.dropdown-toggle::after {
+					font-size: 0.9em !important;
+				}
+			}
 
-        .nav-link {
-          margin-right: 10px;
-          padding: 0.2em 0.5em;
-          @include dark-link;
-        }
+			#search-input-group {
+				width: 220px;
+				height: 35px;
+				font-size: 1.4em;
 
-        .add-button {
-          background-color: $dark-gray;
-          color: white !important;
-          border-radius: 5px;
-        }
+				#search-input {
+					font-size: 0.7em;
+					font-family: $font-stack;
+					font-weight: 400;
+					color: $gray;
+				}
+			}
+		}
+	}
 
-        .dropdown-item:active {
-          background: $dark-gray;
-        }
+	#hamburguesa {
+		margin-bottom: 3px;
+		cursor: pointer;
+		width: 32px;
+		height: 27px;
+		background-color: $dark-gray;
+		border-radius: 5px;
 
-        .dropdown-toggle::after {
-          font-size: 0.9em !important;
-        }
-      }
+		&:hover {
+			background-color: #4c4c4c;
+		}
 
-      #search-input-group {
-        width: 220px;
-        height: 35px;
-        font-size: 1.4em;
+		img {
+			margin: auto;
+			display: block;
+			height: 100%;
+			width: 65%;
+		}
 
-        #search-input {
-          font-size: 0.7em;
-          font-family: $font-stack;
-          font-weight: 400;
-          color: $gray;
-        }
-      }
-    }
-  }
+		#nav-menu-arrow-up {
+			display: none;
+			float: right;
+			margin-right: 12px;
+			border-width: 0 7.5px 10px 7.5px;
+		}
+
+		#nav-menu {
+
+			height: 235px;
+			width: 202px;
+			overflow: hidden;
+
+			display: none;
+			z-index: 5;
+			position: relative;
+			bottom: 1px;
+			left: 15px;
+			float: right;
+			border: 1px solid gray;
+			border-radius: 10px;
+			background-color: #222;
+			font-size: 1em;
+			line-height: 2;
+
+			a {
+				display: block;
+				cursor: pointer;
+				color: white;
+				border-bottom: 1px solid #4c4c4c;
+				padding: 10px 25px;
+
+				&:hover,
+				&:focus {
+					text-decoration: none;
+					background-color: #4c4c4c;
+
+					&:first-child {
+						border-radius: 10px 10px 0 0;
+					}
+
+					&:last-child {
+						border-radius: 0 0 10px 10px;
+					}
+				}
+
+				&:last-child {
+					border-bottom: none;
+				}
+			}
+
+			#nav-menu-pages {
+				width: 400px;
+				height: 235px;
+				position: absolute;
+				.nav-menu-page {
+					float: left;
+					width: 200px !important;
+				}
+			}
+		}
+	}
 }
 
-// Extra small devices (portrait phones, less than 576px)
-// No media query since this is the default in Bootstrap
+//Extra small devices (portrait phones, less than 576px)
+//No media query since this is the default in Bootstrap
 
-//// Small devices (landscape phones, 576px and up)
-//@media (min-width: 576px) {  }
-//
-//// Medium devices (tablets, 768px and up)
-//@media (min-width: 768px) {  }
-//
-//// Large devices (desktops, 992px and up)
-//@media (min-width: 992px) {  }
-//
-//// Extra large devices (large desktops, 1200px and up)
-//@media (min-width: 1200px) {  }
+// Extra small devices
+@media (min-width: 340px) {
+	#header {
+		height: 70px;
+
+		#logo-svg {
+			width: 16em;
+			margin-bottom: -7px;
+		}
+
+		#hamburguesa {
+			width: 40px;
+			height: 33.3px;
+		}
+	}
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+	#header {
+		width: $header-width;
+		#logo-svg {
+			width: 15em;
+			margin-bottom: -8px;
+		}
+
+		#hamburguesa {
+			width: 45px;
+			height: 37.5px;
+
+			#nav-menu-arrow-up {
+				margin-right: 6px;
+				border-width: 0 17.5px 20px 17.5px;
+			}
+
+			#nav-menu {
+				font-size: 1.2em;
+			}
+
+		}
+	}
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+	#header {
+		height: 80px;
+
+		#nav {
+			display: inherit !important;
+		}
+
+		#hamburguesa {
+			display: none;
+
+			#nav-menu {
+				display: none;
+			}
+
+			#nav-menu-arrow-up {
+				display: none;
+			}
+		}
+	}
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+	#header {
+		font-size: 0.9em;
+
+		#logo-svg {
+			width: 22.5em;
+			margin-bottom: -11px;
+		}
+
+		#nav {
+			margin-top: 3px;
+		}
+	}
+
+}

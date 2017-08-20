@@ -94,7 +94,7 @@ class EditToolPageForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
 
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
-	created = DateTimeField("Date Created", validators=[DataRequired()], format="%Y-%m-%d")
+	created = DateTimeField("Date Created", validators=[DataRequired()], format="%Y")
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
 	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
 							coerce=lambda x: x == "True")
@@ -132,7 +132,7 @@ class AddNewToolForm(FlaskForm):
 	parent_category_id = HiddenField()
 	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
-	created = DateTimeField("Date Created", validators=[DataRequired()], format="%Y-%m-%d")
+	created = DateTimeField("Date Created", validators=[DataRequired()], format="%Y")
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
 	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
 							coerce=lambda x: x == "True", default="True")

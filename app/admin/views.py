@@ -7,6 +7,6 @@ class FlaskAdminIndexView(AdminIndexView):
 	@expose('/')
 	@expose('/<path:path>')
 	def index(self):
-		if not current_user.is_administrator():
+		if not current_user.is_administrator:
 			return redirect(url_for('auth.login', next=request.url))
 		return super(FlaskAdminIndexView, self).index()

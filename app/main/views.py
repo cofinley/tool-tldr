@@ -18,7 +18,7 @@ def make_cache_key(*args, **kwargs):
 
 
 @main.route("/")
-@cache.cached(key_prefix=make_cache_key)
+# @cache.cached(key_prefix=make_cache_key)
 def index():
 	categories = models.Category.query.filter_by(parent=None).all()
 	show_more = False
@@ -51,9 +51,9 @@ def load_children_tools(id, env):
 	# Used for explore tree
 
 	if env:
-		child_tools = models.Tool.query.filter_by(parent_category_id=id, env=env).all()
+		child_tools = models.Tool.query.filter_by(parent_category_id=id, env=env).order_by(models.Tool.name).all()
 	else:
-		child_tools = models.Tool.query.filter_by(parent_category_id=id).all()
+		child_tools = models.Tool.query.filter_by(parent_category_id=id).order_by(models.Tool.name).all()
 	cols = ["id", "name", "env"]
 	results = [{col: getattr(child, col) for col in cols} for child in child_tools]
 
@@ -72,9 +72,9 @@ def load_children_tools(id, env):
 @cache.memoize()
 def load_children_categories(id, no_link):
 	if id:
-		children = models.Category.query.filter_by(parent_category_id=id).all()
+		children = models.Category.query.filter_by(parent_category_id=id).order_by(models.Category.name).all()
 	else:
-		children = models.Category.query.filter_by(parent_category_id=None).all()
+		children = models.Category.query.filter_by(parent_category_id=None).order_by(models.Category.name).all()
 
 	cols = ["id", "name"]
 	results = [{col: getattr(child, col) for col in cols} for child in children]
@@ -428,7 +428,7 @@ def edit_tool_page(tool_id):
 		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
 	form.name.data = tool.name
 	form.env.data = tool.env.title()
-	form.created.data = datetime.strftime(tool.created, "%Y-%m-%d")
+	form.created.data = datetime.strftime(tool.created, "%Y")
 	form.project_version.data = tool.project_version
 	form.is_active.data = tool.is_active
 	form.avatar_url.data = tool.avatar_url

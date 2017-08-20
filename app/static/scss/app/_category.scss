@@ -1,6 +1,8 @@
 #category-top-info {
 
   .view-edits-link {
+    vertical-align: middle;
+
     a {
       @include blue-link;
     }
@@ -19,11 +21,21 @@
 
 
 #category-header {
-  font-size: 1.3em;
+  align-items: baseline !important;
+
+  #edit-buttons {
+    align-items: baseline;
+    margin-bottom: 20px;
+
+    a {
+      font-size: 1.1rem;
+      vertical-align: middle;
+    }
+  }
 }
 
 #category-content {
-  font-size: 1.3rem;
+  font-size: 1rem;
 
   #category-content-top {
 
@@ -38,9 +50,11 @@
   }
 
   #category-content-bottom {
+    margin-top: 20px;
     .category-bottom-block {
       .env-alts-env-title {
         font-weight: $font-medium;
+        font-size: 2rem;
       }
       .category-content-list {
 
@@ -60,4 +74,65 @@
   a {
     @include blue-link;
   }
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 340px) {
+
+  #category-header {
+    #edit-buttons {
+      a {
+        font-size: 1.3rem;
+      }
+    }
+  }
+
+  #category-content {
+    font-size: 1.2rem;
+  }
+}
+
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+  #category-header {
+    display: flex;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    #edit-buttons {
+      display: block;
+      align-items: normal;
+      margin-bottom: 0;
+      font-size: 1.3em;
+    }
+  }
+
+
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  #category-content {
+    #category-content-bottom {
+      margin-top: 10px;
+      .category-bottom-block {
+        .env-alts-env-title {
+          font-size: 2em;
+        }
+      }
+    }
+  }
+
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+
+
 }
