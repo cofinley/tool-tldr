@@ -14,11 +14,14 @@
 
 	#know-img {
 		width: 400px;
+		max-width: initial;
 	}
 
 	img {
 		display: block;
 		margin: auto;
+		width: inherit;
+		max-width: max-content;
 	}
 
 	h3 {

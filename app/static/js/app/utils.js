@@ -43,13 +43,15 @@ $("#hamburguesa img").click(function(){
 });
 
 $("#show-add-options").click(function(){
+    var amount = screen.width < 576 ? 180 : 200;
     $("#nav-menu-pages").animate({
-        right: '+=' + 200 + 'px'
+        right: '+=' + amount + 'px'
     });
 });
 
 $("#hide-add-options").click(function () {
+    var amount = screen.width < 576 ? -180 : -200;
     $("#nav-menu-pages").animate({
-        right: '+=' + -200 + 'px'
+        right: '+=' + amount + 'px'
     });
 });

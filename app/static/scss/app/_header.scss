@@ -96,8 +96,8 @@
 
 		#nav-menu {
 
-			height: 235px;
-			width: 202px;
+			height: 213px;
+			width: 180px;
 			overflow: hidden;
 
 			display: none;
@@ -139,12 +139,35 @@
 			}
 
 			#nav-menu-pages {
-				width: 400px;
-				height: 235px;
+				width: 360px;
+				height: 213px;
 				position: absolute;
+
+				#nav-menu-page-2 a:last-child {
+					border-radius: 0 !important;
+				}
+
 				.nav-menu-page {
 					float: left;
-					width: 200px !important;
+					width: 180px !important;
+				}
+
+				#show-add-options > span:after {
+					content: "\203a";
+					font-size: 1.7em;
+					line-height: 0;
+					position: relative;
+					top: 1px;
+					left: 10px;
+				}
+
+				#hide-add-options > span:before {
+					content: "\2039";
+					font-size: 1.7em;
+					line-height: 0;
+					position: relative;
+					top: 1px;
+					right: 10px;
 				}
 			}
 		}
@@ -191,6 +214,18 @@
 
 			#nav-menu {
 				font-size: 1.2em;
+				height: 235px;
+				width: 202px;
+
+				#nav-menu-pages {
+					width: 400px;
+					height: 235px;
+
+					.nav-menu-page {
+						float: left;
+						width: 200px !important;
+					}
+				}
 			}
 
 		}
