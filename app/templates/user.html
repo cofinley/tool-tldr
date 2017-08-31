@@ -28,7 +28,7 @@
                 <li class="list-group-item justify-content-between"><span><b>Member since</b></span>{{ user.member_since.strftime("%B %d, %Y") }}</li>
                 <li class="list-group-item justify-content-between"><span><b>Last seen</b></span>{{ user.last_seen.strftime("%B %d, %Y") }}</li>
                 <li class="list-group-item justify-content-between"><span><b>Real name</b></span>{{ user.name }}</li>
-                <li class="list-group-item justify-content-between"><span><b>Role</b></span>{{ user.role.name }} {% if user.role.name != "Administrator" %}User{% endif %}</li>
+		            <li class="list-group-item justify-content-between"><span><b>Role</b></span><a href="{{ url_for('main.get_roles') }}">{{ user.role.name }} {% if user.role.name != "Administrator" %}User{% endif %}</a></li>
                 <li class="list-group-item justify-content-between"><span><b>Total edits</b></span>{{ total_edits }}</li>
             </ul>
 

@@ -18,11 +18,20 @@ class UserModelView(MyModelView):
 	can_delete = False
 	column_exclude_list = ["password_hash"]
 	column_export_exclude_list = ["password_hash"]
-	form_excluded_columns = ["password_hash", "tool_edits", "category_edits", "member_since", "last_seen"]
+	form_excluded_columns = ["password_hash",
+							 "tool_edits",
+							 "category_edits",
+							 "member_since",
+							 "last_seen"]
 	column_searchable_list = ["username", "email"]
 
 
 class PageModelView(MyModelView):
 	edit_modal = True
-	form_excluded_columns = ["tools", "edit_time", "children", "versions"]
+	form_excluded_columns = ["tools",
+							 "edit_time",
+							 "children",
+							 "versions",
+							 "is_time_travel_edit",
+							 "author"]
 	column_searchable_list = ["name"]
