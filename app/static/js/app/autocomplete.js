@@ -1,20 +1,16 @@
 function autoCompleteAjax(selector) {
 
-    var bigSize = true;
-
-    if (selector === "#search-input") {
-        bigSize = false;
-    }
+    var bigSize = selector !== "#search-input";
+    var loaderDiv = bigSize ? '#big-loader' : '#small-loader';
 
     var xhr;
     new autoComplete({
         selector: selector,
         source: function (term, response) {
-            try {
-                xhr.abort();
-            } catch (e) {
-            }
+            $(loaderDiv).show();
+            try { xhr.abort(); } catch (e){}
             xhr = $.getJSON(window.location.origin + '/search', {q: term}, function (data) {
+                $(loaderDiv).hide();
                 response(data);
             });
         },

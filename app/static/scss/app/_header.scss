@@ -64,8 +64,34 @@
 					font-weight: 400;
 					color: $gray;
 				}
+
+				#small-loader {
+					display: none;
+					position: absolute;
+					top: 8px;
+					width: 20px;
+					animation: spin 1.1s linear infinite;
+					animation-name: loader-spin;
+					right: 8px;
+					z-index: 3;
+					opacity: 0.5;
+				}
 			}
 		}
+	}
+
+	#mobile-search {
+		margin-bottom: 3px;
+		margin-right: 20px;
+		padding: 6px 6px 2px 6px;
+		border: 1px solid gray;
+		border-radius: 5px;
+	}
+
+	#mobile-search-dropdown-container {
+		display: none;
+		position: relative;
+		top: 100px;
 	}
 
 	#hamburguesa {
@@ -84,7 +110,7 @@
 			margin: auto;
 			display: block;
 			height: 100%;
-			width: 65%;
+			width: 22px;
 		}
 
 		#nav-menu-arrow-up {
@@ -96,7 +122,7 @@
 
 		#nav-menu {
 
-			height: 213px;
+			height: 265px;
 			width: 180px;
 			overflow: hidden;
 
@@ -140,7 +166,8 @@
 
 			#nav-menu-pages {
 				width: 360px;
-				height: 213px;
+				//height: 213px;
+				height: auto;
 				position: absolute;
 
 				#nav-menu-page-2 a:last-child {
@@ -190,6 +217,10 @@
 		#hamburguesa {
 			width: 40px;
 			height: 33.3px;
+
+			img {
+				width: 26px;
+			}
 		}
 	}
 }
@@ -207,6 +238,10 @@
 			width: 45px;
 			height: 37.5px;
 
+			img {
+				width: 30px;
+			}
+
 			#nav-menu-arrow-up {
 				margin-right: 6px;
 				border-width: 0 17.5px 20px 17.5px;
@@ -214,7 +249,7 @@
 
 			#nav-menu {
 				font-size: 1.2em;
-				height: 235px;
+				height: 295px;
 				width: 202px;
 
 				#nav-menu-pages {
@@ -233,7 +268,7 @@
 }
 
 // Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {}
+//@media (min-width: 768px) {}
 
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
@@ -244,16 +279,11 @@
 			display: inherit !important;
 		}
 
-		#hamburguesa {
-			display: none;
-
-			#nav-menu {
-				display: none;
-			}
-
-			#nav-menu-arrow-up {
-				display: none;
-			}
+		#mobile-search,
+		#hamburguesa,
+		#nav-menu,
+		#nav-menu-arrow-up {
+			display: none
 		}
 	}
 }

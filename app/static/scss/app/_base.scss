@@ -43,20 +43,6 @@ body {
 				font-size: 1.05em !important;
 				margin-left: 10px;
 			}
-
-			.question-block {
-
-				.question-title {
-					font-weight: $font-medium;
-				}
-
-				& > p {
-					margin-bottom: 40px;
-					margin-left: 15px;
-					font-size: 1.2em;
-					//max-width: 70%;
-				}
-			}
 		}
 
 		.stretch-width-to-content {
@@ -108,11 +94,7 @@ body {
 }
 
 // Large devices (desktops, 992px and up)
-@media (min-width: 992px) {
-
-}
+//@media (min-width: 992px) {  }
 
 // Extra large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) {
-
-}
+//@media (min-width: 1200px) {  }

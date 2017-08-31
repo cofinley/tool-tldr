@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 {% block title %}{{ tool.name }}{% endblock %}
 {% block content %}
-	<div id="tool-header" class="align-items-center d-flex justify-content-end">
-		<h1 id="tool-heading" class="display-4">{{ tool.name }}</h1>
-		<a id="edit-tool-button" role="button" class="btn btn-lg btn-primary ml-auto mr-3" href="/tools/{{ tool.id }}/edit">Edit Page</a>
-		<p id="view-edits-link" class="mr-3"><a href="/tools/{{ tool.id }}/edits">View Edits</a></p>
+	<div id="tool-header" class="content-page-header">
+		<h1 class="display-4">{{ tool.name }}</h1>
+		<div id="edit-buttons">
+			<a role="button" class="btn btn-lg btn-primary ml-auto mr-3" href="/tools/{{ tool.id }}/edit">Edit Page</a>
+			<span id="view-edits-link" class="stretch-width-to-content"><a href="/tools/{{ tool.id }}/edits">View Edits</a></span>
+		</div>
 	</div>
-	<div id="tool-content" class="row justify-content-between">
-		<div id="tool-left-content" class="col-md-7 ml-3">
+	<div id="tool-content" class="row justify-content-between content-page-content">
+		<div id="tool-left-content" class="col-md-10 col-lg-6">
 			<div class="question-block tool-question-block">
 				<h1 class="question-title">The What</h1>
 				<p>This tool falls within the <a href="/categories/{{ tree[-1].id }}">{{ tree[-1].name }}</a> category.</p>
@@ -20,7 +22,7 @@
 			<div class="question-block tool-question-block">
 				<h1 class="question-title">Alternatives</h1>
 				{% if env_alts or other_alts %}
-					<div class="row">
+					<div class="row ml-0">
 						{% if env_alts %}
 							<div class="env-alts-section col-md-6">
 								<h3 class="env-alts-env-title"><i>For {{ tool.env.title() }}</i></h3>

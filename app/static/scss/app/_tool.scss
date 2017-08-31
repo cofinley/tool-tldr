@@ -1,35 +1,14 @@
-#view-edits-link {
-  float: right;
-  a {
-    @include blue-link;
-  }
-}
-
-#tool-header {
-  font-size: 1.3em;
-
-  a {
-    @include blue-link;
-  }
-
-  #edit-tool-button {
-    color: white;
-
-    &:hover {
-      text-decoration: none;
-    }
-  }
-}
-
 #tool-content {
   width: 100%;
-  font-size: 1.3rem;
+  //font-size: 1.3rem;
 
   a {
     @include blue-link;
   }
 
   #tool-left-content {
+
+    margin: 0 auto !important;
 
     &>.tool-question-block > h1 {
       margin-top: 0;
@@ -62,6 +41,8 @@
   #tool-right-content {
     width: $tool-content-right-width;
     font-size: 1rem;
+    order: -1;
+    margin: 0 auto 30px auto;
 
     #tool-pane {
       background-color: #efefef;
@@ -124,22 +105,32 @@
 @media (min-width: 576px) {
   #tool-right-content {
     position: inherit;
-    order: -1;
     margin-bottom: 20px;
   }
 }
 
 // Medium devices (tablets, 768px and up)
-@media (min-width: 768px) { }
+//@media (min-width: 768px) {  }
 
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
-  #tool-right-content {
-    //position: relative;
-    //top: -40px;
-    order: 1;
+  #tool-content {
+    #tool-left-content {
+      margin-left: 1rem !important;
+    }
+    #tool-right-content {
+      width: 385px;
+      order: 1;
+      margin: 0;
+    }
   }
 }
 
 // Extra large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) { }
+@media (min-width: 1200px) {
+  #tool-content {
+    #tool-right-content {
+      width: $tool-content-right-width;
+    }
+  }
+}

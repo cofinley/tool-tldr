@@ -1,5 +1,5 @@
-<div id="header" class="d-flex justify-content-between align-items-end">
-	<a href="/"><img id="logo-svg" src="{{ url_for('static', filename='img/logo-outline-small.svg') }}" /></a>
+<div id="header" class="d-flex justify-content-end align-items-end">
+	<a class="mr-auto" href="/"><img id="logo-svg" src="{{ url_for('static', filename='img/logo-outline-small.svg') }}" /></a>
 	<div id="nav" class="align-items-end d-flex flex-column">
 		<div id="nav-user-actions" class="d-flex flex-row mb-2">
 			{% if current_user.is_authenticated %}
@@ -31,11 +31,20 @@
 
 			<div id="search-input-group" class="input-group">
 				<input id="search-input" class="form-control p-2" placeholder="Search" aria-label="Search">
+				<img id="small-loader" src="{{ url_for('static', filename='img/loader.svg') }}">
 			</div>
 		</div>
 	</div>
+{#	<div id="mobile-search">#}
+{#		<img src="{{ url_for('static', filename='img/search.svg') }}">#}
+{#	</div>#}
+{#	<div id="mobile-search-dropdown-container">#}
+{#		<div id="mobile-search-arrow-up" class="arrow-up"></div>#}
+{#		<input id="mobile-search-input" class="form-control p-2" placeholder="Search" aria-label="Search">#}
+{#		<img id="mobile-loader" src="{{ url_for('static', filename='img/loader.svg') }}">#}
+{#	</div>#}
 	<div id="hamburguesa">
-		<img src="{{ url_for('static', filename='img/hmo.svg') }}">
+		<img src="{{ url_for('static', filename='img/menu.svg') }}">
 		<div id="nav-menu-arrow-up" class="arrow-up"></div>
 		<div id="nav-menu">
 			<div id="nav-menu-pages">
@@ -43,7 +52,8 @@
 					<a id="show-add-options"><span>Add</span></a>
 					<a href="/explore"><span>Explore</span></a>
 					<a href="/about"><span>About</span></a>
-					<a href=""><span>Log in / Sign up</span></a>
+					<a href="/auth/login"><span>Log in</span></a>
+					<a href="/auth/register"><span>Sign up</span></a>
 				</div>
 				<div id="nav-menu-page-2" class="nav-menu-page stretch-width-to-content">
 					<a id="hide-add-options"><span>Back</span></a>

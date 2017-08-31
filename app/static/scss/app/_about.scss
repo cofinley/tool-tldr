@@ -24,7 +24,15 @@
 		max-width: max-content;
 	}
 
+	h2 {
+		font-weight: 500;
+	}
+
 	h3 {
-		font-weight: $font-medium;
+		font-weight: 400;
+	}
+
+	h4 {
+		font-weight: 300;
 	}
 }

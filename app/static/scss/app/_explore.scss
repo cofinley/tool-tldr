@@ -18,6 +18,8 @@
   font-size: 1.3rem;
   margin-bottom: 60px;
   padding-left: 0;
+  overflow: scroll;
+  height: 745px;
 
   .toggler {
     width: 2em;
@@ -80,12 +82,11 @@
     padding: 5px 5px 8px 5px;
     border-radius: 5px;
     white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow-x: hidden;
 
     .blurb {
       margin-left: 50px;
       font-size: 0.8em;
+      opacity: 0.8;
 
       .blurbDisplay {
         display: none !important;
@@ -105,13 +106,31 @@
   }
 }
 
-@media (min-width: 340px) {}
+.jqtree-tree .jqtree-loading > div .jqtree-title:after {
+  content: url(/static/img/loader.svg);
+  top: 3px;
+  position: relative;
+  animation: spin 1.1s linear infinite;
+  animation-name: loader-spin;
+  left: 11px;
+  display: inline-block;
+  opacity: 0.8;
+  transform-origin: 50% 41%;
+}
+
+#explore-tree.jqtree-loading:after {
+  content: url(/static/img/loader.svg);
+  animation: spin 1.1s linear infinite;
+  animation-name: loader-spin;
+}
+
+//@media (min-width: 340px) {}
 
 // Small devices (landscape phones, 576px and up)
-@media (min-width: 576px) {}
+//@media (min-width: 576px) {}
 
 // Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {}
+//@media (min-width: 768px) {}
 
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
@@ -126,4 +145,4 @@
 }
 
 // Extra large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) {}
+//@media (min-width: 1200px) {}

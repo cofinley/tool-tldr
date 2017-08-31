@@ -1,13 +1,5 @@
 #category-top-info {
 
-  .view-edits-link {
-    vertical-align: middle;
-
-    a {
-      @include blue-link;
-    }
-  }
-
   #breadcrumbs {
     font-size: 1.3em;
 
@@ -19,23 +11,7 @@
   }
 }
 
-
-#category-header {
-  align-items: baseline !important;
-
-  #edit-buttons {
-    align-items: baseline;
-    margin-bottom: 20px;
-
-    a {
-      font-size: 1.1rem;
-      vertical-align: middle;
-    }
-  }
-}
-
 #category-content {
-  font-size: 1rem;
 
   #category-content-top {
 
@@ -77,44 +53,14 @@
 }
 
 // Small devices (landscape phones, 576px and up)
-@media (min-width: 340px) {
-
-  #category-header {
-    #edit-buttons {
-      a {
-        font-size: 1.3rem;
-      }
-    }
-  }
-
-  #category-content {
-    font-size: 1.2rem;
-  }
-}
+//@media (min-width: 340px) {  }
 
 
 // Small devices (landscape phones, 576px and up)
-@media (min-width: 576px) {
-
-}
+//@media (min-width: 576px) {  }
 
 // Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {
-  #category-header {
-    display: flex;
-    align-items: center !important;
-    justify-content: space-between !important;
-
-    #edit-buttons {
-      display: block;
-      align-items: normal;
-      margin-bottom: 0;
-      font-size: 1.3em;
-    }
-  }
-
-
-}
+//@media (min-width: 768px) {  }
 
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
@@ -132,7 +78,4 @@
 }
 
 // Extra large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) {
-
-
-}
+//@media (min-width: 1200px) {  }

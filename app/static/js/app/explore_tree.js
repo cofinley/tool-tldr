@@ -81,4 +81,3 @@ $tree.bind(
         $tree.tree('openNode', node);
     }
 );
-

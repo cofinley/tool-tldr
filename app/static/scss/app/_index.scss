@@ -8,6 +8,17 @@
 #big-search {
   margin: 0 auto;
 
+  #big-loader {
+    display: none;
+    position: absolute;
+    top: 15px;
+    animation: spin 1.1s linear infinite;
+    animation-name: loader-spin;
+    right: 30px;
+    z-index: 3;
+    opacity: 0.8;
+  }
+
   #big-search-bar-input {
     font-family: $font-stack;
     font-weight: 400;
@@ -134,5 +145,11 @@
     #category-columns {
       width: 50%;
     }
+  }
+}
+
+@keyframes loader-spin {
+  100% {
+    transform: rotate(360deg);
   }
 }
