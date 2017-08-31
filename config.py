@@ -42,6 +42,7 @@ class DevelopmentConfig(Config):
 	DEBUG = True
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
 	'sqlite:///' + os.path.join(basedir, 'app-dev.db')
+	TEMPLATES_AUTO_RELOAD = True
 
 
 class TestingConfig(Config):

@@ -4,7 +4,12 @@
 
 #tree-pane {
 
-	 .jqtree-title {
+	#explore-tree {
+		font-size: 1.3rem !important;
+
+		.jqtree-title {
 			color: $dark-gray !important;
-	 }
+		}
+	}
+
 }
