@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-    {% include "includes/head.html" %}
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+			<title>{% block title %}{% endblock %} | Tool TL;DR</title>
+
+			<link href="{{ url_for('static', filename='dist/all.min.css') }}" rel="stylesheet">
+
+			<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}">
+			<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
+			<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
+			<link rel="manifest" href="{{ url_for('static', filename='favicons/manifest.json') }}">
+			<link rel="mask-icon" color="#e33b3b" href="{{ url_for('static', filename='favicons/safari-pinned-tab.svg') }}">
+			<link rel="shortcut icon" href="{{ url_for('static', filename='favicons/favicon.ico') }}">
+			<meta name="msapplication-config" content="{{ url_for('static', filename='favicons/browserconfig.xml') }}">
+			<meta name="theme-color" content="#e33b3b">
+		</head>
     <body>
         <div class="container page">
             {% include "includes/header.html" %}
@@ -14,6 +30,15 @@
                 {% block content %}{% endblock %}
             </div>
         </div>
-				{% include "includes/scripts.html" %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" defer></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='dist/all.min.js') }}" defer></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+        <script>
+            WebFont.load({
+                google: {
+                    families: ['Montserrat:300,300i,400,400i,500,500i,600']
+                }
+            });
+        </script>
     </body>
 </html>
