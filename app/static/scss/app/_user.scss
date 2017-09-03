@@ -2,6 +2,10 @@
   line-height: 1.6em;
 }
 
+.user-edit-buttons * {
+  font-size: 1rem !important;
+}
+
 #profile-main {
 
   .list-group-item b {
@@ -74,3 +78,12 @@
   }
 }
 
+@media (min-width: 768px) {
+  .content-page-header {
+    #edit-buttons {
+      #user-email-button {
+        display: inline;
+      }
+    }
+  }
+}

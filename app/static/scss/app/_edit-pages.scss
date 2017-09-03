@@ -6,6 +6,8 @@
 
 	#explore-tree {
 		font-size: 1.3rem !important;
+		overflow: scroll;
+		height: 745px;
 
 		.jqtree-title {
 			color: $dark-gray !important;

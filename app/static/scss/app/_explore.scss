@@ -3,9 +3,6 @@
   button {
     height: 100%;
   }
-
-  #explore-title { }
-  #collapse-button { }
 }
 
 .filter-text {
@@ -14,12 +11,9 @@
 }
 
 #explore-tree {
-
   font-size: 1.3rem;
   margin-bottom: 60px;
   padding-left: 0;
-  overflow: scroll;
-  height: 745px;
 
   .toggler {
     width: 2em;
@@ -44,18 +38,12 @@
     }
   }
 
-  span.openedIcon {
-
-    &::before {
-      content: "\2212";
-    }
+  span.openedIcon::before {
+    content: "\2212";
   }
 
-  span.closedIcon {
-
-    &::before {
-      content: "+";
-    }
+  span.closedIcon::before {
+    content: "+";
   }
 
   span.jqtree-title {
@@ -76,12 +64,14 @@
 
   li {
     margin-bottom: 10px !important;
+    min-width: max-content;
   }
 
   .jqtree-element {
     padding: 5px 5px 8px 5px;
     border-radius: 5px;
     white-space: nowrap;
+    text-overflow: ellipsis;
 
     .blurb {
       margin-left: 50px;

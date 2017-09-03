@@ -71,6 +71,7 @@ class User(db.Model, UserMixin):
 	last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
 	tool_edits = db.relationship('Tool', backref="author", lazy="dynamic")
 	category_edits = db.relationship('Category', backref="author", lazy="dynamic")
+	is_blocked = db.Column(db.Boolean, default=False)
 
 	@property
 	def password(self):
@@ -215,8 +216,8 @@ def load_user(user_id):
 
 
 class Permission:
-	CREATE = 0x01
-	CHANGE_LINKS = 0x02
+	CHANGE_LINKS = 0x01
+	CREATE = 0x02
 	UPLOAD = 0x04
 	MOVE = 0x08
 	UNDO = 0x10

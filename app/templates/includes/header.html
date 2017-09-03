@@ -5,7 +5,7 @@
 			{% if current_user.is_authenticated %}
 				<span class="nav-user-text-button"><a class="nav-user-link" href="/users/{{ current_user.id }}">My Account</a>
 				</span>
-				<span class="nav-user-text-button"><a class="nav-user-link" href="/auth/logout">Sign out</a></span>
+				<span class="nav-user-text-button"><a class="nav-user-link" href="/auth/logout">Log out</a></span>
 			{% else %}
 				<span class="nav-user-text-button"><a class="nav-user-link" href="/auth/login">Log in</a></span>
 				<span class="nav-user-text-button"><a class="nav-user-link" href="/auth/register">Sign up</a></span>
@@ -52,8 +52,13 @@
 					<a id="show-add-options"><span>Add</span></a>
 					<a href="/explore"><span>Explore</span></a>
 					<a href="/about"><span>About</span></a>
-					<a href="/auth/login"><span>Log in</span></a>
-					<a href="/auth/register"><span>Sign up</span></a>
+					{% if current_user.is_authenticated %}
+						<a href="/users/{{ current_user.id }}"><span>My Account</span></a>
+						<a href="/auth/logout"><span>Log out</span></a>
+					{% else %}
+						<a href="/auth/login"><span>Log in</span></a>
+						<a href="/auth/register"><span>Sign up</span></a>
+					{% endif %}
 				</div>
 				<div id="nav-menu-page-2" class="nav-menu-page stretch-width-to-content">
 					<a id="hide-add-options"><span>Back</span></a>

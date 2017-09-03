@@ -1,4 +1,3 @@
-import ipaddress
 from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app, session
 from datetime import datetime
 
@@ -9,6 +8,12 @@ from app.main.forms import *
 from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
 from sqlalchemy_continuum import version_class
+
+
+@main.before_app_request
+def check_if_blocked():
+	if current_user.is_authenticated and current_app.config['BLOCKING_USERS'] and current_user.is_blocked:
+		abort(403)
 
 
 def make_cache_key(*args, **kwargs):

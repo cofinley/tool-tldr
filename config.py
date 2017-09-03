@@ -33,6 +33,8 @@ class Config:
 	EDITS_PER_PAGE = 20
 	ALTS_PER_LIST = 10
 
+	BLOCKING_USERS = True
+
 	@staticmethod
 	def init_app(app):
 		pass
