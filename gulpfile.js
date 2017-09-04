@@ -10,7 +10,8 @@ var jsFileOrder = [
 	staticPath + 'js/app/autocomplete.js',
 	staticPath + 'js/app/diff_radio_buttons.js',
 	staticPath + 'js/app/edit_page.js',
-	staticPath + 'js/lib/floating-scrollbar.js'
+	staticPath + 'js/lib/floating-scrollbar.js',
+	staticPath + 'js/app/character_count.js'
 ];
 
 var gulp = require('gulp');

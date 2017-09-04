@@ -9,6 +9,7 @@
     </div>
     <div class="row">
         <form class="col-md-4" method="post" role="form">
+		        {% set max = 250 %}
             {{ form.hidden_tag() }}
 
             {{ wtf.form_field(form.name) }}
@@ -22,7 +23,8 @@
             {{ wtf.form_field(form.project_version) }}
             {{ wtf.form_field(form.is_active) }}
             {{ wtf.form_field(form.link) }}
-            {{ wtf.form_field(form.why, help_text="Why use this tool over an alternative?") }}
+            {{ wtf.form_field(form.why, help_text="Why use this tool over an alternative?", maxlength=max) }}
+		        <span id="why-count" class="char-count text-muted">{{ max }}</span>
 	          {% if not is_confirmed %}
 	            {{ form.recaptcha }}
 	          {% endif %}

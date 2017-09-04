@@ -2,6 +2,15 @@
 	display: none;
 }
 
+.char-count {
+	position: relative;
+	bottom: 45px;
+	float: right;
+	left: -10px;
+	font-style: italic;
+	user-select: none;
+}
+
 #tree-pane {
 
 	#explore-tree {
