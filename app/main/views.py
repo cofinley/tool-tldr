@@ -439,7 +439,7 @@ def edit_tool_page(tool_id):
 		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
 	form.name.data = tool.name
 	form.env.data = tool.env.title()
-	form.created.data = datetime.strftime(tool.created, "%Y")
+	form.created.data = tool.created
 	form.project_version.data = tool.project_version
 	form.is_active.data = tool.is_active
 	form.avatar_url.data = tool.avatar_url

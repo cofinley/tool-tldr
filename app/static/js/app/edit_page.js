@@ -24,3 +24,8 @@ $("#edit_link, #edit_avatar_url").change(function(){
         $("#edit-tool-recaptcha").hide();
     }
 });
+
+var today = new Date();
+var year = today.getFullYear();
+
+$("input#created").attr("max", year);
