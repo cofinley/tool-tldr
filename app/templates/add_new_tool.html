@@ -16,7 +16,7 @@
             {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
             {{ wtf.form_field(form.avatar_url) }}
             {{ wtf.form_field(form.env, help_text="In what environment is this tool used? Usually, this is a programming lanugage.") }}
-		        {{ wtf.form_field(form.created, min="1970", max="2099", step="1") }}
+		        {{ wtf.form_field(form.created, min="1970", max="2099", step="1", type="number") }}
             {{ wtf.form_field(form.project_version) }}
             {{ wtf.form_field(form.is_active) }}
             {{ wtf.form_field(form.link) }}
