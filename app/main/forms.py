@@ -99,7 +99,8 @@ class EditToolPageForm(FlaskForm):
 	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
 							coerce=lambda x: x == "True")
 
-	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
+	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200),
+													   Regexp("^https://", message="Image link must be hosted under https://")])
 	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	recaptcha = RecaptchaField()
 
@@ -130,7 +131,8 @@ class AddNewToolForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
 	parent_category = StringField("Parent Category", validators=[DataRequired(), Length(max=64)])
 	parent_category_id = HiddenField()
-	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
+	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200),
+													   Regexp("^https://", message="Image link must be hosted under https://")])
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
 	created = IntegerField("Date Created", validators=[DataRequired()])
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
