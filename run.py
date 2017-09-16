@@ -16,7 +16,7 @@ def make_shell_context():
 
 @app.cli.command()
 @click.option('--length', default=25, help='Profile stack length')
-@click.option('--profile-dir', default=None, help='Profile directory')
+@click.option('--profile-dir', default="./profiler/", help='Profile directory')
 def profile(length=25, profile_dir=None):
 	"""Start the application under the code profiler."""
 	from werkzeug.contrib.profiler import ProfilerMiddleware

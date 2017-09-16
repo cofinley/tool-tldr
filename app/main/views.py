@@ -25,7 +25,7 @@ def make_cache_key(*args, **kwargs):
 @main.route("/")
 # @cache.cached(key_prefix=make_cache_key)
 def index():
-	categories = models.Category.query.filter_by(parent=None).all()
+	categories = models.Category.query.order_by(models.Category.edits.desc()).all()
 	show_more = False
 	if len(categories) > 16:
 		show_more = True
@@ -345,7 +345,6 @@ def create_temp_user():
 								password="",
 								role_id=models.Role.query.filter_by(name="Anonymous").first().id)
 		db.session.add(new_temp_user)
-		db.session.commit()
 		return new_temp_user
 	else:
 		return existing_temp_user
@@ -376,11 +375,16 @@ def edit_category_page(category_id):
 		category.edit_msg = form.edit_msg.data
 		category.edit_time = datetime.utcnow()
 		if not current_user.is_authenticated:
-			edit_author = create_temp_user().id
+			edit_author = create_temp_user()
 		else:
-			edit_author = current_user.id
-		category.edit_author = edit_author
+			edit_author = current_user
+		category.edit_author = edit_author.id
+		category.edits += 1
 		db.session.add(category)
+
+		edit_author.edits += 1
+		db.session.add(edit_author)
+
 		# Remove any trailing flash messages (usually IP warning)
 		session.pop('_flashes', None)
 		flash('This category has been updated.', 'success')
@@ -419,12 +423,12 @@ def edit_tool_page(tool_id):
 		tool.avatar_url = form.avatar_url.data
 		tool.link = form.link.data
 		if current_user.is_authenticated:
-			edit_author = current_user.id
+			edit_author = current_user
 			if current_user.is_confirmed:
 				if form.move_parent.data:
 					tool.parent_category_id = form.parent_category_id.data
 		else:
-			edit_author = create_temp_user().id
+			edit_author = create_temp_user()
 		tool.env = form.env.data.lower()
 		tool.created = form.created.data
 		tool.project_version = form.project_version.data
@@ -432,7 +436,13 @@ def edit_tool_page(tool_id):
 		tool.why = form.why.data
 		tool.edit_msg = form.edit_msg.data
 		tool.edit_time = datetime.utcnow()
-		tool.edit_author = edit_author
+		tool.edit_author = edit_author.id
+		tool.edits += 1
+		db.session.add(tool)
+
+		edit_author.edits += 1
+		db.session.add(edit_author)
+
 		session.pop('_flashes', None)
 		flash('This tool has been updated.', 'success')
 		cache.clear()
@@ -545,7 +555,6 @@ def render_time_travel(page_type, page_id, target_version_id):
 		current_version.edit_time = datetime.utcnow()
 		current_version.edit_author = edit_author
 		current_version.is_time_travel_edit = True
-		db.session.commit()
 		cache.clear()
 		flash('This {} has been updated.'.format(page_type), 'success')
 		return redirect(return_route)
@@ -594,9 +603,9 @@ def add_new_tool():
 			flash("You must pick a parent category from the tree.", "danger")
 	if form.validate_on_submit():
 		if not current_user.is_authenticated:
-			edit_author = create_temp_user().id
+			edit_author = create_temp_user()
 		else:
-			edit_author = current_user.id
+			edit_author = current_user
 		tool = models.Tool(
 			name=form.name.data,
 			parent_category_id=form.parent_category_id.data,
@@ -607,11 +616,14 @@ def add_new_tool():
 			is_active=form.is_active.data,
 			link=form.link.data,
 			why=form.why.data,
-			edit_author=edit_author,
+			edit_author=edit_author.id,
 			edit_time=datetime.utcnow()
 		)
 		db.session.add(tool)
-		db.session.commit()
+
+		edit_author.edits += 1
+		db.session.add(edit_author)
+
 		session.pop('_flashes', None)
 		flash('This tool has been added.', 'success')
 		cache.clear()
@@ -631,9 +643,9 @@ def add_new_category():
 	form = AddNewCategoryForm()
 	if form.validate_on_submit():
 		if not current_user.is_authenticated:
-			edit_author = create_temp_user().id
+			edit_author = create_temp_user()
 		else:
-			edit_author = current_user.id
+			edit_author = current_user
 		if form.parent_category.data == "" or form.parent_category.data == "/" or int(form.parent_category_id.data) == 0:
 			parent_category_id = None
 		else:
@@ -644,11 +656,14 @@ def add_new_category():
 			what=form.what.data,
 			why=form.why.data,
 			where=form.where.data,
-			edit_author=edit_author,
+			edit_author=edit_author.id,
 			edit_time=datetime.utcnow()
 		)
 		db.session.add(category)
-		db.session.commit()
+
+		edit_author.edits += 1
+		db.session.add(edit_author)
+
 		session.pop('_flashes', None)
 		flash('This category has been added.', 'success')
 		cache.clear()

@@ -15,12 +15,12 @@
             {% for edit in edits|sort(attribute="edit_time", reverse=True) %}
                 <tr>
                     <td>
-                        <a href="/categories/{{ edit.id }}/edits/diff/{{ edit.previous.transaction_id }}/{{ edit.transaction_id }}"
+                        <a href="/{{ type }}/{{ edit.id }}/edits/diff/{{ edit.previous.transaction_id }}/{{ edit.transaction_id }}"
                            title="{{ edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
                             {{ edit.edit_time.strftime('%B %d, %Y') }}
                         </a>
                     </td>
-                    <td><a href="/categories/{{ edit.id }}">{{ edit.name }}</a></td>
+                    <td><a href="/{{ type }}/{{ edit.id }}">{{ edit.name }}</a></td>
                     <td>{{ edit.edit_msg }}</td>
                 </tr>
             {% endfor %}

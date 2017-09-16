@@ -11,7 +11,7 @@
     <div id="categories">
         <p id="category-title">Featured Categories</p>
         <div id="category-columns">
-                {% for category in categories|sort(attribute="name") %}
+                {% for category in categories %}
                     <a class="category-list-item btn btn-outline-primary btn-lg" role="button" href="/categories/{{ category.id }}">{{ category.name }}</a>
                 {% endfor %}
         </div>

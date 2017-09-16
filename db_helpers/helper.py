@@ -55,7 +55,7 @@ class Helper:
 					avatar_url=avatar_url,
 					parent_category_id=parent_category_id,
 					env=env,
-					created=datetime.utcnow(),
+					created=2017,
 					project_version=project_version,
 					link=link,
 					why="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.",

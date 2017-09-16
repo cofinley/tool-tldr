@@ -28,6 +28,7 @@ class Tool(db.Model):
 	edit_msg = db.Column(db.String(100), default="Initial edit")
 	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
 	edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
+	edits = db.Column(db.Integer, default=1)
 	is_time_travel_edit = db.Column(db.Boolean, default=False)
 
 	def __repr__(self):
@@ -51,6 +52,7 @@ class Category(db.Model):
 	edit_msg = db.Column(db.String(100), default="Initial edit")
 	edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
 	edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
+	edits = db.Column(db.Integer, default=1)
 	is_time_travel_edit = db.Column(db.Boolean, default=False)
 
 	def __repr__(self):
@@ -71,6 +73,7 @@ class User(db.Model, UserMixin):
 	last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
 	tool_edits = db.relationship('Tool', backref="author", lazy="dynamic")
 	category_edits = db.relationship('Category', backref="author", lazy="dynamic")
+	edits = db.Column(db.Integer, default=0)
 	is_blocked = db.Column(db.Boolean, default=False)
 
 	@property

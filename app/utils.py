@@ -54,6 +54,8 @@ def get_hostname(url):
 def gen_diff_html(old_data, new_data):
 
 	# Generate word-by-word diff if spaces, letter-by-letter if not
+	old_data = str(old_data)
+	new_data = str(new_data)
 	has_spaces = " " in old_data and " " in new_data
 	if has_spaces:
 		diff1 = list(ndiff(old_data.split(" "), new_data.split(" ")))
