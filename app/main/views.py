@@ -624,6 +624,8 @@ def add_new_tool():
 		edit_author.edits += 1
 		db.session.add(edit_author)
 
+		# Leave this commit, need record created now so it can be used on the redirect
+		db.session.commit()
 		session.pop('_flashes', None)
 		flash('This tool has been added.', 'success')
 		cache.clear()
@@ -664,6 +666,8 @@ def add_new_category():
 		edit_author.edits += 1
 		db.session.add(edit_author)
 
+		# Leave this commit, need record created now so it can be used on the redirect
+		db.session.commit()
 		session.pop('_flashes', None)
 		flash('This category has been added.', 'success')
 		cache.clear()
