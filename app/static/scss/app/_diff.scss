@@ -1,9 +1,9 @@
-#comparison-info{
+#comparison-info {
   font-weight: $font-medium;
 }
 
 blockquote {
-  margin: 0 auto 2rem auto !important;
+  margin: 0 auto 2rem !important;
   max-width: 60%;
   word-wrap: break-word;
   display: table;
@@ -15,22 +15,26 @@ blockquote {
 }
 
 .card {
+
+  margin-bottom: 1rem;
+
   h3 {
     font-weight: $font-medium;
     margin-top: 0;
   }
+
   .card-text {
     margin-top: 0;
     overflow-wrap: break-word;
 
     .diff-danger {
-      color: #a94442;
-      background-color: #f2dede;
+      color: $diff-red-text;
+      background-color: $diff-red-bg;
     }
 
     .diff-success {
-      color: #3c763d;
-      background-color: #dff0d8;
+      color: $diff-green-text;
+      background-color: $diff-green-bg;
     }
 
     &.card-wrapped-text {
@@ -43,16 +47,12 @@ blockquote {
     font-weight: $font-light;
     font-size: 1.2rem;
   }
-
-  margin-bottom: 1rem;
 }
 
 @media (min-width: 768px) {
   .right-diff {
-    border-left: 1px solid #ddd;
+    border-left: 1px solid $light-gray;
     padding-left: 10px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
 }

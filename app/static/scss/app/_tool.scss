@@ -10,7 +10,7 @@
 
     margin: 0 auto !important;
 
-    &>.tool-question-block > h1 {
+    & > .tool-question-block > h1 {
       margin-top: 0;
     }
 
@@ -32,7 +32,7 @@
     }
   }
 
-  p.alts-more-link {
+  .alts-more-link {
     font-size: 1.2em !important;
     margin-left: -20px !important;
     max-width: 125% !important;
@@ -42,13 +42,15 @@
     width: $tool-content-right-width;
     font-size: 1rem;
     order: -1;
-    margin: 0 auto 30px auto;
+    margin: 0 auto 30px;
 
     #tool-pane {
       background-color: #efefef;
       padding-top: 30px;
       border: 10px solid #dedede;
+
       #tool-pane-top {
+
         #tool-avatar {
           margin: auto;
           padding: 15px;
@@ -59,18 +61,23 @@
           background-position: center !important;
           background-size: contain !important;
         }
+
         #tool-name {
           font-weight: $font-medium;
           text-align: center;
         }
       }
+
       #tool-pane-bottom {
+
         #tool-metadata-table {
           width: 100%;
           display: table;
           border-spacing: 0 0;
           border-collapse: collapse;
-          border: none;
+          border: 0;
+          table-layout: fixed;
+
           .tool-metadata-row {
             vertical-align: top;
             width: 100%;
@@ -81,18 +88,24 @@
             }
 
             td {
-              padding: 8px 0 8px 0;
+              padding: 8px 0;
               display: table-cell;
             }
+
             .tool-metadata-name {
               font-weight: $font-medium;
               padding-left: 15px;
+              width: 40%;
             }
+
             .tool-metadata-value {
+
               .tool-parents {
                 white-space: pre !important;
                 margin-bottom: 4px;
                 display: block;
+                text-overflow: ellipsis;
+                overflow-x: hidden;
               }
             }
           }
@@ -103,6 +116,7 @@
 }
 
 @media (min-width: 576px) {
+
   #tool-right-content {
     position: inherit;
     margin-bottom: 20px;
@@ -118,6 +132,7 @@
     #tool-left-content {
       margin-left: 1rem !important;
     }
+
     #tool-right-content {
       width: 385px;
       order: 1;

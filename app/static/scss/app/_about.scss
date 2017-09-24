@@ -1,38 +1,38 @@
 .about-text {
-	font-size: 1.3rem;
-	line-height: 1.5;
+  font-size: 1.3rem;
+  line-height: 1.5;
 
-	p {
-		text-indent: 10px;
-		margin-left: 10px;
-	}
+  p {
+    text-indent: 10px;
+    margin-left: 10px;
+  }
 
-	.no-indent {
-		text-indent: 0;
-		margin-left: 0;
-	}
+  .no-indent {
+    text-indent: 0;
+    margin-left: 0;
+  }
 
-	#know-img {
-		width: 400px;
-		max-width: initial;
-	}
+  #know-img {
+    width: 400px;
+    max-width: initial;
+  }
 
-	img {
-		display: block;
-		margin: auto;
-		width: inherit;
-		max-width: max-content;
-	}
+  img {
+    display: block;
+    margin: auto;
+    width: inherit;
+    max-width: max-content;
+  }
 
-	h2 {
-		font-weight: 500;
-	}
+  h2 {
+    font-weight: 500;
+  }
 
-	h3 {
-		font-weight: 400;
-	}
+  h3 {
+    font-weight: 400;
+  }
 
-	h4 {
-		font-weight: 300;
-	}
+  h4 {
+    font-weight: 300;
+  }
 }

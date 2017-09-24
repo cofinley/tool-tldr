@@ -77,7 +77,7 @@
 								{% endif %}
 								{% for parent in tree[-3:] %}
 									<span class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a
-													href="/categories/{{ parent.id }}">{{ parent.name }}</a></span>
+													href="/categories/{{ parent.id }}" title="{{ parent.name }}">{{ parent.name }}</a></span>
 								{% endfor %}
 							</td>
 						</tr>

@@ -1,7 +1,7 @@
 $('#explore-tree').tree({
     dragAndDrop: false,
-    openedIcon: $('<span class="openedIcon toggler"></span>'),
-    closedIcon: $('<span class="closedIcon toggler"></span>'),
+    openedIcon: $('<span class="opened-icon toggler"></span>'),
+    closedIcon: $('<span class="closed-icon toggler"></span>'),
     useContextMenu: false,
     autoEscape: false,
     selectable: true
@@ -81,3 +81,13 @@ $tree.bind(
         $tree.tree('openNode', node);
     }
 );
+
+$(document).ready(function () {
+    console.log("ready");
+    $tree.floatingScroll("init");
+});
+
+$tree.on('click', function () {
+    console.log("clicked");
+    $tree.floatingScroll("update");
+});

@@ -1,5 +1,5 @@
-from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app, session
-from datetime import datetime
+from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app, session, make_response
+from datetime import datetime, timedelta
 
 from . import main
 from .. import models as models
@@ -673,3 +673,22 @@ def add_new_category():
 		cache.clear()
 		return redirect(url_for('.fetch_category_page', category_id=category.id))
 	return render_template('add_new_category.html', form=form)
+
+
+@main.route('/sitemap.xml', methods=['GET'])
+def sitemap():
+	"""Generate sitemap.xml. Makes a list of urls and date modified."""
+	pages = []
+	ten_days_ago = (datetime.now() - timedelta(days=10)).isoformat()
+	# static pages
+	for rule in current_app.url_map.iter_rules():
+		if "GET" in rule.methods and len(rule.arguments) == 0 and "admin" not in rule.rule:
+			pages.append(
+				[rule.rule, ten_days_ago]
+			)
+
+	sitemap_xml = render_template('sitemap.xml', pages=pages)
+	response = make_response(sitemap_xml)
+	response.headers["Content-Type"] = "application/xml"
+
+	return response

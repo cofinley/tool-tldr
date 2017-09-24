@@ -1,66 +1,65 @@
 .content-page-header {
-	align-items: baseline !important;
+  align-items: baseline !important;
 
-	#edit-buttons {
-		align-items: baseline;
-		margin-bottom: 20px;
+  #edit-buttons {
+    align-items: baseline;
+    margin-bottom: 20px;
 
-		a {
-			font-size: 1.1rem;
-			vertical-align: middle;
-		}
+    a {
+      font-size: 1.1rem;
+      vertical-align: middle;
+    }
 
-		.view-edits-link {
-			vertical-align: middle;
+    .view-edits-link {
+      vertical-align: middle;
 
-			a {
-				@include blue-link;
-			}
-		}
-	}
+      a {
+        @include blue-link;
+      }
+    }
+  }
 }
 
 .content-page-content {
-	font-size: 1.2rem;
+  font-size: 1.2rem;
 
-	.question-block {
+  .question-block {
 
-		.question-title {
-			font-weight: $font-medium;
-			font-size: 2.4rem;
-		}
+    .question-title {
+      font-weight: $font-medium;
+      font-size: 2.4rem;
+    }
 
-		& > p {
-			margin-bottom: 40px;
-			margin-left: 15px;
-			font-size: 1.2em;
-		}
-	}
+    & > p {
+      margin-bottom: 40px;
+      margin-left: 15px;
+      font-size: 1.2em;
+    }
+  }
 }
-
 
 // Small devices (landscape phones, 576px and up)
 @media (min-width: 340px) {
-	.content-page-header {
-		#edit-buttons {
-			a {
-				font-size: 1.3rem;
-			}
-		}
-	}
+  .content-page-header {
+    #edit-buttons {
+      a {
+        font-size: 1.3rem;
+      }
+    }
+  }
 }
 
 @media (min-width: 768px) {
-	.content-page-header {
-		display: flex;
-		align-items: center !important;
-		justify-content: space-between !important;
+  .content-page-header {
+    display: flex;
+    align-items: center !important;
+    justify-content: space-between !important;
 
-		#edit-buttons {
-			display: block;
-			align-items: normal;
-			margin-bottom: 0;
-			font-size: 1.3em;
-		}
-	}
+    #edit-buttons {
+      display: block;
+      align-items: normal;
+      margin-bottom: 0;
+      font-size: 1.3em;
+    }
+  }
 }

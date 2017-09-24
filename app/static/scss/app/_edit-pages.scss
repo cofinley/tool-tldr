@@ -1,26 +1,25 @@
 .initially-hidden-field {
-	display: none;
+  display: none;
 }
 
 .char-count {
-	position: relative;
-	bottom: 45px;
-	float: right;
-	left: -10px;
-	font-style: italic;
-	user-select: none;
+  position: relative;
+  bottom: 45px;
+  float: right;
+  left: -10px;
+  font-style: italic;
+  user-select: none;
 }
 
 #tree-pane {
 
-	#explore-tree {
-		font-size: 1.3rem !important;
-		overflow: scroll;
-		height: 745px;
+  #explore-tree {
+    font-size: 1.3rem !important;
+    overflow: scroll;
+    height: 745px;
 
-		.jqtree-title {
-			color: $dark-gray !important;
-		}
-	}
-
+    .jqtree-title {
+      color: $dark-gray !important;
+    }
+  }
 }

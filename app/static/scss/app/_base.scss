@@ -1,99 +1,102 @@
 body {
-	font-family: $font-stack;
+  font-family: $font-stack;
 
-	.page {
-		width: 100%;
+  .page {
+    width: 100%;
 
-		.content {
-			width: 95%;
-			margin: auto;
+    .content {
+      width: 95%;
+      margin: auto;
 
-			b {
-				font-weight: $font-medium;
-			}
+      b {
+        font-weight: $font-medium;
+      }
 
-			.btn-lg {
-				padding: .5rem 1rem !important;
-			}
+      .btn-lg {
+        padding: .5rem 1rem !important;
+      }
 
-			.form-button {
-				cursor: pointer;
-			}
+      .form-button {
+        cursor: pointer;
+      }
 
-			h1 {
-				font-weight: 500;
+      h1 {
+        font-weight: 500;
 
-				&.display-4 {
-					font-weight: $font-light;
-					font-size: 3rem;
-					margin-bottom: 25px;
-					margin-top: 30px;
-				}
-			}
+        &.display-4 {
+          font-weight: $font-light;
+          font-size: 3rem;
+          margin-bottom: 25px;
+          margin-top: 30px;
+        }
+      }
 
-			input, select, textarea, .btn {
-				font-family: $font-stack !important;
-			}
+      input,
+      select,
+      textarea,
+      .btn {
+        font-family: $font-stack !important;
+      }
 
-			textarea {
-				height: 170px;
-			}
+      textarea {
+        height: 170px;
+      }
 
-			.help-text {
-				font-size: 1.05em !important;
-				margin-left: 10px;
-			}
+      .help-text {
+        font-size: 1.05em !important;
+        margin-left: 10px;
+      }
 
-			.red-text {
-				color: $red;
-			}
-		}
+      .red-text {
+        color: $red;
+      }
+    }
 
-		.stretch-width-to-content {
-			width: intrinsic; /* Safari/WebKit uses a non-standard name */
-			width: -moz-max-content; /* Firefox/Gecko */
-			width: -webkit-max-content; /* Chrome */
-		}
+    .stretch-width-to-content {
+      width: intrinsic; // Safari/WebKit uses a non-standard name
+      width: -moz-max-content; // Firefox/Gecko
+      width: -webkit-max-content; // Chrome
+    }
 
-		.arrow-up {
-			width: 0;
-			height: 0;
-			border-style: solid;
-			border-width: 0 10px 17.3px 10px;
-			border-color: transparent transparent $dark-gray transparent;
-		}
-	}
+    .arrow-up {
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 10px 17.3px;
+      border-color: transparent transparent $dark-gray;
+    }
+  }
 
-	a {
-		@include blue-link;
-	}
+  a {
+    @include blue-link;
+  }
 }
 
-@media (min-width: 340px) {}
+// @media (min-width: 340px) {}
 
 // Small devices (landscape phones, 576px and up)
 @media (min-width: 576px) {
-	body {
-		.page {
-			.content {
-				width: $content-width;
-			}
-		}
-	}
+  body {
+    .page {
+      .content {
+        width: $content-width;
+      }
+    }
+  }
 }
 
 // Medium devices (tablets, 768px and up)
 @media (min-width: 768px) {
-	body {
-		.page {
-			.content {
-				h1.display-4 {
-					margin-top: 0.67em;
-					margin-bottom: 0.67em;
-				}
-			}
-		}
-	}
+  body {
+    .page {
+      .content {
+        .display-4 {
+          margin-top: .67em;
+          margin-bottom: .67em;
+        }
+      }
+    }
+  }
 
 }
 

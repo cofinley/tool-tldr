@@ -1,42 +1,44 @@
 .autocomplete-highlight {
-    font-family: $font-stack;
-    font-weight: $font-light;
-    color: $dark-gray;
+  font-family: $font-stack;
+  font-weight: $font-light;
+  color: $dark-gray;
 }
 
-.ui-state-active, .ui-widget-content .ui-state-active {
+.ui-state-active,
+.ui-widget-content {
+  .ui-state-active {
     border: 1px solid $blue;
     background: $blue;
     font-weight: $font-light;
-    color: #ffffff;
+    color: $white;
+  }
 }
 
 .autocomplete-small {
-    font-size: 1em;
+  font-size: 1em;
 }
 
 .autocomplete-big {
-    font-size: 1.3em;
+  font-size: 1.3em;
 }
 
-
 .autocomplete-suggestions {
-    margin-top: -5px;
-    padding-top: 5px;
-    z-index: auto;
+  margin-top: -5px;
+  padding-top: 5px;
+  z-index: auto;
 
-    .autocomplete-suggestion {
-        font-size: 0.98em;
-        font-weight: 400;
-        padding: 0.2em 0 0.2em 0.5em;
+  .autocomplete-suggestion {
+    font-size: .98em;
+    font-weight: 400;
+    padding: .2em 0 .2em .5em;
 
-        &:first-child {
-            margin-top: -2px;
-        }
+    &:first-child {
+      margin-top: -2px;
     }
+  }
 
-    .autocomplete-suggestion-big {
-        font-size: 1.4rem;
-        padding: 0.45em 0 .4em .75em;
-    }
+  .autocomplete-suggestion-big {
+    font-size: 1.4rem;
+    padding: .45em 0 .4em .75em;
+  }
 }

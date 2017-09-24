@@ -14,26 +14,28 @@
 #category-content {
 
   #category-content-top {
-
-    background-color: #222;
-    color: white;
+    background-color: $dark-gray;
+    color: $white;
     border-radius: 20px;
     padding: 15px;
 
     .help-text {
-      color: #9c9c9c !important;
+      color: $white;
+      opacity: .5;
     }
   }
 
   #category-content-bottom {
     margin-top: 20px;
+
     .category-bottom-block {
+
       .env-alts-env-title {
         font-weight: $font-medium;
         font-size: 2rem;
       }
-      .category-content-list {
 
+      .category-content-list {
         list-style-position: inside;
         display: table;
         margin: auto;
@@ -55,7 +57,6 @@
 // Small devices (landscape phones, 576px and up)
 //@media (min-width: 340px) {  }
 
-
 // Small devices (landscape phones, 576px and up)
 //@media (min-width: 576px) {  }
 
@@ -65,9 +66,12 @@
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
   #category-content {
+
     #category-content-bottom {
       margin-top: 10px;
+
       .category-bottom-block {
+
         .env-alts-env-title {
           font-size: 2em;
         }

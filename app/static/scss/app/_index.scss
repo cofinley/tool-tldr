@@ -1,7 +1,7 @@
 #tagline {
   font-weight: $font-light;
   font-size: 1.25em;
-  margin: 60px auto 50px auto;
+  margin: 60px auto 50px;
   max-width: 320px;
 }
 
@@ -16,7 +16,7 @@
     animation-name: loader-spin;
     right: 30px;
     z-index: 3;
-    opacity: 0.8;
+    opacity: .8;
   }
 
   #big-search-bar-input {
@@ -24,12 +24,12 @@
     font-weight: 400;
     color: $dark-gray;
     padding: .75rem 1.1rem !important;
-    font-size: 0.9rem;
+    font-size: .9rem;
   }
 }
 
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: lightgray;
+::-webkit-input-placeholder { // Chrome/Opera/Safari
+  color: $light-gray;
 }
 
 #categories {
@@ -53,6 +53,7 @@
       font-size: 1rem;
     }
   }
+
   a {
     margin: 5px;
     overflow: hidden;
@@ -85,7 +86,7 @@
   #tagline {
     font-size: 1.5rem;
     max-width: 400px;
-    margin: 90px auto 60px auto;
+    margin: 90px auto 60px;
   }
 
   #big-search {

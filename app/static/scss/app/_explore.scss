@@ -1,5 +1,4 @@
 #explore-header {
-
   button {
     height: 100%;
   }
@@ -14,14 +13,20 @@
   font-size: 1.3rem;
   margin-bottom: 60px;
   padding-left: 0;
+  overflow: auto;
+  width: 100%;
+
+  & > ul {
+    margin-top: 0;
+  }
 
   .toggler {
     width: 2em;
     height: 2em;
     display: inline-block;
-    font-size: 0.8em;
+    font-size: .8em;
     text-align: center;
-    border: 0.01em solid transparent;
+    border: .01em solid transparent;
     padding: 4pt;
     border-radius: 4px;
     position: relative;
@@ -38,24 +43,28 @@
     }
   }
 
-  span.openedIcon::before {
-    content: "\2212";
+  .opened-icon {
+    &::before {
+      content: '\2212';
+    }
   }
 
-  span.closedIcon::before {
-    content: "+";
+  .closed-icon {
+    &::before {
+      content: '+';
+    }
   }
 
-  span.jqtree-title {
+  .jqtree-title {
     position: relative;
     top: -2px;
   }
 
-  ul.jqtree-tree li.jqtree-selected>.jqtree-element {
+  .jqtree-tree .jqtree-selected > .jqtree-element {
     background: lighten($light-gray, 11%);
     text-shadow: none;
 
-    span.jqtree-title {
+    .jqtree-title {
       &:focus {
         outline: none;
       }
@@ -68,19 +77,15 @@
   }
 
   .jqtree-element {
-    padding: 5px 5px 8px 5px;
+    padding: 5px 5px 8px;
     border-radius: 5px;
     white-space: nowrap;
     text-overflow: ellipsis;
 
     .blurb {
       margin-left: 50px;
-      font-size: 0.8em;
-      opacity: 0.8;
-
-      .blurbDisplay {
-        display: none !important;
-      }
+      font-size: .8em;
+      opacity: .8;
     }
   }
 
@@ -96,20 +101,20 @@
   }
 }
 
-.jqtree-tree .jqtree-loading > div .jqtree-title:after {
-  content: url(/static/img/loader.svg);
+.jqtree-tree .jqtree-loading > div .jqtree-title::after {
+  content: url('/static/img/loader.svg');
   top: 3px;
   position: relative;
   animation: spin 1.1s linear infinite;
   animation-name: loader-spin;
   left: 11px;
   display: inline-block;
-  opacity: 0.8;
+  opacity: .8;
   transform-origin: 50% 41%;
 }
 
-#explore-tree.jqtree-loading:after {
-  content: url(/static/img/loader.svg);
+#explore-tree.jqtree-loading::after {
+  content: url('/static/img/loader.svg');
   animation: spin 1.1s linear infinite;
   animation-name: loader-spin;
 }

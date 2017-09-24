@@ -1,4 +1,4 @@
-.profile-edits-list{
+.profile-edits-list {
   line-height: 1.6em;
 }
 
@@ -8,16 +8,19 @@
 
 #profile-main {
 
-  .list-group-item b {
-    font-weight: $font-medium;
+  .list-group-item {
+    b {
+      font-weight: $font-medium;
+    }
   }
+
   .profile-info-header {
     font-weight: $font-medium;
   }
 }
 
 #about-me {
- white-space: pre-wrap;
+  white-space: pre-wrap;
 }
 
 #recent-activity-header {
@@ -67,9 +70,9 @@
 
   input:checked + label {
     color: $dark-gray;
-    border: 1px solid #ddd;
+    border: 1px solid $light-gray;
     border-top: 2px solid $red;
-    border-bottom: 2px solid #fff;
+    border-bottom: 2px solid $white;
   }
 
   #tab1:checked ~ #tool-edits,
