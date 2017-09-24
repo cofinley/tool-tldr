@@ -1,71 +1,72 @@
 <div id="header" class="d-flex justify-content-end align-items-end">
-	<a class="mr-auto" href="/"><img id="logo-svg" src="{{ url_for('static', filename='img/logo-outline-small.svg') }}" /></a>
-	<div id="nav" class="align-items-end d-flex flex-column">
-		<div id="nav-user-actions" class="d-flex flex-row mb-2">
-			{% if current_user.is_authenticated %}
-				<span class="nav-user-text-button"><a class="nav-user-link" href="/users/{{ current_user.id }}">My Account</a>
-				</span>
-				<span class="nav-user-text-button"><a class="nav-user-link" href="/auth/logout">Log out</a></span>
-			{% else %}
-				<span class="nav-user-text-button"><a class="nav-user-link" href="/auth/login">Log in</a></span>
-				<span class="nav-user-text-button"><a class="nav-user-link" href="/auth/register">Sign up</a></span>
-			{% endif %}
-		</div>
-		<div id="links-and-search" class="d-flex flex-row">
-			<ul class="nav">
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle add-button" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-					   aria-expanded="false">add</a>
-					<div class="dropdown-menu">
-						<a class="dropdown-item" href="/add-new-tool">Tool</a>
-						<a class="dropdown-item" href="/add-new-category">Category</a>
-					</div>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/explore">explore</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/about">about</a>
-				</li>
-			</ul>
+  <a class="mr-auto" href="/"><img id="logo-svg" src="{{ url_for('static', filename='img/logo-outline-small.svg') }}"/></a>
+  <div id="nav" class="align-items-end d-flex flex-column">
+    <div id="nav-user-actions" class="d-flex flex-row mb-2">
+      {% if current_user.is_authenticated %}
+        <span class="nav-user-text-button"><a class="nav-user-link" href="/users/{{ current_user.id }}">My Account</a>
+        </span>
+        <span class="nav-user-text-button"><a class="nav-user-link" href="/auth/logout">Log out</a></span>
+      {% else %}
+        <span class="nav-user-text-button"><a class="nav-user-link" href="/auth/login">Log in</a></span>
+        <span class="nav-user-text-button"><a class="nav-user-link" href="/auth/register">Sign up</a></span>
+      {% endif %}
+    </div>
+    <div id="links-and-search" class="d-flex flex-row">
+      <ul class="nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle add-button" data-toggle="dropdown" href="#" role="button"
+             aria-haspopup="true"
+             aria-expanded="false">add</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/add-new-tool">Tool</a>
+            <a class="dropdown-item" href="/add-new-category">Category</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/explore">explore</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">about</a>
+        </li>
+      </ul>
 
-			<div id="search-input-group" class="input-group">
-				<input id="search-input" class="form-control p-2" placeholder="Search" aria-label="Search">
-				<img id="small-loader" src="{{ url_for('static', filename='img/loader.svg') }}">
-			</div>
-		</div>
-	</div>
-{#	<div id="mobile-search">#}
-{#		<img src="{{ url_for('static', filename='img/search.svg') }}">#}
-{#	</div>#}
-{#	<div id="mobile-search-dropdown-container">#}
-{#		<div id="mobile-search-arrow-up" class="arrow-up"></div>#}
-{#		<input id="mobile-search-input" class="form-control p-2" placeholder="Search" aria-label="Search">#}
-{#		<img id="mobile-loader" src="{{ url_for('static', filename='img/loader.svg') }}">#}
-{#	</div>#}
-	<div id="hamburguesa">
-		<img src="{{ url_for('static', filename='img/menu.svg') }}">
-		<div id="nav-menu-arrow-up" class="arrow-up"></div>
-		<div id="nav-menu">
-			<div id="nav-menu-pages">
-				<div id="nav-menu-page-1" class="nav-menu-page stretch-width-to-content">
-					<a id="show-add-options"><span>Add</span></a>
-					<a href="/explore"><span>Explore</span></a>
-					<a href="/about"><span>About</span></a>
-					{% if current_user.is_authenticated %}
-						<a href="/users/{{ current_user.id }}"><span>My Account</span></a>
-						<a href="/auth/logout"><span>Log out</span></a>
-					{% else %}
-						<a href="/auth/login"><span>Log in</span></a>
-						<a href="/auth/register"><span>Sign up</span></a>
-					{% endif %}
-				</div>
-				<div id="nav-menu-page-2" class="nav-menu-page stretch-width-to-content">
-					<a id="hide-add-options"><span>Back</span></a>
-					<a href="/add-new-tool"><span>Tool</span></a>
-					<a href="/add-new-category"><span>Category</span></a>
-				</div>
-			</div>
-		</div>
-	</div>
+      <div id="search-input-group" class="input-group">
+        <input id="search-input" class="form-control p-2" placeholder="Search" aria-label="Search">
+        <img id="small-loader" src="{{ url_for('static', filename='img/loader.svg') }}">
+      </div>
+    </div>
+  </div>
+  {#	<div id="mobile-search">#}
+  {#		<img src="{{ url_for('static', filename='img/search.svg') }}">#}
+  {#	</div>#}
+  {#	<div id="mobile-search-dropdown-container">#}
+  {#		<div id="mobile-search-arrow-up" class="arrow-up"></div>#}
+  {#		<input id="mobile-search-input" class="form-control p-2" placeholder="Search" aria-label="Search">#}
+  {#		<img id="mobile-loader" src="{{ url_for('static', filename='img/loader.svg') }}">#}
+  {#	</div>#}
+  <div id="hamburguesa">
+    <img src="{{ url_for('static', filename='img/menu.svg') }}">
+    <div id="nav-menu-arrow-up" class="arrow-up"></div>
+    <div id="nav-menu">
+      <div id="nav-menu-pages">
+        <div id="nav-menu-page-1" class="nav-menu-page stretch-width-to-content">
+          <a id="show-add-options"><span>Add</span></a>
+          <a href="/explore"><span>Explore</span></a>
+          <a href="/about"><span>About</span></a>
+          {% if current_user.is_authenticated %}
+            <a href="/users/{{ current_user.id }}"><span>My Account</span></a>
+            <a href="/auth/logout"><span>Log out</span></a>
+          {% else %}
+            <a href="/auth/login"><span>Log in</span></a>
+            <a href="/auth/register"><span>Sign up</span></a>
+          {% endif %}
+        </div>
+        <div id="nav-menu-page-2" class="nav-menu-page stretch-width-to-content">
+          <a id="hide-add-options"><span>Back</span></a>
+          <a href="/add-new-tool"><span>Tool</span></a>
+          <a href="/add-new-category"><span>Category</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

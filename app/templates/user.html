@@ -4,116 +4,122 @@
 {% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
-<div class="content-page-header">
-		<h1>{{ user.username }}{% if user.is_blocked %}<span class="red-text"> [blocked]</span>{% endif %}</h1>
+  <div class="content-page-header">
+    <h1>{{ user.username }}{% if user.is_blocked %}<span class="red-text"> [blocked]</span>{% endif %}</h1>
     <div id="edit-buttons" class="user-edit-buttons">
-        {% if current_user.is_administrator %}
-            <p id="user-email-button" class="mr-2"><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
-        {% endif %}
-        {% if user == current_user %}
-            <a class="btn btn-secondary mr-2" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
-        {% endif %}
-        {% if current_user.is_administrator %}
-            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
-        {% endif %}
+      {% if current_user.is_administrator %}
+        <p id="user-email-button" class="mr-2"><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+      {% endif %}
+      {% if user == current_user %}
+        <a class="btn btn-secondary mr-2" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
+      {% endif %}
+      {% if current_user.is_administrator %}
+        <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
+      {% endif %}
     </div>
-</div>
-<div id="profile-main">
+  </div>
+  <div id="profile-main">
 
     <div class="row">
 
-        <div id="profile-details" class="col-lg-3 col-12">
-            <ul class="list-group">
-                <li class="list-group-item text-muted">Profile</li>
-                <li class="list-group-item justify-content-between"><span><b>Member since</b></span>{{ user.member_since.strftime("%B %d, %Y") }}</li>
-                <li class="list-group-item justify-content-between"><span><b>Last seen</b></span>{{ user.last_seen.strftime("%B %d, %Y") }}</li>
-                <li class="list-group-item justify-content-between"><span><b>Real name</b></span>{{ user.name }}</li>
-		            <li class="list-group-item justify-content-between"><span><b>Role</b></span><a href="{{ url_for('main.get_roles') }}">{{ user.role.name }} {% if user.role.name != "Administrator" %}User{% endif %}</a></li>
-                <li class="list-group-item justify-content-between"><span><b>Total edits</b></span>{{ total_edits }}</li>
-            </ul>
+      <div id="profile-details" class="col-lg-3 col-12">
+        <ul class="list-group">
+          <li class="list-group-item text-muted">Profile</li>
+          <li class="list-group-item justify-content-between">
+            <span><b>Member since</b></span>{{ user.member_since.strftime("%B %d, %Y") }}</li>
+          <li class="list-group-item justify-content-between">
+            <span><b>Last seen</b></span>{{ user.last_seen.strftime("%B %d, %Y") }}</li>
+          <li class="list-group-item justify-content-between"><span><b>Real name</b></span>{{ user.name }}</li>
+          <li class="list-group-item justify-content-between"><span><b>Role</b></span><a
+                  href="{{ url_for('main.get_roles') }}">{{ user.role.name }} {% if user.role.name != "Administrator" %}
+            User{% endif %}</a></li>
+          <li class="list-group-item justify-content-between"><span><b>Total edits</b></span>{{ total_edits }}</li>
+        </ul>
 
-            <ul class="list-group">
-                <li class="list-group-item text-muted">About</li>
-                <li class="list-group-item"><p id="about-me">{{ user.about_me }}</p></li>
-            </ul>
-        </div>
+        <ul class="list-group">
+          <li class="list-group-item text-muted">About</li>
+          <li class="list-group-item"><p id="about-me">{{ user.about_me }}</p></li>
+        </ul>
+      </div>
 
-        <div id="recent-activity" class="col-lg-9 col-12">
+      <div id="recent-activity" class="col-lg-9 col-12">
 
-            <h2 class="profile-info-header">Recent Activity</h2>
+        <h2 class="profile-info-header">Recent Activity</h2>
 
-            <input id="tab1" type="radio" name="tabs" checked>
-            <label for="tab1">Tool Edits</label>
+        <input id="tab1" type="radio" name="tabs" checked>
+        <label for="tab1">Tool Edits</label>
 
-            <input id="tab2" type="radio" name="tabs">
-            <label for="tab2">Category Edits</label>
+        <input id="tab2" type="radio" name="tabs">
+        <label for="tab2">Category Edits</label>
 
-            <section id="tool-edits">
+        <section id="tool-edits">
 
-                <table class="table table-striped">
+          <table class="table table-striped">
 
-                    <thead>
-                        <tr>
-                            <th>Edit</th>
-                            <th>Tool Name (at the time)</th>
-                            <th>Edit Message</th>
-                        </tr>
-                    </thead>
+            <thead>
+            <tr>
+              <th>Edit</th>
+              <th>Tool Name (at the time)</th>
+              <th>Edit Message</th>
+            </tr>
+            </thead>
 
-                    {% if tool_edits %}
-                        <tbody>
-                            {% for tool_edit in tool_edits|sort(attribute="edit_time", reverse=True) %}
-                                <tr>
-                                    <td>
-                                        <a href="/tools/{{ tool_edit.id }}/edits/diff/{{ tool_edit.previous.transaction_id }}/{{ tool_edit.transaction_id }}"
-                                            title="{{ tool_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
-                                                    {{ tool_edit.edit_time.strftime('%B %d, %Y') }}
-                                        </a>
-                                    </td>
-                                    <td><a href="/tools/{{ tool_edit.id }}">{{ tool_edit.name }}</a></td>
-                                    <td>{{ tool_edit.edit_msg }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-		                {% endif %}
-                </table>
+            {% if tool_edits %}
+              <tbody>
+              {% for tool_edit in tool_edits|sort(attribute="edit_time", reverse=True) %}
+                <tr>
+                  <td>
+                    <a href="/tools/{{ tool_edit.id }}/edits/diff/{{ tool_edit.previous.transaction_id }}/{{ tool_edit.transaction_id }}"
+                       title="{{ tool_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
+                      {{ tool_edit.edit_time.strftime('%B %d, %Y') }}
+                    </a>
+                  </td>
+                  <td><a href="/tools/{{ tool_edit.id }}">{{ tool_edit.name }}</a></td>
+                  <td>{{ tool_edit.edit_msg }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            {% endif %}
+          </table>
 
-		            <a href="/users/{{ user.id }}/edits/tools" class="btn btn-secondary {% if not tool_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
-            </section>
+          <a href="/users/{{ user.id }}/edits/tools"
+             class="btn btn-secondary {% if not tool_edits %}disabled{% endif %}">View All</a>
+        </section>
 
-            <section id="category-edits">
+        <section id="category-edits">
 
-                <table class="table table-striped">
+          <table class="table table-striped">
 
-                    <thead>
-                        <tr>
-                            <th>Edit</th>
-                            <th>Category Name (at the time)</th>
-                            <th>Edit Message</th>
-                        </tr>
-                    </thead>
+            <thead>
+            <tr>
+              <th>Edit</th>
+              <th>Category Name (at the time)</th>
+              <th>Edit Message</th>
+            </tr>
+            </thead>
 
-                    {% if category_edits %}
-                        <tbody>
-                            {% for category_edit in category_edits|sort(attribute="edit_time", reverse=True) %}
-                            <tr>
-                                <td>
-                                    <a href="/categories/{{ category_edit.id }}/edits/diff/{{ category_edit.previous.transaction_id }}/{{ category_edit.transaction_id }}"
-                                        title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
-                                                    {{ category_edit.edit_time.strftime('%B %d, %Y') }}
-                                    </a>
-                                </td>
-                                <td><a href="/categories/{{ category_edit.id }}">{{ category_edit.name }}</a></td>
-                                <td>{{ category_edit.edit_msg }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-		                {% endif %}
-                </table>
+            {% if category_edits %}
+              <tbody>
+              {% for category_edit in category_edits|sort(attribute="edit_time", reverse=True) %}
+                <tr>
+                  <td>
+                    <a href="/categories/{{ category_edit.id }}/edits/diff/{{ category_edit.previous.transaction_id }}/{{ category_edit.transaction_id }}"
+                       title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
+                      {{ category_edit.edit_time.strftime('%B %d, %Y') }}
+                    </a>
+                  </td>
+                  <td><a href="/categories/{{ category_edit.id }}">{{ category_edit.name }}</a></td>
+                  <td>{{ category_edit.edit_msg }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            {% endif %}
+          </table>
 
-		            <a href="/users/{{ user.id }}/edits/categories" class="btn btn-secondary {% if not category_edits %}disabled{% endif %}" role="button" aria-pressed="true">View All</a>
-            </section>
-        </div>
+          <a href="/users/{{ user.id }}/edits/categories"
+             class="btn btn-secondary {% if not category_edits %}disabled{% endif %}">View All</a>
+        </section>
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}

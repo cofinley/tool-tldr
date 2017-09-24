@@ -4,31 +4,31 @@
 {% block title %}Add New Category{% endblock %}
 
 {% block content %}
-    <div class="page-header">
-        <h1>Add New Category</h1>
-    </div>
-    <div class="row">
-        <form class="col-md-4" method="post" role="form">
-	        {% set max = 250 %}
-          {{ form.hidden_tag() }}
+  <div class="page-header">
+    <h1>Add New Category</h1>
+  </div>
+  <div class="row">
+    <form class="col-md-4" method="post">
+      {% set max = 250 %}
+      {{ form.hidden_tag() }}
 
-          {{ wtf.form_field(form.name) }}
-          {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
-	        {{ wtf.form_field(form.what, help_text="What is the tl;dr of the category? What do tools in this category let you do?", maxlength=max) }}
-	        <span id="what-count" class="char-count text-muted">{{ max }}</span>
-	        {{ wtf.form_field(form.why, help_text="Why would I need to use it? Why would I need to <i>start</i> using it?", maxlength=max) }}
-	        <span id="why-count" class="char-count text-muted">{{ max }}</span>
-	        {{ wtf.form_field(form.where, help_text="Where does it fall in the application space or stack? Where would I use it in my application?", maxlength=max) }}
-	        <span id="where-count" class="char-count text-muted">{{ max }}</span>
+      {{ wtf.form_field(form.name) }}
+      {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
+      {{ wtf.form_field(form.what, help_text="What is the tl;dr of the category? What do tools in this category let you do?", maxlength=max) }}
+      <span id="what-count" class="char-count text-muted">{{ max }}</span>
+      {{ wtf.form_field(form.why, help_text="Why would I need to use it? Why would I need to <i>start</i> using it?", maxlength=max) }}
+      <span id="why-count" class="char-count text-muted">{{ max }}</span>
+      {{ wtf.form_field(form.where, help_text="Where does it fall in the application space or stack? Where would I use it in my application?", maxlength=max) }}
+      <span id="where-count" class="char-count text-muted">{{ max }}</span>
 
-          <div class="d-flex justify-content-end mb-5 mt-3 w-100">
-              <button type="button" class="btn btn-outline-danger mr-auto form-button" onclick="goBack()">Cancel</button>
-              <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
-          </div>
-        </form>
-        <div id="tree-pane" class="col-md-8">
-            <label>Pick a parent category</label>
-            <div id="explore-tree" data-url="/explore_nodes?no-link=true&show-root=true"></div>
-        </div>
+      <div class="d-flex justify-content-end mb-5 mt-3 w-100">
+        <button type="button" class="btn btn-outline-danger mr-auto form-button" onclick="goBack()">Cancel</button>
+        <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
+      </div>
+    </form>
+    <div id="tree-pane" class="col-md-8">
+      <label>Pick a parent category</label>
+      <div id="explore-tree" data-url="/explore_nodes?no-link=true&show-root=true"></div>
     </div>
+  </div>
 {% endblock %}

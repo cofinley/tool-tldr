@@ -4,35 +4,35 @@
 {% block title %}Add New Tool{% endblock %}
 
 {% block content %}
-    <div class="page-header">
-        <h1>Add New Tool</h1>
-    </div>
-    <div class="row">
-        <form class="col-md-4" method="post" role="form">
-		        {% set max = 250 %}
-            {{ form.hidden_tag() }}
+  <div class="page-header">
+    <h1>Add New Tool</h1>
+  </div>
+  <div class="row">
+    <form class="col-md-4" method="post">
+      {% set max = 250 %}
+      {{ form.hidden_tag() }}
 
-            {{ wtf.form_field(form.name) }}
-            {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
-            {{ wtf.form_field(form.avatar_url) }}
-            {{ wtf.form_field(form.env, help_text="In what environment is this tool used? Usually, this is a programming lanugage.") }}
-		        {{ wtf.form_field(form.created, min="1970", max="2099", step="1", type="number") }}
-            {{ wtf.form_field(form.project_version) }}
-            {{ wtf.form_field(form.is_active) }}
-            {{ wtf.form_field(form.link) }}
-            {{ wtf.form_field(form.why, help_text="Why use this tool over an alternative?", maxlength=max) }}
-		        <span id="why-count" class="char-count text-muted">{{ max }}</span>
-	          {% if not is_confirmed %}
-	            {{ form.recaptcha }}
-	          {% endif %}
-            <div class="d-flex justify-content-end mb-5 mt-3 w-100">
-                <button type="button" class="btn btn-outline-danger mr-auto form-button" onclick="goBack()">Cancel</button>
-                <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
-            </div>
-        </form>
-        <div id="tree-pane" class="col-md-8">
-            <label>Pick a parent category</label>
-            <div id="explore-tree" data-url="/explore_nodes?no-link=true"></div>
-        </div>
+      {{ wtf.form_field(form.name) }}
+      {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
+      {{ wtf.form_field(form.avatar_url) }}
+      {{ wtf.form_field(form.env, help_text="In what environment is this tool used? Usually, this is a programming lanugage.") }}
+      {{ wtf.form_field(form.created, min="1970", max="2099", step="1", type="number") }}
+      {{ wtf.form_field(form.project_version) }}
+      {{ wtf.form_field(form.is_active) }}
+      {{ wtf.form_field(form.link) }}
+      {{ wtf.form_field(form.why, help_text="Why use this tool over an alternative?", maxlength=max) }}
+      <span id="why-count" class="char-count text-muted">{{ max }}</span>
+      {% if not is_confirmed %}
+        {{ form.recaptcha }}
+      {% endif %}
+      <div class="d-flex justify-content-end mb-5 mt-3 w-100">
+        <button type="button" class="btn btn-outline-danger mr-auto form-button" onclick="goBack()">Cancel</button>
+        <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
+      </div>
+    </form>
+    <div id="tree-pane" class="col-md-8">
+      <label>Pick a parent category</label>
+      <div id="explore-tree" data-url="/explore_nodes?no-link=true"></div>
     </div>
+  </div>
 {% endblock %}

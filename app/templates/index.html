@@ -1,22 +1,24 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-    <div id="tagline" class="col-lg-5 text-center">
-        <p>A community wiki for navigating programming tools in layman's terms.</p>
+  <div id="tagline" class="col-lg-5 text-center">
+    <p>A community wiki for navigating programming tools in layman's terms.</p>
+  </div>
+  <div id="big-search" class="col-lg-5 col-md-6 input-group input-group-lg">
+    <input id="big-search-bar-input" class="form-control" aria-label="Search" placeholder="Search software tools"
+           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search software tools'">
+    <img id="big-loader" src="{{ url_for('static', filename='img/loader.svg') }}">
+  </div>
+  <div id="categories">
+    <p id="category-title">Popular Categories</p>
+    <div id="category-columns">
+      {% for category in categories %}
+        <a class="category-list-item btn btn-outline-primary btn-lg" href="/categories/{{ category.id }}"
+           title="{{ category.name }}">{{ category.name }}</a>
+      {% endfor %}
     </div>
-    <div id="big-search" class="col-lg-5 col-md-6 input-group input-group-lg">
-        <input id="big-search-bar-input" class="form-control" aria-label="Search" placeholder="Search software tools" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search software tools'">
-		    <img id="big-loader" src="{{ url_for('static', filename='img/loader.svg') }}">
-    </div>
-    <div id="categories">
-        <p id="category-title">Popular Categories</p>
-        <div id="category-columns">
-                {% for category in categories %}
-                    <a class="category-list-item btn btn-outline-primary btn-lg" role="button" href="/categories/{{ category.id }}" title="{{ category.name }}">{{ category.name }}</a>
-                {% endfor %}
-        </div>
-        {%  if show_more %}
-            <p id="show-more"><a href="/explore">Show More...</a></p>
-        {% endif %}
-    </div>
+    {% if show_more %}
+      <p id="show-more"><a href="/explore">Show More...</a></p>
+    {% endif %}
+  </div>
 {% endblock %}

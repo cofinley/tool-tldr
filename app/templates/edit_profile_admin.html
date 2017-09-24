@@ -4,23 +4,23 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-<div class="page-header">
+  <div class="page-header">
     <h1>Edit This Profile</h1>
-</div>
-<form class="col-md-8 col-lg-4" method="post" role="form">
+  </div>
+  <form class="col-md-8 col-lg-4" method="post">
     {{ form.hidden_tag() }}
     {{ wtf.form_errors(form, hiddens="only") }}
 
-		{{ wtf.form_field(form.email) }}
-		{{ wtf.form_field(form.username) }}
-		<div class="mb-3 mt-4">
-			{{ wtf.form_field(form.confirmed) }}
-		</div>
-		{{ wtf.form_field(form.role) }}
+    {{ wtf.form_field(form.email) }}
+    {{ wtf.form_field(form.username) }}
+    <div class="mb-3 mt-4">
+      {{ wtf.form_field(form.confirmed) }}
+    </div>
+    {{ wtf.form_field(form.role) }}
 
     <div class="d-flex justify-content-end mb-5">
-        <button type="button" class="btn btn-outline-danger mr-auto form-button" onclick="goBack()">Cancel</button>
-        <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
+      <button type="button" class="btn btn-outline-danger mr-auto form-button" onclick="goBack()">Cancel</button>
+      <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
     </div>
-</form>
+  </form>
 {% endblock %}

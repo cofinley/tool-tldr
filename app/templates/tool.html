@@ -1,110 +1,111 @@
 {% extends "base.html" %}
 {% block title %}{{ tool.name }}{% endblock %}
 {% block content %}
-	<div id="tool-header" class="content-page-header">
-		<h1 class="display-4">{{ tool.name }}</h1>
-		<div id="edit-buttons">
-			<a role="button" class="btn btn-lg btn-primary ml-auto mr-3" href="/tools/{{ tool.id }}/edit">Edit Page</a>
-			<span id="view-edits-link" class="stretch-width-to-content"><a href="/tools/{{ tool.id }}/edits">View Edits</a></span>
-		</div>
-	</div>
-	<div id="tool-content" class="row justify-content-between content-page-content">
-		<div id="tool-left-content" class="col-md-10 col-lg-6">
-			<div class="question-block tool-question-block">
-				<h1 class="question-title">The What</h1>
-				<p>This tool falls within the <a href="/categories/{{ tree[-1].id }}">{{ tree[-1].name }}</a> category.</p>
-			</div>
-			<div class="question-block tool-question-block">
-				<h1 class="question-title">The Why</h1>
-				<p class="text-muted help-text mb-0">Why use this tool over an alternative?</p>
-				<p>{{ tool.why }}</p>
-			</div>
-			<div class="question-block tool-question-block">
-				<h1 class="question-title">Alternatives</h1>
-				{% if env_alts or other_alts %}
-					<div class="row ml-0">
-						{% if env_alts %}
-							<div class="env-alts-section col-md-6">
-								<h3 class="env-alts-env-title"><i>For {{ tool.env.title() }}</i></h3>
-								<ul class="env-alts-list">
-									{% for alt in env_alts %}
-										<li><a href="/tools/{{ alt.id }}">{{ alt.name }}</a></li>
-										{%- if loop.index == 7 %}
-											<p class="alts-more-link"><a
-															href={{ url_for("main.browse_categories", id=tree[-1].id, env=tool.env) }}>More
-												for {{ tool.env.title() }}...</a></p>
-											{% break %}
-										{% endif %}
-									{%- endfor %}
-								</ul>
-							</div>
-						{% endif %}
-						{% if other_alts %}
-							<div class="env-alts-section col-md-6">
-								<h3 class="env-alts-env-title"><i>For other environments</i></h3>
-								<ul class="env-alts-list">
-									{% for alt in other_alts %}
-										<li><a href="/tools/{{ alt.id }}">{{ alt.name }}</a> ({{ alt.env.title() }})</li>
-										{%- if loop.index == 7 %}
-											<p class="alts-more-link"><a href={{ url_for("main.browse_categories", id=tree[-1].id) }}>More for
-												all environments...</a></p>
-											{% break %}
-										{% endif %}
-									{%- endfor %}
-								</ul>
-							</div>
-						{% endif %}
-					</div>
-				{% else %}
-					<p class="text-muted"><i>No alternatives added yet</i></p>
-				{% endif %}
-			</div>
-		</div>
-		<div id="tool-right-content" class="col-md-auto">
-			<div id="tool-pane">
-				<div id="tool-pane-top">
-					<div id="tool-avatar" style="background: url({{ tool.avatar_url }}) no-repeat white"></div>
-					<h1 id="tool-name">{{ tool.name }}</h1>
-				</div>
-				<hr>
-				<div id="tool-pane-bottom">
-					<table id="tool-metadata-table">
-						<tr class="tool-metadata-row ">
-							<td class="tool-metadata-name">Hierarchy</td>
-							<td class="tool-metadata-value">
-								{% if tree | length > 3 %}
-									<span class="tool-parents">...</span>
-								{% endif %}
-								{% for parent in tree[-3:] %}
-									<span class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a
-													href="/categories/{{ parent.id }}" title="{{ parent.name }}">{{ parent.name }}</a></span>
-								{% endfor %}
-							</td>
-						</tr>
-						<tr class="tool-metadata-row">
-							<td class="tool-metadata-name">Environment</td>
-							<td class="tool-metadata-value">{{ tool.env.title() }}</td>
-						</tr>
-						<tr class="tool-metadata-row">
-							<td class="tool-metadata-name">Created</td>
-							<td class="tool-metadata-value">{{ tool.created }}</td>
-						</tr>
-						<tr class="tool-metadata-row">
-							<td class="tool-metadata-name">Version</td>
-							<td class="tool-metadata-value">{{ tool.project_version }}</td>
-						</tr>
-						<tr class="tool-metadata-row">
-							<td class="tool-metadata-name">Active</td>
-							<td class="tool-metadata-value">{% if tool.is_active %}Yes{% else %}No{% endif %}</td>
-						</tr>
-						<tr class="tool-metadata-row">
-							<td class="tool-metadata-name">Project URL</td>
-							<td class="tool-metadata-value"><a id="tool-link" href="{{ tool.link }}" target="_blank">{{ link }}</a>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div id="tool-header" class="content-page-header">
+    <h1 class="display-4">{{ tool.name }}</h1>
+    <div id="edit-buttons">
+      <a class="btn btn-lg btn-primary ml-auto mr-3" href="/tools/{{ tool.id }}/edit">Edit Page</a>
+      <span id="view-edits-link" class="stretch-width-to-content"><a
+              href="/tools/{{ tool.id }}/edits">View Edits</a></span>
+    </div>
+  </div>
+  <div id="tool-content" class="row justify-content-between content-page-content">
+    <div id="tool-left-content" class="col-md-10 col-lg-6">
+      <div class="question-block tool-question-block">
+        <h1 class="question-title">The What</h1>
+        <p>This tool falls within the <a href="/categories/{{ tree[-1].id }}">{{ tree[-1].name }}</a> category.</p>
+      </div>
+      <div class="question-block tool-question-block">
+        <h1 class="question-title">The Why</h1>
+        <p class="text-muted help-text mb-0">Why use this tool over an alternative?</p>
+        <p>{{ tool.why }}</p>
+      </div>
+      <div class="question-block tool-question-block">
+        <h1 class="question-title">Alternatives</h1>
+        {% if env_alts or other_alts %}
+          <div class="row ml-0">
+            {% if env_alts %}
+              <div class="env-alts-section col-md-6">
+                <h3 class="env-alts-env-title"><i>For {{ tool.env.title() }}</i></h3>
+                <ul class="env-alts-list">
+                  {% for alt in env_alts %}
+                    <li><a href="/tools/{{ alt.id }}">{{ alt.name }}</a></li>
+                    {%- if loop.index == 7 %}
+                      <p class="alts-more-link"><a
+                              href={{ url_for("main.browse_categories", id=tree[-1].id, env=tool.env) }}>More
+                        for {{ tool.env.title() }}...</a></p>
+                      {% break %}
+                    {% endif %}
+                  {%- endfor %}
+                </ul>
+              </div>
+            {% endif %}
+            {% if other_alts %}
+              <div class="env-alts-section col-md-6">
+                <h3 class="env-alts-env-title"><i>For other environments</i></h3>
+                <ul class="env-alts-list">
+                  {% for alt in other_alts %}
+                    <li><a href="/tools/{{ alt.id }}">{{ alt.name }}</a> ({{ alt.env.title() }})</li>
+                    {%- if loop.index == 7 %}
+                      <p class="alts-more-link"><a href={{ url_for("main.browse_categories", id=tree[-1].id) }}>More for
+                        all environments...</a></p>
+                      {% break %}
+                    {% endif %}
+                  {%- endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          </div>
+        {% else %}
+          <p class="text-muted"><i>No alternatives added yet</i></p>
+        {% endif %}
+      </div>
+    </div>
+    <div id="tool-right-content" class="col-md-auto">
+      <div id="tool-pane">
+        <div id="tool-pane-top">
+          <div id="tool-avatar" style="background: url({{ tool.avatar_url }}) no-repeat white"></div>
+          <h1 id="tool-name">{{ tool.name }}</h1>
+        </div>
+        <hr>
+        <div id="tool-pane-bottom">
+          <table id="tool-metadata-table">
+            <tr class="tool-metadata-row ">
+              <td class="tool-metadata-name">Hierarchy</td>
+              <td class="tool-metadata-value">
+                {% if tree | length > 3 %}
+                  <span class="tool-parents">...</span>
+                {% endif %}
+                {% for parent in tree[-3:] %}
+                  <span class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a
+                          href="/categories/{{ parent.id }}" title="{{ parent.name }}">{{ parent.name }}</a></span>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr class="tool-metadata-row">
+              <td class="tool-metadata-name">Environment</td>
+              <td class="tool-metadata-value">{{ tool.env.title() }}</td>
+            </tr>
+            <tr class="tool-metadata-row">
+              <td class="tool-metadata-name">Created</td>
+              <td class="tool-metadata-value">{{ tool.created }}</td>
+            </tr>
+            <tr class="tool-metadata-row">
+              <td class="tool-metadata-name">Version</td>
+              <td class="tool-metadata-value">{{ tool.project_version }}</td>
+            </tr>
+            <tr class="tool-metadata-row">
+              <td class="tool-metadata-name">Active</td>
+              <td class="tool-metadata-value">{% if tool.is_active %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr class="tool-metadata-row">
+              <td class="tool-metadata-name">Project URL</td>
+              <td class="tool-metadata-value"><a id="tool-link" href="{{ tool.link }}" target="_blank">{{ link }}</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
