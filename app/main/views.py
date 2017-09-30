@@ -102,7 +102,7 @@ def load_children_categories(id, no_link):
 def explore_nodes():
 	node_id = request.args.get("node")
 	manual_node_id = request.args.get("manual_node")
-	# `manual_node` id passed in from tool alternatives
+	# `manual_node_id` passed in from tool alternatives
 	# At first, it will just be manual id passed as param here
 	# Once user expands a node, `node` will also be added as param
 	# If just `manual_node`, use it as node_id
@@ -345,6 +345,7 @@ def create_temp_user():
 								password="",
 								role_id=models.Role.query.filter_by(name="Anonymous").first().id)
 		db.session.add(new_temp_user)
+		db.session.commit()
 		return new_temp_user
 	else:
 		return existing_temp_user

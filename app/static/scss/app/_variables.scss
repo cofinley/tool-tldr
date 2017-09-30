@@ -45,3 +45,9 @@ $category-content-width: 50%;
   color: $dark-gray;
   text-decoration: none;
 }
+
+@mixin min-width-max-content {
+  min-width: intrinsic; // Safari/WebKit uses a non-standard name
+  min-width: -moz-max-content; // Firefox/Gecko
+  min-width: -webkit-max-content; // Chrome
+}

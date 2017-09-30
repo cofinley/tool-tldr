@@ -72,8 +72,8 @@
   }
 
   li {
-    margin-bottom: 10px !important;
-    min-width: max-content;
+    @include min-width-max-content;
+    margin: 0;
   }
 
   .jqtree-element {
