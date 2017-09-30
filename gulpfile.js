@@ -81,4 +81,4 @@ gulp.task('watch', function () {
 gulp.task('default', ['js-lint', 'sass-lint', 'sass', 'scripts', 'minify-css', 'watch']);
 
 // Compile (default without watch)
-gulp.task('compile', ['js-lint', 'sass-lint', 'sass', 'scripts', 'minify-css']);
+gulp.task('compile', ['js-lint', 'sass', 'scripts', 'minify-css']);
