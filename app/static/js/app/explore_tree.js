@@ -72,7 +72,6 @@ $tree.bind(
     }
 );
 
-
 $tree.bind(
     'tree.init',
     function () {
@@ -81,13 +80,3 @@ $tree.bind(
         $tree.tree('openNode', node);
     }
 );
-
-$(document).ready(function () {
-    console.log("ready");
-    $tree.floatingScroll("init");
-});
-
-$tree.on('click', function () {
-    console.log("clicked");
-    $tree.floatingScroll("update");
-});

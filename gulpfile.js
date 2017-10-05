@@ -2,16 +2,8 @@
 var staticPath = "./app/static/";
 
 var jsFileOrder = [
-    staticPath + 'js/app/utils.js',
-    staticPath + 'js/lib/tree.jquery.js',
-    staticPath + 'js/lib/auto-complete.min.js',
-    staticPath + 'js/lib/jquery.floatingscroll.min.js',
-    staticPath + 'js/app/explore_tree.js',
-    staticPath + 'js/app/alert.js',
-    staticPath + 'js/app/autocomplete.js',
-    staticPath + 'js/app/diff_radio_buttons.js',
-    staticPath + 'js/app/edit_page.js',
-    staticPath + 'js/app/character_count.js'
+    staticPath + 'js/lib/**/*.js',
+    staticPath + 'js/app/**/*.js'
 ];
 
 var gulp = require('gulp');
@@ -26,7 +18,7 @@ var sassLint = require('gulp-sass-lint');
 
 // Lint Task, only lint my js files
 gulp.task('js-lint', function () {
-    return gulp.src(staticPath + "js/app/*.js")
+    return gulp.src(staticPath + "js/app/**/*.js")
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
@@ -72,7 +64,7 @@ gulp.task('scripts', function () {
 
 //Watch task
 gulp.task('watch', function () {
-    gulp.watch(staticPath + 'js/**/*.js', ['lint', 'scripts']);
+    gulp.watch(staticPath + 'js/**/*.js', ['js-lint', 'scripts']);
     gulp.watch(staticPath + 'css/**/*.css', ['minify-css']);
     gulp.watch(staticPath + 'scss/**/*.scss', ['sass', 'minify-css']);
 });
