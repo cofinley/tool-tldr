@@ -37,6 +37,13 @@ class Config:
 
 	SSLIFY_PERMANENT = True
 
+	SECURITY_HEADERS = {
+		"X-Frame-Options": "DENY",
+		"X-Xss-Protection": "1; mode=block",
+		"X-Content-Type-Options": "nosniff",
+		"Referrer-Policy": "no-referrer-when-downgrade"
+	}
+
 	@staticmethod
 	def init_app(app):
 		pass
@@ -62,6 +69,14 @@ class ProductionConfig(Config):
 	# MySQL fix
 	SQLALCHEMY_POOL_SIZE = 100
 	SQLALCHEMY_POOL_RECYCLE = 280
+
+	SECURITY_HEADERS = {
+		"Content-Security-Policy": "default-src 'none'; script-src 'self' https://ajax.googleapis.com; img-src https:; style-src 'self'; connect-src 'self'",
+		"X-Frame-Options": "DENY",
+		"X-Xss-Protection": "1; mode=block",
+		"X-Content-Type-Options": "nosniff",
+		"Referrer-Policy": "no-referrer-when-downgrade"
+	}
 
 
 config = {

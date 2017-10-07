@@ -30,15 +30,8 @@
     {% block content %}{% endblock %}
   </div>
 </div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/lib/webfont_loader.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" defer></script>
 <script type="text/javascript" src="{{ url_for('static', filename='dist/all.min.js') }}" defer></script>
-<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-<script>
-    WebFont.load({
-        google: {
-            families: ['Montserrat:300,300i,400,400i,500,500i,600']
-        }
-    });
-</script>
 </body>
 </html>

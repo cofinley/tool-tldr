@@ -5,7 +5,7 @@ from . import main
 from .. import models as models
 from .. import cache, utils, db
 from app.main.forms import *
-from ..decorators import admin_required, permission_required
+from ..decorators import admin_required
 from flask_login import login_required, current_user
 from sqlalchemy_continuum import version_class
 
@@ -14,6 +14,14 @@ from sqlalchemy_continuum import version_class
 def check_if_blocked():
 	if current_user.is_authenticated and current_app.config['BLOCKING_USERS'] and current_user.is_blocked:
 		abort(403)
+
+
+@main.after_request
+def apply_headers(response):
+	h = response.headers
+	for header, value in current_app.config["SECURITY_HEADERS"].items():
+		h[header] = value
+	return response
 
 
 def make_cache_key(*args, **kwargs):

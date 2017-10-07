@@ -3,6 +3,7 @@ var staticPath = "./app/static/";
 
 var jsFileOrder = [
     staticPath + 'js/lib/**/*.js',
+    '!' + staticPath + 'js/lib/webfont_loader.js',
     staticPath + 'js/app/**/*.js'
 ];
 
