@@ -6,7 +6,6 @@
   }
 
   #tool-left-content {
-
     margin: 0 auto !important;
 
     & > .tool-question-block > h1 {
@@ -52,13 +51,23 @@
 
         #tool-avatar {
           margin: auto;
-          padding: 15px;
           border: 1px solid gray;
-          background-origin: content-box !important;
           width: $tool-image;
           height: $tool-image;
-          background-position: center !important;
-          background-size: contain !important;
+          background: $white;
+          text-align: center;
+
+          .img-align-helper {
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+          }
+
+          #avatar-img {
+            max-width: calc(100% - 30px);
+            max-height: 100%;
+            vertical-align: middle;
+          }
         }
 
         #tool-name {

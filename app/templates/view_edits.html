@@ -12,10 +12,9 @@
         </div>
         <div class="ml-5">
           <button type="button"
-                  class="btn btn-secondary btn-sm"
+                  class="btn btn-secondary btn-sm cursor-{% if not previous_versions %}noop{% else %}pointer{% endif %}"
                   {% if not previous_versions %}disabled{% endif %}
-                  onclick="compareTwo('{{ type }}', '{{ id }}')"
-                  style="cursor: {% if not previous_versions %}not-allowed{% else %}pointer{% endif %}">Compare Selected
+                  onclick="compareTwo('{{ type }}', '{{ id }}')">Compare Selected
           </button>
         </div>
       </th>
@@ -38,7 +37,7 @@
         {% else %}
           Previous
         {% endif %}
-        <div class="form-check form-check-inline ml-5" style="visibility: hidden">
+        <div class="form-check form-check-inline ml-5 invisible">
           <label class="form-check-label">
             <input class="form-check-input radio-left" type="radio" name="inlineRadioOptionsLeft" id="inlineRadio1"
                    value="null" disabled>

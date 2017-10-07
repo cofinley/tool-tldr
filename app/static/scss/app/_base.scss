@@ -65,6 +65,18 @@ body {
       border-width: 0 10px 17.3px;
       border-color: transparent transparent $dark-gray;
     }
+
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
+    .cursor-noop {
+      cursor: not-allowed;
+    }
+
+    .invisible {
+      visibility: hidden;
+    }
   }
 
   a {

@@ -17,7 +17,7 @@
           edit! <i>Tool TL;DR</i> is, and will always be, a community-first place.</p>
       </div>
       <div class="col-md-6 align-self-center">
-        <img src="{{ url_for('static', filename='img/0days.png') }}"/>
+        <img src="{{ url_for('static', filename='img/0days.png') }}" alt="Javascript Frameworks">
       </div>
     </div>
     <div class="row">
@@ -48,7 +48,7 @@
         </p>
       </div>
       <div class="col-md-6 align-self-center">
-        <img id="know-img" src="{{ url_for('static', filename='img/know.svg') }}"/>
+        <img id="know-img" src="{{ url_for('static', filename='img/know.svg') }}" alt="You don't know what you don't know">
       </div>
     </div>
     <div class="row">
@@ -102,10 +102,9 @@
     <div class="row">
       <div class="col-md-6 mb-5">
         <hr>
-        <p class="no-indent" style="display: inline">If the site helps you and you want to show some love, give the
-          site some more uptime (or beer) by donating.</p>
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top"
-              style="display: inline; vertical-align: middle">
+        <span class="no-indent">If the site helps you and you want to show some love, give the
+          site some more uptime (or beer) by donating.</span>
+        <form class="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
           <input type="hidden" name="cmd" value="_s-xclick">
           <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
           <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" name="submit"

@@ -18,7 +18,7 @@
         <div class="mb-3 mt-4">
           {{ wtf.form_field(form.move_parent, checked=False) }}
         </div>
-        <div class="initially-hidden-field">
+        <div id="optional_parent_field" class="initially-hidden-field">
           {{ wtf.form_field(form.parent_category, readonly=True, placeholder="Pick a category from the tree") }}
         </div>
       {% endif %}
@@ -35,7 +35,7 @@
         <input class="btn btn-success form-button" id="submit" name="submit" type="submit" value="Submit">
       </div>
     </form>
-    <div id="tree-pane" class="col-md-8" style="display: none">
+    <div id="tree-pane" class="col-md-8 initially-hidden-field">
       <label>Pick a parent category</label>
       <div id="explore-tree" data-url="/explore_nodes?no-link=true&show-root=true"></div>
     </div>

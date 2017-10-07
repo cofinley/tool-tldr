@@ -64,7 +64,10 @@
     <div id="tool-right-content" class="col-md-auto">
       <div id="tool-pane">
         <div id="tool-pane-top">
-          <div id="tool-avatar" style="background: url({{ tool.avatar_url }}) no-repeat white"></div>
+          <div id="tool-avatar">
+            <span class="img-align-helper"></span>
+            <img id="avatar-img" src="{{ tool.avatar_url }}" alt="{{ tool.name }}">
+          </div>
           <h1 id="tool-name">{{ tool.name }}</h1>
         </div>
         <hr>

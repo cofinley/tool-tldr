@@ -3,7 +3,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-	SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+	SECRET_KEY = os.environ.get('SECRET_KEY') or 'Wjqjll33tKq1dOtTJo3Sued129ohlSNf'
 
 	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 	SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')

@@ -1,5 +1,6 @@
 {
     "name": "Tool TL;DR",
+    "short_name": "Tool TL;DR",
     "icons": [
         {
             "src": "../static/android-chrome-192x192.png",
