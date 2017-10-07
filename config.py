@@ -71,7 +71,7 @@ class ProductionConfig(Config):
 	SQLALCHEMY_POOL_RECYCLE = 280
 
 	SECURITY_HEADERS = {
-		"Content-Security-Policy": "default-src 'none'; script-src 'self' https://ajax.googleapis.com; img-src https:; style-src 'self' https://fonts.googleapis.com; connect-src 'self'",
+		"Content-Security-Policy": "default-src 'none'; script-src 'self' https://ajax.googleapis.com; img-src https:; style-src 'self' https://fonts.googleapis.com; connect-src 'self'; font-src https://fonts.gstatic.com",
 		"X-Frame-Options": "DENY",
 		"X-Xss-Protection": "1; mode=block",
 		"X-Content-Type-Options": "nosniff",
