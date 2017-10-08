@@ -1,5 +1,6 @@
 #tool-content {
   width: 101%;
+  margin: 0 auto;
 
   a {
     @include blue-link;
@@ -7,6 +8,7 @@
 
   #tool-left-content {
     margin: 0 auto !important;
+    padding-left: 0;
 
     & > .tool-question-block > h1 {
       margin-top: 0;
@@ -98,12 +100,13 @@
             td {
               padding: 8px 0;
               display: table-cell;
+              font-size: 0.85em;
             }
 
             .tool-metadata-name {
               font-weight: $font-medium;
               padding-left: 15px;
-              width: 40%;
+              width: 45%;
             }
 
             .tool-metadata-value {
@@ -132,7 +135,32 @@
 }
 
 // Medium devices (tablets, 768px and up)
-//@media (min-width: 768px) {  }
+@media (min-width: 768px) {
+  #tool-content {
+    margin: 0 -15px;
+
+    #tool-left-content {
+      padding-left: 15px;
+    }
+
+    #tool-right-content {
+      #tool-pane {
+        #tool-pane-bottom {
+          #tool-metadata-table {
+            .tool-metadata-row {
+              td {
+                font-size: 16px;
+              }
+              .tool-metadata-name {
+                width: 40%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
