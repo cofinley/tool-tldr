@@ -2,7 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}Time Travel {{ name }}{% endblock %}
 {% block content %}
-  <h1><a href="{% if type == "category" %}categories{% else %}tools{% endif %}?id={{ id }}">{{ name }}</a>: Time Travel
+  <h1><a href="/{{ type }}/{{ id }}">{{ name }}</a>: Time Travel
   </h1>
   <p><a href="/{{ type }}/{{ id }}/edits">Back to edits</a></p>
   <div class="my-5">
@@ -11,8 +11,8 @@
       {{ wtf.form_errors(form, hiddens="only") }}
       {{ wtf.form_field(form.edit_msg) }}
       <div class="d-flex justify-content-end mb-5">
-        <button type="button" class="btn btn-outline-danger mr-auto" onclick="goBack()">Cancel</button>
-        <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Submit">
+        <button type="button" class="btn btn-outline-danger mr-auto form-button">Cancel</button>
+        <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
       </div>
     </form>
   </div>

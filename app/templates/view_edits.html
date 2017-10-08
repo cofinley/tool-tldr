@@ -11,10 +11,10 @@
           Comparisons
         </div>
         <div class="ml-5">
-          <button type="button"
+          <button id="compare-selected" type="button"
                   class="btn btn-secondary btn-sm cursor-{% if not previous_versions %}noop{% else %}pointer{% endif %}"
                   {% if not previous_versions %}disabled{% endif %}
-                  onclick="compareTwo('{{ type }}', '{{ id }}')">Compare Selected
+                  data-type="{{ type }}" data-id="{{ id }}">Compare Selected
           </button>
         </div>
       </th>

@@ -1,6 +1,6 @@
-function goBack() {
+$(".cancel-button").click(function() {
     window.history.back();
-}
+});
 
 $(".add-button").hover(function(){
    // Show dropdown on add button hover
@@ -54,4 +54,13 @@ $("#hide-add-options").click(function () {
     $("#nav-menu-pages").animate({
         right: '+=' + amount + 'px'
     });
+});
+
+$(".search-form").on({
+    'focus': function() {
+        this.placeholder = '';
+    },
+    'blur': function() {
+        this.placeholder = this.id.includes('big') ? 'Search software tools' : 'Search';
+    }
 });

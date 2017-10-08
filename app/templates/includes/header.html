@@ -31,7 +31,7 @@
       </ul>
 
       <div id="search-input-group" class="input-group">
-        <input id="search-input" class="form-control p-2" placeholder="Search" aria-label="Search">
+        <input id="search-input" class="form-control p-2 search-form" placeholder="Search" aria-label="Search">
         <img id="small-loader" src="{{ url_for('static', filename='img/loader.svg') }}" alt="Small loading...">
       </div>
     </div>
@@ -45,7 +45,7 @@
   {#		<img id="mobile-loader" src="{{ url_for('static', filename='img/loader.svg') }}">#}
   {#	</div>#}
   <div id="hamburguesa">
-    <img src="{{ url_for('static', filename='img/menu.svg') }}">
+    <img src="{{ url_for('static', filename='img/menu.svg') }}" alt="menu">
     <div id="nav-menu-arrow-up" class="arrow-up"></div>
     <div id="nav-menu">
       <div id="nav-menu-pages">

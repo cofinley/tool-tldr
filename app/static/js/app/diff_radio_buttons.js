@@ -26,8 +26,10 @@ $(".radio-right").click(function (){
     });
 });
 
-function compareTwo (type, id) {
+$("#compare-selected").click(function() {
+    var type = this.dataset.type;
+    var id = this.dataset.id;
     var older = $('input[name=inlineRadioOptionsLeft]:checked').val();
     var newer = $('input[name=inlineRadioOptionsRight]:checked').val();
     window.location.href = window.location.origin + "/" + type + "/" + id + "/edits/diff/" + older + "/" + newer;
-}
+});
