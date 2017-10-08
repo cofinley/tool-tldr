@@ -35,7 +35,7 @@ function autoCompleteAjax(selector) {
             return suggestionDiv.outerHTML;
         },
         onSelect: function (e) {
-            var itemData = e.srcElement.dataset;
+            var itemData = e.target.dataset;
             if (itemData.type === 't') {
                 window.location.href = window.location.origin + '/tools/' + itemData.id;
             }
