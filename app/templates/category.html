@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "_macros.html" as macros %}
 {% block title %}{{ category.name }}{% endblock %}
 {% block content %}
 
@@ -19,14 +20,7 @@
     </div>
   {% endif %}
 
-  <div id="category-header" class="content-page-header">
-    <h1 class="display-4">{{ category.name }}</h1>
-    <div id="edit-buttons">
-      <a class="btn btn-lg btn-primary ml-auto mr-3" href="/categories/{{ category.id }}/edit">Edit Page</a>
-      <span class="view-edits-link stretch-width-to-content"><a
-              href="/categories/{{ category.id }}/edits">View Edits</a></span>
-    </div>
-  </div>
+  {{ macros.page_header(type="categories", obj=category) }}
 
   <div id="category-content" class="content-page-content">
     <div id="category-content-top" class="row">

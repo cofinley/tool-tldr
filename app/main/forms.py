@@ -96,7 +96,7 @@ class EditToolPageForm(FlaskForm):
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
 	created = IntegerField("Date Created", validators=[DataRequired()])
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
-	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
+	is_active = SelectField("Actively Developed?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
 							coerce=lambda x: x == "True")
 
 	avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200),
@@ -136,7 +136,7 @@ class AddNewToolForm(FlaskForm):
 	env = StringField("Environment", validators=[DataRequired(), Length(1, 64)])
 	created = IntegerField("Date Created", validators=[DataRequired()])
 	project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
-	is_active = SelectField("Active?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
+	is_active = SelectField("Actively Developed?", choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
 							coerce=lambda x: x == "True", default="True")
 	link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
 	why = TextAreaField("Why", validators=[DataRequired(), Length(1, 250)])

@@ -1,14 +1,10 @@
 {% extends "base.html" %}
+{% import "_macros.html" as macros %}
 {% block title %}{{ tool.name }}{% endblock %}
 {% block content %}
-  <div id="tool-header" class="content-page-header">
-    <h1 class="display-4">{{ tool.name }}</h1>
-    <div id="edit-buttons">
-      <a class="btn btn-lg btn-primary ml-auto mr-3" href="/tools/{{ tool.id }}/edit">Edit Page</a>
-      <span id="view-edits-link" class="stretch-width-to-content"><a
-              href="/tools/{{ tool.id }}/edits">View Edits</a></span>
-    </div>
-  </div>
+
+  {{ macros.page_header(type="tools", obj=tool) }}
+
   <div id="tool-content" class="row justify-content-between content-page-content">
     <div id="tool-left-content" class="col-md-10 col-lg-6">
       <div class="question-block tool-question-block">
@@ -98,7 +94,7 @@
               <td class="tool-metadata-value">{{ tool.project_version }}</td>
             </tr>
             <tr class="tool-metadata-row">
-              <td class="tool-metadata-name">Active</td>
+              <td class="tool-metadata-name">Actively Developed?</td>
               <td class="tool-metadata-value">{% if tool.is_active %}Yes{% else %}No{% endif %}</td>
             </tr>
             <tr class="tool-metadata-row">
