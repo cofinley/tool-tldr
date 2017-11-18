@@ -5595,9 +5595,9 @@ button.close {
     max-width: 800px;
   }
 }
+*/
 
 
-/*!
 .tooltip {
   position: absolute;
   z-index: 1070;
@@ -5681,6 +5681,80 @@ button.close {
   border-left-color: #000;
 }
 
+.tooltip .arrow {
+  position: absolute;
+  display: block;
+  width: 5px;
+  height: 5px;
+}
+
+.tooltip .arrow::before {
+  position: absolute;
+  border-color: transparent;
+  border-style: solid;
+}
+
+.tooltip.bs-tooltip-top, .tooltip.bs-tooltip-auto[x-placement^="top"] {
+  padding: 5px 0;
+}
+
+.tooltip.bs-tooltip-top .arrow, .tooltip.bs-tooltip-auto[x-placement^="top"] .arrow {
+  bottom: 0;
+}
+
+.tooltip.bs-tooltip-top .arrow::before, .tooltip.bs-tooltip-auto[x-placement^="top"] .arrow::before {
+  margin-left: -3px;
+  content: "";
+  border-width: 5px 5px 0;
+  border-top-color: #000;
+}
+
+.tooltip.bs-tooltip-right, .tooltip.bs-tooltip-auto[x-placement^="right"] {
+  padding: 0 5px;
+}
+
+.tooltip.bs-tooltip-right .arrow, .tooltip.bs-tooltip-auto[x-placement^="right"] .arrow {
+  left: 0;
+}
+
+.tooltip.bs-tooltip-right .arrow::before, .tooltip.bs-tooltip-auto[x-placement^="right"] .arrow::before {
+  margin-top: -3px;
+  content: "";
+  border-width: 5px 5px 5px 0;
+  border-right-color: #000;
+}
+
+.tooltip.bs-tooltip-bottom, .tooltip.bs-tooltip-auto[x-placement^="bottom"] {
+  padding: 5px 0;
+}
+
+.tooltip.bs-tooltip-bottom .arrow, .tooltip.bs-tooltip-auto[x-placement^="bottom"] .arrow {
+  top: 0;
+}
+
+.tooltip.bs-tooltip-bottom .arrow::before, .tooltip.bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+  margin-left: -3px;
+  content: "";
+  border-width: 0 5px 5px;
+  border-bottom-color: #000;
+}
+
+.tooltip.bs-tooltip-left, .tooltip.bs-tooltip-auto[x-placement^="left"] {
+  padding: 0 5px;
+}
+
+.tooltip.bs-tooltip-left .arrow, .tooltip.bs-tooltip-auto[x-placement^="left"] .arrow {
+  right: 0;
+}
+
+.tooltip.bs-tooltip-left .arrow::before, .tooltip.bs-tooltip-auto[x-placement^="left"] .arrow::before {
+  right: 0;
+  margin-top: -3px;
+  content: "";
+  border-width: 5px 0 5px 5px;
+  border-left-color: #000;
+}
+
 .tooltip-inner {
   max-width: 200px;
   padding: 3px 8px;
@@ -5698,7 +5772,7 @@ button.close {
   border-style: solid;
 }
 
-
+/*!
 .popover {
   position: absolute;
   top: 0;
