@@ -18,6 +18,13 @@
       }
     }
   }
+  .content-page-header-dropdown {
+    display: inline-block;
+
+    .dropdown-menu.show {
+      display: table;
+    }
+  }
 }
 
 .content-page-content {

@@ -55,8 +55,8 @@ def get_hostname(url):
 def gen_diff_html(old_data, new_data):
 
 	# Generate word-by-word diff if spaces, letter-by-letter if not
-	old_data = html.escape(str(old_data))
-	new_data = html.escape(str(new_data))
+	old_data = escape_html(old_data)
+	new_data = escape_html(new_data)
 	has_spaces = " " in old_data and " " in new_data
 	if has_spaces:
 		diff1 = list(ndiff(old_data.split(" "), new_data.split(" ")))
@@ -68,7 +68,7 @@ def gen_diff_html(old_data, new_data):
 	# On left side, hide new additions
 	for index, value in enumerate(diff1):
 		if value.startswith("-"):
-			diff1[index] = "<span class='diff-danger'>{}</span>".format(value.replace("- ", ""))
+			diff1[index] = "<span class='diff-danger'>{}</span>".format(escape_html(value.replace("- ", "")))
 		elif value.startswith("+"):
 			diff1[index] = ""
 		elif value.startswith("?"):
@@ -87,7 +87,7 @@ def gen_diff_html(old_data, new_data):
 		if value.startswith("-"):
 			diff2[index] = ""
 		elif value.startswith("+"):
-			diff2[index] = "<span class='diff-success'>{}</span>".format(value.replace("+ ", ""))
+			diff2[index] = "<span class='diff-success'>{}</span>".format(escape_html(value.replace("+ ", "")))
 		elif value.startswith("?"):
 			diff2[index] = ""
 		else:
@@ -233,3 +233,7 @@ def check_if_three_time_travels(edit_author: int, model_class, page_id: int) -> 
 	time_travels_in_last_24_hours = [v for v in versions if is_within_last_x_hours(v.edit_time, 24)]
 	db.session.close()
 	return len(time_travels_in_last_24_hours) >= 3
+
+
+def escape_html(s):
+	return html.escape(str(s))

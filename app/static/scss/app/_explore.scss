@@ -60,17 +60,6 @@
     top: -2px;
   }
 
-  .jqtree-tree .jqtree-selected > .jqtree-element {
-    background: lighten($light-gray, 11%);
-    text-shadow: none;
-
-    .jqtree-title {
-      &:focus {
-        outline: none;
-      }
-    }
-  }
-
   li {
     @include min-width-max-content;
     margin: 0;
@@ -81,6 +70,7 @@
     border-radius: 5px;
     white-space: nowrap;
     text-overflow: ellipsis;
+    cursor: default;
 
     .blurb {
       margin-left: 50px;

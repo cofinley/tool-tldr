@@ -72,10 +72,10 @@ def load_children_tools(id, env):
 
 	for result in results:
 		if env:
-			label_link = "<a href='/tools/{}'>{}</a>".format(result["id"], result["name"])
+			label_link = "<a href='/tools/{}'>{}</a>".format(result["id"], utils.escape_html(result["name"]))
 		else:
-			label_link = "<a href='/tools/{}'>{}</a> ({})".format(result["id"], result["name"],
-																 result["env"].title())
+			label_link = "<a href='/tools/{}'>{}</a> ({})".format(result["id"], utils.escape_html(result["name"]),
+																 utils.escape_html(result["env"].title()))
 		result.pop("name")
 		result["label"] = label_link
 
@@ -96,7 +96,7 @@ def load_children_categories(id, no_link):
 		cleaned_result = {"id": result["id"], "load_on_demand": True}
 		if not no_link:
 			# anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
-			label_link = "<a href='/categories/{}'>{}</a>".format(result["id"], result["name"])
+			label_link = "<a href='/categories/{}'>{}</a>".format(result["id"], utils.escape_html(result["name"]))
 			cleaned_result["label"] = label_link
 		else:
 			cleaned_result["name"] = result["name"]
@@ -131,20 +131,6 @@ def explore_nodes():
 		return jsonify(root)
 
 	return jsonify(results)
-
-
-@main.route("/load_blurb")
-@cache.cached(key_prefix=make_cache_key)
-def load_blurb():
-	id = request.args.get("id")
-	tool = request.args.get("tool")
-	if tool:
-		blurb = ""
-	else:
-		blurb = models.Category.query.get_or_404(id).what
-	result = {"blurb": blurb}
-
-	return jsonify(result)
 
 
 @main.route("/about")
@@ -200,6 +186,12 @@ def fetch_tool_page(tool_id):
 						   other_alts=alts_for_other_envs,
 						   tree=category_tree,
 						   link=project_link)
+
+
+@main.route("/tip/<int:category_id>")
+@cache.cached(key_prefix=make_cache_key)
+def get_tooltip(category_id):
+	return models.Category.query.get_or_404(category_id).what
 
 
 @main.route("/search")
@@ -595,8 +587,9 @@ def category_time_travel(tool_id, target_version_id):
 # CREATE ROUTES
 
 
+@main.route("/categories/<int:parent_category_id>/add-new-tool", methods=["GET", "POST"])
 @main.route("/add-new-tool", methods=["GET", "POST"])
-def add_new_tool():
+def add_new_tool(parent_category_id=None):
 
 	if not current_user.is_authenticated:
 		flash(
@@ -639,6 +632,13 @@ def add_new_tool():
 		flash('This tool has been added.', 'success')
 		cache.clear()
 		return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
+
+	if parent_category_id:
+		# Tool added from category page
+		form.parent_category_id.data = parent_category_id
+		parent_category = models.Category.query.get_or_404(parent_category_id)
+		form.parent_category.data = parent_category.name
+
 	return render_template('add_new_tool.html',
 						   form=form,
 						   is_confirmed=current_user.is_confirmed)
