@@ -1,7 +1,5 @@
 var shield = (function () {
 
-    // TODO: make shields work on tools (pick out of url in extract, keep as global var to reference in other functions)
-
     var init = function() {
         $(".generate-shield").click(function(e){
             var $dropdownMenu = $(this);
@@ -9,8 +7,11 @@ var shield = (function () {
                 $(".shield-url").select();
                 return false;
             }
-            var id = extractCategoryIdFromUrl(window.location.pathname);
-            var url = generateShieldUrl(id);
+            var pageInfo = extractPageInfoFromUrl(window.location.pathname);
+            var id = pageInfo.id;
+            var page_type = pageInfo.type;
+
+            var url = generateShieldUrl(page_type, id);
             var html = generateShieldHtml(url);
             $dropdownMenu.after(html);
             copyShieldLinkToClipboard();
@@ -18,11 +19,15 @@ var shield = (function () {
         });
     };
 
-    var extractCategoryIdFromUrl = function(url){
-        var idPattern = new RegExp("\\/categories\\/(\\d+)");
-        var match = idPattern.exec(url);
+    var extractPageInfoFromUrl = function(url){
+        // Get page type (tool/cat) and id
+        var pat = new RegExp("\\/(\\w*)\\/(\\d+)");
+        var match = pat.exec(url);
         if (null !== match) {
-            return match[1];
+            return {
+                type: match[1],
+                id: match[2]
+            };
         }
     };
 
@@ -31,10 +36,10 @@ var shield = (function () {
         document.execCommand("copy");
     };
 
-    var generateShieldUrl = function(id) {
+    var generateShieldUrl = function(page_type, id) {
         var basePath = "https://img.shields.io/badge/dynamic/json.svg";
-        var ttUri = "https://tooltldr.com/categories/" + id + "/shield";
-        var jsonKey = "c";
+        var ttUri = window.location.origin + "/" + page_type + "/" + id + "/shield";
+        var jsonKey = "name";
         var data = {
             label: "Tool TL;DR",
             colorB: "e33b3b",
@@ -71,7 +76,7 @@ var shield = (function () {
         return $shieldDiv;
     };
 
-    var watchShieldDiv = function() {
+    var watchShieldDivClick = function() {
         // Don't allow dropdown to close when clicking on shield or other shield-related elements
         $(".dropdown-menu").on('click', ".shield-container", function (e) {
             e.stopPropagation();
@@ -86,13 +91,13 @@ var shield = (function () {
 
     return {
         init: init,
-        watchShieldDiv: watchShieldDiv,
+        watchShieldDivClick: watchShieldDivClick,
         watchClipboardCopy: watchClipboardCopy
     };
 })();
 
 $(document).ready(function () {
     shield.init();
-    shield.watchShieldDiv();
+    shield.watchShieldDivClick();
     shield.watchClipboardCopy();
 });

@@ -21,8 +21,12 @@
   .content-page-header-dropdown {
     display: inline-block;
 
-    .dropdown-menu.show {
-      display: table;
+    .dropdown-menu {
+      min-width: 17.5em;
+
+      &.show {
+        display: table;
+      }
     }
 
 

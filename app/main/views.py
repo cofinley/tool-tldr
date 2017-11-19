@@ -194,10 +194,11 @@ def get_tooltip(category_id):
 	return models.Category.query.get_or_404(category_id).what
 
 
-@main.route("/categories/<int:category_id>/shield")
-def get_shield(category_id):
-	name = models.Category.query.get_or_404(category_id).name
-	result = {"c": name}
+@main.route("/<page_type>/<int:page_id>/shield")
+def get_shield(page_type, page_id):
+	cls = models.Category if page_type == "categories" else models.Tool
+	name = cls.query.get_or_404(page_id).name
+	result = {"name": name}
 	return jsonify(result)
 
 
