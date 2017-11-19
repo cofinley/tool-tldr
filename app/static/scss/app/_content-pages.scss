@@ -24,6 +24,37 @@
     .dropdown-menu.show {
       display: table;
     }
+
+
+    .shield-container {
+      display: block;
+
+      .shield-img {
+        display: block;
+        margin: auto auto 9px;
+      }
+
+      .shield-link-row {
+        width: 87%;
+        margin: auto;
+
+        .shield-url {
+          border: 1px solid $light-gray;
+          text-overflow: ellipsis;
+          width: 100%;
+          margin-right: 5px;
+          padding: 3px 5px;
+          border-radius: 4px;
+        }
+
+        .shield-link-copy-img {
+          width: 30px;
+          height: 30px;
+          cursor: pointer;
+          padding: 5px;
+        }
+      }
+    }
   }
 }
 

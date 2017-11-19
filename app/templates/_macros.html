@@ -66,7 +66,7 @@
 
 {% macro page_header(type, obj) %}
   <div class="content-page-header">
-    <h1 class="display-4">{{ obj.name }}</h1>
+    <h1 class="display-4 content-page-title">{{ obj.name }}</h1>
     <div id="edit-buttons">
       <a class="btn btn-lg btn-primary ml-auto mr-3" href="/{{ type }}/{{ obj.id }}/edit">Edit Page</a>
       <span id="view-edits-link" class="stretch-width-to-content mr-3">
@@ -82,7 +82,7 @@
           {% if type == "categories" %}
           <a class="dropdown-item" href="/categories/{{ obj.id }}/add-new-tool">Add a tool for this category</a>
           {% endif %}
-{#          <a class="dropdown-item" href="#">Generate shield</a>#}
+          <a class="dropdown-item generate-shield" href="#">Generate shield</a>
         </div>
       </div>
     </div>
