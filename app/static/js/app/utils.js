@@ -51,3 +51,16 @@ $(".search-form").on({
         this.placeholder = this.id.includes('big') ? 'Search software tools' : 'Search';
     }
 });
+
+// Saving for rainy day...
+function extractPageInfoFromUrl(url) {
+    // Get page type (tool/cat) and id
+    var pat = new RegExp("\\/(\\w*)\\/(\\d+)");
+    var match = pat.exec(url);
+    if (null !== match) {
+        return {
+            type: match[1],
+            id: match[2]
+        };
+    }
+}

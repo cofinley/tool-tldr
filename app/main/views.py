@@ -189,7 +189,7 @@ def fetch_tool_page(tool_id):
 
 
 @main.route("/tip/<int:category_id>")
-@cache.cached(key_prefix=make_cache_key)
+@cache.memoize()
 def get_tooltip(category_id):
 	return models.Category.query.get_or_404(category_id).what
 
