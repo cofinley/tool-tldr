@@ -7,28 +7,14 @@ var shield = (function () {
                 $(".shield-url").select();
                 return false;
             }
-            var pageInfo = extractPageInfoFromUrl(window.location.pathname);
-            var id = pageInfo.id;
-            var page_type = pageInfo.type;
-
-            var url = generateShieldUrl(page_type, id);
+            var page_title = $(".content-page-title").text();
+            var url = generateShieldUrl(page_title);
             var html = generateShieldHtml(url);
             $dropdownMenu.after(html);
+
             copyShieldLinkToClipboard();
             e.stopPropagation();
         });
-    };
-
-    var extractPageInfoFromUrl = function(url){
-        // Get page type (tool/cat) and id
-        var pat = new RegExp("\\/(\\w*)\\/(\\d+)");
-        var match = pat.exec(url);
-        if (null !== match) {
-            return {
-                type: match[1],
-                id: match[2]
-            };
-        }
     };
 
     var copyShieldLinkToClipboard = function() {
@@ -36,18 +22,11 @@ var shield = (function () {
         document.execCommand("copy");
     };
 
-    var generateShieldUrl = function(page_type, id) {
-        var basePath = "https://img.shields.io/badge/dynamic/json.svg";
-        var ttUri = window.location.origin + "/" + page_type + "/" + id + "/shield";
-        var jsonKey = "name";
-        var data = {
-            label: "Tool TL;DR",
-            colorB: "e33b3b",
-            query: jsonKey,
-            uri: ttUri
-        };
-        var paramData = $.param(data);
-        return basePath + "?" + paramData;
+    var generateShieldUrl = function(page_title) {
+        var basePath = "https://img.shields.io/badge/";
+        var subject = "Tool TL;DR";
+        var color = "e33b3b";
+        return basePath + encodeURIComponent(subject + "-" + page_title) + "-" + color + ".svg";
     };
 
     var generateShieldHtml = function(url) {
