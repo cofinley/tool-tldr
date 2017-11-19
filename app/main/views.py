@@ -381,6 +381,7 @@ def edit_category_page(category_id):
 			edit_author = current_user
 		category.edit_author = edit_author.id
 		category.edits += 1
+		category.is_time_travel_edit = False
 		db.session.add(category)
 
 		edit_author.edits += 1
@@ -439,6 +440,7 @@ def edit_tool_page(tool_id):
 		tool.edit_time = datetime.utcnow()
 		tool.edit_author = edit_author.id
 		tool.edits += 1
+		tool.is_time_travel_edit = False
 		db.session.add(tool)
 
 		edit_author.edits += 1
@@ -556,6 +558,7 @@ def render_time_travel(page_type, page_id, target_version_id):
 		current_version.edit_time = datetime.utcnow()
 		current_version.edit_author = edit_author
 		current_version.is_time_travel_edit = True
+		db.session.add(current_version)
 		cache.clear()
 		flash('This {} has been updated.'.format(page_type), 'success')
 		return redirect(return_route)

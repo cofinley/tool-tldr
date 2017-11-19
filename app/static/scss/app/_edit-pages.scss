@@ -11,6 +11,11 @@
   user-select: none;
 }
 
+.edit-msg-input {
+  padding-right: 40px;
+  text-overflow: ellipsis;
+}
+
 #tree-pane {
 
   #explore-tree {

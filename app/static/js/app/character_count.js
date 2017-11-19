@@ -1,27 +1,31 @@
-var maxLength = 250;
+var characterCount = (function() {
+    var fieldLength = 250;
 
-function watchTextArea(textAreaId) {
-    var charCountId = textAreaId + "-count";
-    if ($(textAreaId).length) {
-        if ($(textAreaId).val().length > 0) {
-            var charsLeft = maxLength - $(textAreaId).val().length;
-            $(charCountId).text(charsLeft);
-        }
-    }
-    $(textAreaId).keyup(function () {
-        var charsLeft = maxLength - $(this).val().length;
-        $(charCountId).text(charsLeft);
-    });
-}
+    var watchTextArea = function(textAreaId, max) {
+        var maxLength = max || fieldLength;
+        $(textAreaId).ready(function(){
+            var charCountId = textAreaId + "-count";
+            if ($(textAreaId).length) {
+                if ($(textAreaId).val().length > 0) {
+                    var charsLeft = maxLength - $(textAreaId).val().length;
+                    $(charCountId).text(charsLeft);
+                }
+            }
+            $(textAreaId).keyup(function () {
+                var charsLeft = maxLength - $(this).val().length;
+                $(charCountId).text(charsLeft);
+            });
+        });
+    };
+
+    return {
+        init: watchTextArea
+    };
+})();
 
 $(document).ready(function(){
-    $("#what").ready(function() {
-        watchTextArea("#what");
-    });
-    $("#where").ready(function() {
-        watchTextArea("#where");
-    });
-    $("#why").ready(function() {
-        watchTextArea("#why");
-    });
+    characterCount.init("#what");
+    characterCount.init("#where");
+    characterCount.init("#why");
+    characterCount.init("#edit_msg", 100);
 });

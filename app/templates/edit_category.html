@@ -10,6 +10,7 @@
   <div class="row">
     <form class="col-md-4" method="post">
       {% set max = 250 %}
+      {% set edit_msg_max = 100 %}
       {{ form.hidden_tag() }}
       {{ wtf.form_errors(form, hiddens="only") }}
 
@@ -29,7 +30,8 @@
       {{ wtf.form_field(form.where, help_text="Where does it fall in the application space or stack? Where would I use it in my application?", maxlength=max) }}
       <span id="where-count" class="char-count text-muted">{{ max }}</span>
 
-      {{ wtf.form_field(form.edit_msg) }}
+      {{ wtf.form_field(form.edit_msg, class="form-control edit-msg-input", maxlength=edit_msg_max) }}
+      <span id="edit_msg-count" class="char-count text-muted">{{ edit_msg_max }}</span>
       <div class="d-flex justify-content-end mb-5">
         <button type="button" class="btn btn-danger mr-auto form-button cancel-button">Cancel</button>
         <input class="btn btn-success form-button" id="submit" name="submit" type="submit" value="Submit">

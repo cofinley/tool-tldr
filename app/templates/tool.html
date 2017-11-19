@@ -9,7 +9,7 @@
     <div id="tool-left-content" class="col-md-10 col-lg-6">
       <div class="question-block tool-question-block">
         <h1 class="question-title">The What</h1>
-        <p>This tool falls within the <a href="/categories/{{ tree[-1].id }}">{{ tree[-1].name }}</a> category.</p>
+        <p>This tool falls within the <a href={{ url_for("main.fetch_category_page", category_id=tree[-1].id) }}>{{ tree[-1].name }}</a> category.</p>
       </div>
       <div class="question-block tool-question-block">
         <h1 class="question-title">The Why</h1>
@@ -25,7 +25,7 @@
                 <h3 class="env-alts-env-title"><i>For {{ tool.env.title() }}</i></h3>
                 <ul class="env-alts-list">
                   {% for alt in env_alts %}
-                    <li><a href="/tools/{{ alt.id }}">{{ alt.name }}</a></li>
+                    <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a></li>
                     {%- if loop.index == 7 %}
                       <p class="alts-more-link"><a
                               href={{ url_for("main.browse_categories", id=tree[-1].id, env=tool.env) }}>More
@@ -41,7 +41,7 @@
                 <h3 class="env-alts-env-title"><i>For other environments</i></h3>
                 <ul class="env-alts-list">
                   {% for alt in other_alts %}
-                    <li><a href="/tools/{{ alt.id }}">{{ alt.name }}</a> ({{ alt.env.title() }})</li>
+                    <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a> ({{ alt.env.title() }})</li>
                     {%- if loop.index == 7 %}
                       <p class="alts-more-link"><a href={{ url_for("main.browse_categories", id=tree[-1].id) }}>More for
                         all environments...</a></p>
@@ -76,8 +76,7 @@
                   <span class="tool-parents">...</span>
                 {% endif %}
                 {% for parent in tree[-3:] %}
-                  <span class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a
-                          href="/categories/{{ parent.id }}">{{ parent.name }}</a></span>
+                  <span class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a href={{ url_for("main.fetch_category_page", category_id=parent.id) }}>{{ parent.name }}</a></span>
                 {% endfor %}
               </td>
             </tr>
@@ -99,7 +98,7 @@
             </tr>
             <tr class="tool-metadata-row">
               <td class="tool-metadata-name">Project URL</td>
-              <td class="tool-metadata-value"><a id="tool-link" href="{{ tool.link }}" target="_blank">{{ link }}</a>
+              <td class="tool-metadata-value"><a id="tool-link" href={{ tool.link }} target="_blank">{{ link }}</a>
               </td>
             </tr>
           </table>
