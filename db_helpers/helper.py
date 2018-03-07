@@ -89,14 +89,16 @@ class Helper:
 			db.session.commit()
 
 	def setup_all(self):
-		db.create_all()
+		# If you get error telling you to rollback,
+		# run Helper().db.session.rollback()
 		models.Role.insert_roles()
+		self.setup_users()
 		self.setup_categories()
 		self.setup_tools()
-		self.setup_users()
 
 	def reset_all(self):
 		db.drop_all()
+		db.create_all()
 		self.setup_all()
 
 	@staticmethod

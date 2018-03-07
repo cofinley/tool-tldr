@@ -51,20 +51,17 @@ class Config:
 
 class DevelopmentConfig(Config):
 	DEBUG = True
-	SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-	'sqlite:///' + os.path.join(basedir, 'app-dev.db')
+	SQLALCHEMY_DATABASE_URI = os.environ.get('TOOLTLDR_DATABASE_URL_DEV')
 	TEMPLATES_AUTO_RELOAD = True
 
 
 class TestingConfig(Config):
 	TESTING = True
-	SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-	'sqlite:///' + os.path.join(basedir, 'app-test.db')
+	SQLALCHEMY_DATABASE_URI = os.environ.get('TOOLTLDR_DATABASE_URL_TEST')
 
 
 class ProductionConfig(Config):
-	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-	'sqlite:///' + os.path.join(basedir, 'app.db')
+	SQLALCHEMY_DATABASE_URI = os.environ.get('TOOLTLDR_DATABASE_URL_PROD')
 
 	# MySQL fix
 	SQLALCHEMY_POOL_SIZE = 100
