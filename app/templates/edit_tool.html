@@ -9,7 +9,7 @@
   </div>
 
   <div class="row">
-    <form class="col-md-4" method="post">
+    <form id="recaptcha-form" class="col-md-4" method="post">
       {% set max = 250 %}
       {% set edit_msg_max = 100 %}
       {{ form.hidden_tag() }}
@@ -40,9 +40,9 @@
           {{ form.recaptcha }}
         </div>
       {% endif %}
-      <div class="d-flex justify-content-end mb-5">
-        <button type="button" class="btn btn-danger mr-auto form-button cancel-button">Cancel</button>
-        <input class="btn btn-success form-button" id="submit" name="submit" type="submit" value="Submit">
+      <div class="d-flex justify-content-end mb-5 w-100">
+        <button type="button" class="btn btn-outline-danger mr-auto form-button cancel-button">Cancel</button>
+        <button type="button" class="btn btn-success form-button" id="recaptcha-submit">Submit</button>
       </div>
     </form>
     {% if is_confirmed %}

@@ -7,3 +7,7 @@ var today = new Date();
 var year = today.getFullYear();
 
 $("input#created").attr("max", year);
+
+function onRecaptchaSubmitCallback(token) {
+    $("#recaptcha-form").submit();
+}

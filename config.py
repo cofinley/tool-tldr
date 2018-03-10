@@ -13,8 +13,9 @@ class Config:
 	WTF_CSRF_ENABLED = True
 
 	RECAPTCHA_USE_SSL = True
-	RECAPTCHA_PUBLIC_KEY = "6Lfn1icUAAAAAMefI3wT1KHDA6fcgThmbVMqv4MB"
-	RECAPTCHA_PRIVATE_KEY = "6Lfn1icUAAAAAFjb_GazZxvWwQqEam7FpkCiUALA"
+	RECAPTCHA_PUBLIC_KEY = os.environ.get("TOOLTLDR_RECAPTCHA_SITE_KEY")
+	RECAPTCHA_PRIVATE_KEY = os.environ.get("TOOLTLDR_RECAPTCHA_SECRET_KEY")
+	RECAPTCHA_DATA_ATTRS = {'bind': 'recaptcha-submit', 'callback': 'onRecaptchaSubmitCallback', 'size': 'invisible'}
 
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "tooltldr@gmail.com"
 	MAIL_SENDER = os.environ.get('MAIL_SENDER') or "tooltldr@gmail.com"

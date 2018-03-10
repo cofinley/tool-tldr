@@ -8,7 +8,7 @@
     <h1>Add New Tool</h1>
   </div>
   <div class="row">
-    <form class="col-md-4" method="post">
+    <form id="recaptcha-form" class="col-md-4" method="post">
       {% set max = 250 %}
       {{ form.hidden_tag() }}
 
@@ -27,7 +27,7 @@
       {% endif %}
       <div class="d-flex justify-content-end mb-5 mt-3 w-100">
         <button type="button" class="btn btn-outline-danger mr-auto form-button cancel-button">Cancel</button>
-        <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
+        <button type="button" class="btn btn-success form-button" id="recaptcha-submit">Submit</button>
       </div>
     </form>
     <div id="tree-pane" class="col-md-8">
