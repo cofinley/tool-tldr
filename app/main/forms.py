@@ -82,9 +82,9 @@ class EditCategoryPageFormConfirmed(EditCategoryPageForm):
 		if not super().validate():
 			return False
 		if self.move_parent.data:
-			if is_at_or_below_category(self.parent_category_id.data, self.current_category_id):
+			if is_at_or_below_category(int(self.parent_category_id.data), self.current_category_id):
 				self.parent_category_id.errors.append(
-					"The current category's parent cannot not be a subcategory or itself.")
+					"The current category's parent cannot be itself or a subcategory of itself.")
 				return False
 		return True
 

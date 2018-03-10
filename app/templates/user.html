@@ -69,12 +69,19 @@
               {% for tool_edit in tool_edits|sort(attribute="edit_time", reverse=True) %}
                 <tr>
                   <td>
-                    <a href="/tools/{{ tool_edit.id }}/edits/diff/{{ tool_edit.previous.transaction_id }}/{{ tool_edit.transaction_id }}"
+                    {% if tool_edit.previous %}
+                    <a href="{{ url_for(".view_tool_diff", tool_id=tool_edit.id, newer=tool_edit.transaction_id, older=tool_edit.previous.transaction_id) }}"
                        title="{{ tool_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
                       {{ tool_edit.edit_time.strftime('%B %d, %Y') }}
                     </a>
+                    {% else %}
+                    <a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=slugify(tool_edit.name)) }}"
+                       title="{{ tool_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
+                      {{ tool_edit.edit_time.strftime('%B %d, %Y') }}
+                    </a>
+                    {% endif %}
                   </td>
-                  <td><a href="/tools/{{ tool_edit.id }}">{{ tool_edit.name }}</a></td>
+                  <td><a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=slugify(tool_edit.name)) }}">{{ tool_edit.name }}</a></td>
                   <td>{{ tool_edit.edit_msg }}</td>
                 </tr>
               {% endfor %}
@@ -82,7 +89,7 @@
             {% endif %}
           </table>
 
-          <a href="/users/{{ user.id }}/edits/tools"
+          <a href="{{ url_for(".view_user_edits", id=user.id, page_type="tools", page_number=1) }}"
              class="btn btn-secondary {% if not tool_edits %}disabled{% endif %}">View All</a>
         </section>
 
@@ -103,12 +110,19 @@
               {% for category_edit in category_edits|sort(attribute="edit_time", reverse=True) %}
                 <tr>
                   <td>
-                    <a href="/categories/{{ category_edit.id }}/edits/diff/{{ category_edit.previous.transaction_id }}/{{ category_edit.transaction_id }}"
+                    {% if category_edit.previous %}
+                    <a href="{{ url_for(".view_category_diff", category_id=category_edit.id, older=category_edit.previous.transaction_id, newer=category_edit.transaction_id) }}"
                        title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
                       {{ category_edit.edit_time.strftime('%B %d, %Y') }}
                     </a>
+                    {% else %}
+                    <a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=slugify(category_edit.name)) }}"
+                       title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
+                      {{ category_edit.edit_time.strftime('%B %d, %Y') }}
+                    </a>
+                    {% endif %}
                   </td>
-                  <td><a href="/categories/{{ category_edit.id }}">{{ category_edit.name }}</a></td>
+                  <td><a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=slugify(category_edit.name)) }}">{{ category_edit.name }}</a></td>
                   <td>{{ category_edit.edit_msg }}</td>
                 </tr>
               {% endfor %}

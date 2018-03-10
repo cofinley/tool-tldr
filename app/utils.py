@@ -1,40 +1,33 @@
 from difflib import ndiff
 from datetime import timedelta, datetime
-from typing import List
 from urllib.parse import urlsplit
 from sqlalchemy_continuum import version_class
 from app import models, db
 import html
 
 
-def build_top_down_list(category_id):
-	"""Used for validating the moving of pages"""
-	top_category = models.Category.query.get(category_id)
-	l = [category_id]
-	for child_category in top_category.children:
-		l += build_top_down_list(child_category.id)
-	return l
-
-
-def is_at_or_below_category(chosen_id, current_id):
+def is_at_or_below_category(chosen_category_id, current_category_id):
 	"""
-	Checks to see if the chosen_id is not the current_id or a child of current_id.
-	This is used in page move validation. A category cannot be its own parent or child.
+	Checks to see if the current_category_id is in the upward path of the chosen_category_id
+	If so, chosen_category_id is below current_category_id and user trying to move page down (illegal)
+	This is used in page move validation.
 	Moving can only go up, not down. Otherwise circular dependencies.
 	
-	:param chosen_id: parent category id picked in form explore tree
-	:param current_id: id of current category
+	:param chosen_category_id: parent category picked in form explore tree
+	:param current_category_id: current category id of page
 	:return: bool if the chosen_id is the same or below the current_id
 	"""
-	return int(chosen_id) in build_top_down_list(int(current_id))
+
+	current_category = models.Category.query.get(current_category_id)
+	return current_category in build_bottom_up_tree(chosen_category_id)
 
 
-def build_bottom_up_tree(parent_category_id: int) -> List:
+def build_bottom_up_tree(parent_category_id):
 	"""
 	Used for tool page hierarchy tree.
 	
-	:param parent_category_id: parent category id int
-	:return List of categories
+	:param parent_category_id: end parent_category id
+	:return List of categories going up
 	"""
 	parent_list = []
 
@@ -55,6 +48,9 @@ def get_hostname(url):
 def gen_diff_html(old_data, new_data):
 
 	# Generate word-by-word diff if spaces, letter-by-letter if not
+
+	# Diff is shown with html rendered with 'safe' filter in jinja template
+	# Make sure to escape the content beforehand
 	old_data = escape_html(old_data)
 	new_data = escape_html(new_data)
 	has_spaces = " " in old_data and " " in new_data
