@@ -68,12 +68,23 @@ class ProductionConfig(Config):
 	SQLALCHEMY_POOL_SIZE = 100
 	SQLALCHEMY_POOL_RECYCLE = 280
 
+	CSP = """
+    default-src 'none';
+    script-src 'self' https://www.google.com https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com;
+    img-src https:;
+    style-src 'self' https://fonts.googleapis.com;
+    connect-src 'self';
+    font-src https://fonts.gstatic.com;
+    manifest-src 'self'
+    """
+
 	SECURITY_HEADERS = {
-		"Content-Security-Policy": "default-src 'none'; script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; img-src https:; style-src 'self' https://fonts.googleapis.com; connect-src 'self'; font-src https://fonts.gstatic.com; manifest-src 'self'",
+		"Content-Security-Policy": CSP,
 		"X-Frame-Options": "DENY",
 		"X-Xss-Protection": "1; mode=block",
 		"X-Content-Type-Options": "nosniff",
-		"Referrer-Policy": "no-referrer-when-downgrade"
+		"Referrer-Policy": "no-referrer-when-downgrade",
+		"Strict-Transport-Security": "max-age=31536000; includeSubDomains"
 	}
 
 
