@@ -4,12 +4,16 @@
   }
 }
 
+#explore-tree .jqtree-element {
+  cursor: default;
+}
+
 .filter-text {
   font-size: 1.25em;
   margin: 0 0 0 1rem;
 }
 
-#explore-tree {
+.explore-tree {
   font-size: 1.3rem;
   margin-bottom: 60px;
   padding-left: 0;
@@ -26,7 +30,7 @@
     display: inline-block;
     font-size: .8em;
     text-align: center;
-    border: .01em solid transparent;
+    border: .03em solid transparent;
     padding: 4pt;
     border-radius: 4px;
     position: relative;
@@ -60,6 +64,19 @@
     top: -2px;
   }
 
+  .jqtree-tree .jqtree-selected > .jqtree-element,
+  .jqtree-tree .jqtree-selected > .jqtree-element:hover {
+
+    background: lighten($light-gray, 11%);
+    text-shadow: none;
+
+    .jqtree-title {
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
   li {
     @include min-width-max-content;
     margin: 0;
@@ -70,13 +87,6 @@
     border-radius: 5px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    cursor: default;
-
-    .blurb {
-      margin-left: 50px;
-      font-size: .8em;
-      opacity: .8;
-    }
   }
 
   .jqtree-toggler {
@@ -103,7 +113,7 @@
   transform-origin: 50% 41%;
 }
 
-#explore-tree.jqtree-loading::after {
+.explore-tree.jqtree-loading::after {
   content: url('/static/img/loader.svg');
   animation: spin 1.1s linear infinite;
   animation-name: loader-spin;
@@ -119,7 +129,7 @@
 
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
-  #explore-tree {
+  .explore-tree {
     font-size: 1.5rem;
     padding-left: 15px;
 

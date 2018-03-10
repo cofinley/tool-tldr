@@ -3,6 +3,7 @@ var tooltip_engine = (function(){
     var cache = {};
     var tooltipUrlPrefix = "/tip/";
     var selector = "/categories/";
+    var excludedSubRoutes = ["edit", "edits", "add-new-tool"];
 
     var categoryInfoLookup = function(categoryId, success) {
         $.ajax({
@@ -22,10 +23,10 @@ var tooltip_engine = (function(){
         }
 
         var route = $(this).attr('href');
-        var idPattern = new RegExp("^\\/categories\\/(\\d+)$");
+        var idPattern = new RegExp("^\\/categories\\/(\\d+)\\/([a-z-]*)$");
         var categoryIdMatch = idPattern.exec(route);
 
-        if (null !== categoryIdMatch){
+        if ((null !== categoryIdMatch) && ($.inArray(categoryIdMatch[2], excludedSubRoutes) === -1)){
 
             var categoryId = categoryIdMatch[1];
             if (!cache.hasOwnProperty(categoryId)) {

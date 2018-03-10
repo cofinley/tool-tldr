@@ -2,7 +2,11 @@
 {% import "_macros.html" as macros %}
 {% block title %}{{ current_version.name }} Edits{% endblock %}
 {% block content %}
-  <h1><a href="/{{ type }}/{{ id }}">{{ current_version.name }}</a>: Edits</h1>
+  {% if type == "tools" %}
+    <h1><a href="{{ url_for(".fetch_tool_page", tool_id=id, tool_name=slugify(current_version.name)) }}">{{ current_version.name }}</a>: Edits</h1>
+  {% else %}
+    <h1><a href="{{ url_for(".fetch_category_page", category_id=id, category_name=slugify(current_version.name)) }}">{{ current_version.name }}</a>: Edits</h1>
+  {% endif %}
   <table class="table table-striped">
     <thead>
     <tr>
@@ -85,7 +89,7 @@
           {% endif %}
         </td>
         <td>{{ version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
-        <td><a href="/users/{{ version.author.id }}">{{ version.author.username }}</a></td>
+        <td><a href="{{ url_for(".user", user_id=version.author.id) }}">{{ version.author.username }}</a></td>
         <td>{{ version.edit_msg }}</td>
         <td><a class="btn btn-sm btn-secondary" href="edit/time-travel/{{ version.transaction_id }}"
                title="Time travel to this edit in time. This will make a new, overwriting edit.">Time Travel</a></td>

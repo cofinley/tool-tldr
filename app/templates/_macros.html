@@ -80,7 +80,7 @@
 
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
           {% if type == "categories" %}
-          <a class="dropdown-item" href="/categories/{{ obj.id }}/add-new-tool">Add a tool for this category</a>
+          <a class="dropdown-item" href="{{ url_for(".add_new_tool", parent_category_id=obj.id) }}">Add a tool for this category</a>
           {% endif %}
           <a class="dropdown-item generate-shield" href="#">Generate shield</a>
         </div>

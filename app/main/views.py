@@ -8,6 +8,7 @@ from app.main.forms import *
 from ..decorators import admin_required
 from flask_login import login_required, current_user
 from sqlalchemy_continuum import version_class
+from slugify import slugify
 
 
 @main.before_app_request
@@ -72,10 +73,14 @@ def load_children_tools(id, env):
 
 	for result in results:
 		if env:
-			label_link = "<a href='/tools/{}'>{}</a>".format(result["id"], utils.escape_html(result["name"]))
+			label_link = "<a href='/tools/{}/{}'>{}</a>".format(result["id"],
+																utils.escape_html(slugify(result["name"])),
+																utils.escape_html(result["name"]))
 		else:
-			label_link = "<a href='/tools/{}'>{}</a> ({})".format(result["id"], utils.escape_html(result["name"]),
-																 utils.escape_html(result["env"].title()))
+			label_link = "<a href='/tools/{}/{}'>{}</a> ({})".format(result["id"],
+																	 utils.escape_html(slugify(result["name"])),
+																	 utils.escape_html(result["name"]),
+																	 utils.escape_html(result["env"].title()))
 		result.pop("name")
 		result["label"] = label_link
 
@@ -96,7 +101,9 @@ def load_children_categories(id, no_link):
 		cleaned_result = {"id": result["id"], "load_on_demand": True}
 		if not no_link:
 			# anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
-			label_link = "<a href='/categories/{}'>{}</a>".format(result["id"], utils.escape_html(result["name"]))
+			label_link = "<a href='/categories/{}/{}'>{}</a>".format(result["id"],
+																	 utils.escape_html(slugify(result["name"])),
+																	 utils.escape_html(result["name"]))
 			cleaned_result["label"] = label_link
 		else:
 			cleaned_result["name"] = result["name"]
@@ -145,10 +152,15 @@ def get_roles():
 	return render_template("roles.html")
 
 
-@main.route("/categories/<int:category_id>")
+@main.route("/categories/<int:category_id>", defaults={'category_name': ""})
+@main.route("/categories/<int:category_id>/", defaults={'category_name': ""})
+@main.route("/categories/<int:category_id>/<category_name>")
 @cache.cached(key_prefix=make_cache_key)
-def fetch_category_page(category_id):
+def fetch_category_page(category_id, category_name):
 	category = models.Category.query.get_or_404(category_id)
+	category_name_slug = slugify(category.name)
+	if category_name != category_name_slug:
+		return redirect(url_for('.fetch_category_page', category_id=category_id, category_name=category_name_slug))
 	subcategories = category.children
 	subtools = category.tools.all()
 	category_tree = utils.build_bottom_up_tree(category.id)
@@ -160,10 +172,15 @@ def fetch_category_page(category_id):
 						   breadcrumbs=category_tree)
 
 
-@main.route("/tools/<int:tool_id>")
+@main.route("/tools/<int:tool_id>", defaults={"tool_name": ""})
+@main.route("/tools/<int:tool_id>/", defaults={"tool_name": ""})
+@main.route("/tools/<int:tool_id>/<tool_name>")
 @cache.cached(key_prefix=make_cache_key)
-def fetch_tool_page(tool_id):
+def fetch_tool_page(tool_id, tool_name):
 	tool = models.Tool.query.get_or_404(tool_id)
+	tool_name_slug = slugify(tool.name)
+	if tool_name != tool_name_slug:
+		return redirect(url_for('.fetch_tool_page', tool_id=tool_id, tool_name=tool_name_slug))
 
 	alts_for_this_env = models.Tool.query\
 		.filter_by(parent_category_id=tool.parent_category_id)\
@@ -215,7 +232,6 @@ def search_tools():
 @main.route('/users/<int:user_id>')
 def user(user_id):
 	user = models.User.query.get_or_404(user_id)
-
 	tool_edits = version_class(models.Tool).query.filter_by(edit_author=user_id).all()
 	category_edits = version_class(models.Category).query.filter_by(edit_author=user_id).all()
 
@@ -391,7 +407,7 @@ def edit_category_page(category_id):
 		session.pop('_flashes', None)
 		flash('This category has been updated.', 'success')
 		cache.clear()
-		return redirect(url_for('.fetch_category_page', category_id=category.id))
+		return redirect(url_for('.fetch_category_page', category_id=category.id, category_name=slugify(category.name)))
 	form.name.data = category.name
 	if current_user.is_confirmed:
 		form.move_parent.data = False
@@ -515,11 +531,9 @@ def render_time_travel(page_type, page_id, target_version_id):
 
 	if page_type == "categories":
 		cls = models.Category
-		return_route = url_for('main.fetch_category_page', category_id=page_id)
 		three_revision_route = "main.view_category_edits"
 	elif page_type == "tools":
 		cls = models.Tool
-		return_route = url_for('main.fetch_tool_page', tool_id=page_id)
 		three_revision_route = "main.view_tool_edits"
 	else:
 		abort(404)
@@ -561,6 +575,11 @@ def render_time_travel(page_type, page_id, target_version_id):
 		db.session.add(current_version)
 		cache.clear()
 		flash('This {} has been updated.'.format(page_type), 'success')
+		destination_slug = slugify(destination_version.name)
+		if page_type == "categories":
+			return_route = url_for('main.fetch_category_page', category_id=page_id, category_name=destination_slug)
+		else:
+			return_route = url_for('main.fetch_tool_page', tool_id=page_id, tool_name=destination_slug)
 		return redirect(return_route)
 
 	form.edit_msg.data = "Time travel back to {} from {}".format(current_time, destination_time)
@@ -704,3 +723,10 @@ def sitemap():
 	response.headers["Content-Type"] = "application/xml"
 
 	return response
+
+
+@main.context_processor
+def utility_processor():
+	def jinja_slugify(s):
+		return slugify(s)
+	return dict(slugify=jinja_slugify)

@@ -1,13 +1,18 @@
-$('#explore-tree').tree({
+var treeOptions = {
     dragAndDrop: false,
     openedIcon: $('<span class="opened-icon toggler"></span>'),
     closedIcon: $('<span class="closed-icon toggler"></span>'),
     useContextMenu: false,
     autoEscape: false,
     selectable: false
-});
+};
 
-var $tree = $('#explore-tree');
+$('#explore-tree').tree(treeOptions);
+
+$('#explore-tree-edit').tree($.extend(true, treeOptions, {selectable:true}));
+
+var $tree = $('.explore-tree');
+var $editTree = $('#explore-tree-edit');
 $('#collapse-button').click(function() {
   $(this).blur();
   var tree = $tree.tree('getTree');
@@ -27,7 +32,7 @@ function populateFormField(node) {
     }
 }
 
-$tree.bind(
+$editTree.bind(
     'tree.select',
     function (event) {
         if (event.node) {
@@ -38,11 +43,11 @@ $tree.bind(
     }
 );
 
-$tree.bind(
+$editTree.bind(
     'tree.init',
     function () {
         // Auto-open root node if it's present
-        var node = $tree.tree('getNodeById', 0);
-        $tree.tree('openNode', node);
+        var node = $editTree.tree('getNodeById', 0);
+        $editTree.tree('openNode', node);
     }
 );
