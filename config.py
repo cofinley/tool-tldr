@@ -68,15 +68,13 @@ class ProductionConfig(Config):
 	SQLALCHEMY_POOL_SIZE = 100
 	SQLALCHEMY_POOL_RECYCLE = 280
 
-	CSP = """
-    default-src 'none';
-    script-src 'self' https://www.google.com https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com;
-    img-src https:;
-    style-src 'self' https://fonts.googleapis.com;
-    connect-src 'self';
-    font-src https://fonts.gstatic.com;
-    manifest-src 'self'
-    """
+	CSP = ("default-src 'none';"
+		    "script-src 'self' https://www.google.com https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com;"
+		    "img-src https:;"
+            "style-src 'self' https://fonts.googleapis.com;"
+            "connect-src 'self';"
+    		"font-src https://fonts.gstatic.com;"
+    		"manifest-src 'self'")
 
 	SECURITY_HEADERS = {
 		"Content-Security-Policy": CSP,
