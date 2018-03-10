@@ -611,6 +611,7 @@ def category_time_travel(tool_id, target_version_id):
 
 @main.route("/categories/<int:parent_category_id>/add-new-tool", methods=["GET", "POST"])
 @main.route("/add-new-tool", methods=["GET", "POST"])
+@login_required
 def add_new_tool(parent_category_id=None):
 
 	if not current_user.is_authenticated:
@@ -667,12 +668,9 @@ def add_new_tool(parent_category_id=None):
 
 
 @main.route("/add-new-category", methods=["GET", "POST"])
+@login_required
 def add_new_category():
 
-	if not current_user.is_authenticated:
-		flash(
-			"You must log in or sign up to add new pages.")
-		return redirect(url_for("auth.login"))
 	form = AddNewCategoryForm()
 	if form.validate_on_submit():
 		if not current_user.is_authenticated:
