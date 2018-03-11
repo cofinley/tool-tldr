@@ -63,7 +63,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_POOL_RECYCLE = 280
 
     CSP = {
-        "default-src": "none",
+        "default-src": "'none'",
         "script-src": [
             "'self'",
             "https://ajax.googleapis.com",
