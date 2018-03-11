@@ -12,7 +12,7 @@ from flask_talisman import Talisman
 from .admin.model_views import UserModelView, PageModelView
 from .admin.views import FlaskAdminIndexView
 
-from flask_bootstrap import Bootstrap
+from extra_packages.flask_bootstrap import Bootstrap
 
 admin = Admin(index_view=FlaskAdminIndexView(), template_mode="bootstrap3")
 bootstrap = Bootstrap()
