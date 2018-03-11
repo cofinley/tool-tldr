@@ -7,12 +7,12 @@ from config import config
 import flask_whooshalchemyplus
 from sqlalchemy_continuum import make_versioned
 from flask_admin import Admin
-from flask_sslify import SSLify
+from flask_talisman import Talisman
 
 from .admin.model_views import UserModelView, PageModelView
 from .admin.views import FlaskAdminIndexView
 
-from extra_packages.flask_bootstrap4 import Bootstrap
+from extra_packages.flask_bootstrap import Bootstrap
 
 admin = Admin(index_view=FlaskAdminIndexView(), template_mode="bootstrap3")
 bootstrap = Bootstrap()
@@ -36,7 +36,12 @@ def create_app(config_name):
 	mail.init_app(app)
 	db.init_app(app)
 	login_manager.init_app(app)
-	SSLify(app)
+
+	csp = app.config["CSP"]
+
+	Talisman(app,
+			 content_security_policy=csp,
+			 content_security_policy_nonce_in=['script-src'])
 
 	cache_config = {
 		"CACHE_TYPE": app.config["CACHE_TYPE"],
