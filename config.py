@@ -68,11 +68,9 @@ class ProductionConfig(Config):
         "default-src": "none",
         "script-src": [
             "'self'",
-            "https://www.google.com/recaptcha/"
-            "https://www.gstatic.com/recaptcha/"
-            "https: // ajax.googleapis.com",
-            "https: // cdnjs.cloudflare.com",
-            "https: // maxcdn.bootstrapcdn.com;"
+            "https://ajax.googleapis.com",
+            "https://cdnjs.cloudflare.com",
+            "https://maxcdn.bootstrapcdn.com"
         ],
         "img-src": "https:",
         "style-src": "'self' https://fonts.googleapis.com",

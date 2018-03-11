@@ -1,3 +1,0 @@
-[submodule "extra_packages/flask-wtf"]
-	path = extra_packages/flask-wtf
-	url = https://github.com/lepture/flask-wtf.git
