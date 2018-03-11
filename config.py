@@ -16,7 +16,7 @@ class Config:
     RECAPTCHA_USE_SSL = True
     RECAPTCHA_PUBLIC_KEY = os.environ.get("TOOLTLDR_RECAPTCHA_SITE_KEY")
     RECAPTCHA_PRIVATE_KEY = os.environ.get("TOOLTLDR_RECAPTCHA_SECRET_KEY")
-    # RECAPTCHA_DATA_ATTRS = {'bind': 'recaptcha-submit', 'callback': 'onRecaptchaSubmitCallback', 'size': 'invisible'}
+    RECAPTCHA_DATA_ATTRS = {'bind': 'recaptcha-submit', 'callback': 'onRecaptchaSubmitCallback', 'size': 'invisible'}
 
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "tooltldr@gmail.com"
     MAIL_SENDER = os.environ.get('MAIL_SENDER') or "tooltldr@gmail.com"
@@ -70,13 +70,16 @@ class ProductionConfig(Config):
             "'self'",
             "https://ajax.googleapis.com",
             "https://cdnjs.cloudflare.com",
-            "https://maxcdn.bootstrapcdn.com"
+            "https://maxcdn.bootstrapcdn.com",
+            "https://www.google.com/recaptcha/",
+            "https://www.gstatic.com/recaptcha/"
         ],
         "img-src": "https:",
-        "style-src": "'self' https://fonts.googleapis.com",
+        "style-src": "'self' https://fonts.googleapis.com 'unsafe-inline'",
         "connect-src": "'self'",
         "font-src": "https://fonts.gstatic.com",
-        "manifest-src": "'self'"
+        "manifest-src": "'self'",
+        "frame-src": "https://www.google.com/recaptcha/"
     }
 
 config = {

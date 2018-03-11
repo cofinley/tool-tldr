@@ -23,12 +23,11 @@
       {{ wtf.form_field(form.why, help_text="Why use this tool over an alternative?", maxlength=max) }}
       <span id="why-count" class="char-count text-muted">{{ max }}</span>
       {% if not is_confirmed %}
-        {{ form.recaptcha(nonce=csp_nonce()) }}
+        {{ form.recaptcha }}
       {% endif %}
       <div class="d-flex justify-content-end mb-5 mt-3 w-100">
         <button type="button" class="btn btn-outline-danger mr-auto form-button cancel-button">Cancel</button>
-{#        <button type="button" class="btn btn-success form-button" id="recaptcha-submit">Submit</button>#}
-        <input type="submit" name="submit" value="Submit" class="btn btn-success form-button" id="recaptcha-submit">
+        <button type="button" class="btn btn-success form-button" id="recaptcha-submit">Submit</button>
       </div>
     </form>
     <div id="tree-pane" class="col-md-8">
