@@ -17,14 +17,6 @@ def check_if_blocked():
 		abort(403)
 
 
-# @main.after_request
-# def apply_headers(response):
-# 	h = response.headers
-# 	for header, value in current_app.config["SECURITY_HEADERS"].items():
-# 		h[header] = value
-# 	return response
-
-
 def make_cache_key(*args, **kwargs):
 	path = request.path
 	args = str(hash(frozenset(request.args.items())))
@@ -32,7 +24,6 @@ def make_cache_key(*args, **kwargs):
 
 
 @main.route("/")
-# @cache.cached(key_prefix=make_cache_key)
 def index():
 	categories = models.Category.query.order_by(models.Category.edits.desc()).all()
 	show_more = False

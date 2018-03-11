@@ -37,8 +37,6 @@ class Config:
 
     BLOCKING_USERS = True
 
-    SSLIFY_PERMANENT = True
-
     CSP = {}
 
     @staticmethod

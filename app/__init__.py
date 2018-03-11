@@ -7,7 +7,6 @@ from config import config
 import flask_whooshalchemyplus
 from sqlalchemy_continuum import make_versioned
 from flask_admin import Admin
-from flask_sslify import SSLify
 from flask_talisman import Talisman
 
 from .admin.model_views import UserModelView, PageModelView
@@ -37,7 +36,6 @@ def create_app(config_name):
 	mail.init_app(app)
 	db.init_app(app)
 	login_manager.init_app(app)
-	SSLify(app)
 
 	csp = app.config["CSP"]
 
