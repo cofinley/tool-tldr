@@ -37,7 +37,7 @@
       <span id="edit_msg-count" class="char-count text-muted">{{ edit_msg_max }}</span>
       {% if not is_confirmed %}
         <div id="edit-tool-recaptcha" class="my-3">
-          {{ form.recaptcha(nonce=csp_nonce()) }}
+          {{ form.recaptcha }}
         </div>
       {% endif %}
       <div class="d-flex justify-content-end mb-5 w-100">
