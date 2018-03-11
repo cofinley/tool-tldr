@@ -8,6 +8,7 @@ import flask_whooshalchemyplus
 from sqlalchemy_continuum import make_versioned
 from flask_admin import Admin
 from flask_sslify import SSLify
+from flask_talisman import Talisman
 
 from .admin.model_views import UserModelView, PageModelView
 from .admin.views import FlaskAdminIndexView
@@ -37,6 +38,12 @@ def create_app(config_name):
 	db.init_app(app)
 	login_manager.init_app(app)
 	SSLify(app)
+
+	csp = app.config["CSP"]
+
+	Talisman(app,
+			 content_security_policy=csp,
+			 content_security_policy_nonce_in=['script-src'])
 
 	cache_config = {
 		"CACHE_TYPE": app.config["CACHE_TYPE"],

@@ -17,12 +17,12 @@ def check_if_blocked():
 		abort(403)
 
 
-@main.after_request
-def apply_headers(response):
-	h = response.headers
-	for header, value in current_app.config["SECURITY_HEADERS"].items():
-		h[header] = value
-	return response
+# @main.after_request
+# def apply_headers(response):
+# 	h = response.headers
+# 	for header, value in current_app.config["SECURITY_HEADERS"].items():
+# 		h[header] = value
+# 	return response
 
 
 def make_cache_key(*args, **kwargs):
