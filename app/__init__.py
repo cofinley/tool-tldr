@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from config import config
 import flask_whooshalchemyplus
 from sqlalchemy_continuum import make_versioned
+from sqlalchemy_continuum.plugins import ActivityPlugin
 from flask_admin import Admin
 from flask_talisman import Talisman
 
@@ -17,7 +18,8 @@ from extra_packages.flask_bootstrap import Bootstrap
 admin = Admin(index_view=FlaskAdminIndexView(), template_mode="bootstrap3")
 bootstrap = Bootstrap()
 mail = Mail()
-make_versioned()
+activityPlugin = ActivityPlugin()
+make_versioned(plugins=[activityPlugin])
 db = SQLAlchemy()
 cache = Cache()
 

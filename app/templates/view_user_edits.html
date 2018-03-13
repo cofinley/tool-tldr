@@ -1,8 +1,9 @@
 {% extends "base.html" %}
-{% import "_macros.html" as macros %}
+{% from "bootstrap/pagination.html" import render_pagination %}
+
 {% block title %}{{ user.username }} Edits ({{ type.title() }}){% endblock %}
 {% block content %}
-  <h1>Edits by <a href="/users/{{ user.id }}">{{ user.username }}</a> ({{ type.title() }})</h1>
+  <h1>Edits by <a href="{{ url_for(".user", user_id=user.id) }}">{{ user.username }}</a> ({{ type.title() }})</h1>
   <table class="table table-striped">
     <thead>
     <tr>
@@ -25,7 +26,7 @@
       </tr>
     {% endfor %}
   </table>
-  <div class="pagination">
-    {{ macros.edits_pagination_widget(pagination, '.view_user_edits', id=user.id, type=type) }}
+  <div class="d-flex justify-content-center">
+    {{ render_pagination(pagination, prev="Previous", next="Next") }}
   </div>
 {% endblock %}

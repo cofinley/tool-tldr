@@ -27,7 +27,11 @@
       {% endif %}
       <div class="d-flex justify-content-end mb-5 mt-3 w-100">
         <button type="button" class="btn btn-outline-danger mr-auto form-button cancel-button">Cancel</button>
-        <button type="button" class="btn btn-success form-button" id="recaptcha-submit">Submit</button>
+        {% if not is_confirmed %}
+          <button type="button" class="btn btn-success form-button" id="recaptcha-submit">Submit</button>
+        {% else %}
+          <input type="submit" class="btn btn-success form-button" id="recaptcha-submit" value="Submit" name="Submit">
+        {% endif %}
       </div>
     </form>
     <div id="tree-pane" class="col-md-8">

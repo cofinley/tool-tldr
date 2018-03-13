@@ -2,6 +2,7 @@ from difflib import ndiff
 from datetime import timedelta, datetime
 from urllib.parse import urlsplit
 from sqlalchemy_continuum import version_class
+from sqlalchemy_continuum import versioning_manager
 from app import models, db
 import html
 
@@ -214,17 +215,17 @@ def is_over_x_hours_ago(t: datetime, hours: int) -> bool:
 	return t < (datetime.utcnow() - timedelta(hours=hours))
 
 
-def check_if_three_time_travels(edit_author: int, model_class, page_id: int) -> bool:
+def check_if_three_time_travels(edit_author_id: int, model_class, page_id: int) -> bool:
 	"""
 	Look at all versions, check if provided user shows up three or more times in the past 24 hours.
-	:param edit_author: user id
+	:param edit_author_id: user id
 	:param model_class: categories or tools class
 	:param page_id: id of the page
 	:return: bool if user has made 3 or more time travels alraedy
 	"""
 
 	versions = db.session.query(version_class(model_class)).filter_by(id=page_id,
-																	  edit_author=edit_author,
+																	  edit_author=edit_author_id,
 																	  is_time_travel_edit=True).all()
 	time_travels_in_last_24_hours = [v for v in versions if is_within_last_x_hours(v.edit_time, 24)]
 	db.session.close()
@@ -233,3 +234,15 @@ def check_if_three_time_travels(edit_author: int, model_class, page_id: int) -> 
 
 def escape_html(s):
 	return html.escape(str(s))
+
+
+def create_activity(verb=None, object=None, target=None):
+	db.session.flush()
+	Activity = versioning_manager.activity_cls
+	activity = Activity(
+		object=object,
+		target=target,
+		verb=verb
+	)
+	db.session.add(activity)
+	return activity

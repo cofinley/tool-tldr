@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import "_macros.html" as macros %}
+{% from "bootstrap/pagination.html" import render_pagination %}
 {% block title %}{{ current_version.name }} Edits{% endblock %}
 {% block content %}
   {% if type == "tools" %}
@@ -96,11 +96,7 @@
       </tr>
     {% endfor %}
   </table>
-  <div class="pagination">
-    {% if type == "tools" %}
-      {{ macros.edits_pagination_widget(pagination, '.view_tool_edits', id=id, type=type) }}
-    {% elif type == "categories " %}
-      {{ macros.edits_pagination_widget(pagination, '.view_category_edits', id=id, type=type) }}
-    {% endif %}
+  <div class="d-flex justify-content-center">
+    {{ render_pagination(pagination, prev="Previous", next="Next") }}
   </div>
 {% endblock %}
