@@ -7,7 +7,7 @@
   <table class="table table-striped">
     <thead>
     <tr>
-      <th>Edit</th>
+      <th>Edit Time</th>
       <th>{{ type.title() }} Name (at the time)</th>
       <th>Edit Message</th>
     </tr>
@@ -16,10 +16,32 @@
     {% for edit in edits|sort(attribute="edit_time", reverse=True) %}
       <tr>
         <td>
-          <a href="/{{ type }}/{{ edit.id }}/edits/diff/{{ edit.previous.transaction_id }}/{{ edit.transaction_id }}"
-             title="{{ edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
-            {{ edit.edit_time.strftime('%B %d, %Y') }}
-          </a>
+          {% if type == "tool" %}
+            {% if edit.previous %}
+              <a href="{{ url_for(".view_tool_diff", tool_id=edit.id, newer=edit.transaction_id, older=edit.previous.transaction_id) }}"
+                 title="{{ edit.edit_time }}">
+                {{ edit.edit_time | timesince }}
+              </a>
+            {% else %}
+              <a href="{{ url_for(".fetch_tool_page", tool_id=edit.id, tool_name=slugify(edit.name)) }}"
+                 title="{{ edit.edit_time }}">
+                {{ edit.edit_time | timesince }}
+              </a>
+            {% endif %}
+
+          {% else %}
+            {% if edit.previous %}
+              <a href="{{ url_for(".view_category_diff", category_id=edit.id, newer=edit.transaction_id, older=edit.previous.transaction_id) }}"
+                 title="{{ edit.edit_time }}">
+                {{ edit.edit_time | timesince }}
+              </a>
+            {% else %}
+              <a href="{{ url_for(".fetch_category_page", category_id=edit.id, category_name=slugify(edit.name)) }}"
+                 title="{{ edit.edit_time }}">
+                {{ edit.edit_time | timesince }}
+              </a>
+            {% endif %}
+          {% endif %}
         </td>
         <td><a href="/{{ type }}/{{ edit.id }}">{{ edit.name }}</a></td>
         <td>{{ edit.edit_msg }}</td>

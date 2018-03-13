@@ -723,8 +723,8 @@ def sitelog():
 	if request.args.get("page"):
 		page_number = int(request.args.get("page"))
 	Activity = versioning_manager.activity_cls
-	pagination = Activity.query.\
-		order_by(Activity.id.desc()) \
+	pagination = Activity.query \
+		.order_by(Activity.id.desc()) \
 		.paginate(page_number, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
 
 	return render_template("sitelog.html",
@@ -752,6 +752,9 @@ def sitemap():
 	return response
 
 
+# TEMPLATE ADDONS
+
+
 @main.context_processor
 def utility_processor():
 	# Functions to be used inside jinja functions
@@ -761,7 +764,7 @@ def utility_processor():
 
 
 @main.app_template_filter("timesince")
-def timesince(dt, default="just now"):
+def timesince(dt, default="Just now"):
 	"""
     Returns string representing "time since" e.g.
     3 days ago, 5 hours ago etc.
@@ -781,7 +784,6 @@ def timesince(dt, default="just now"):
 	)
 
 	for period, singular, plural in periods:
-
 		if period >= 1:
 			return "%d %s ago" % (period, singular if period == 1 else plural)
 

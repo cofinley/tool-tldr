@@ -20,11 +20,11 @@
     <tbody>
     {% for change in pagination.items %}
       <tr>
-        <td title="{{ change.object.edit_time }}">{{ change.object.edit_time | timesince }}</td>
+        <td title="{{ change.object_version.edit_time }}">{{ change.object_version.edit_time | timesince }}</td>
         <td><a href="{{ url_for(".user", user_id=change.object.author.id) }}">{{ change.object.author.username }}</a></td>
-        {% if change.very == "edit" %}
+        {% if change.verb == "edit" %}
           <td>Edit</td>
-        {% elif change.very == "add" %}
+        {% elif change.verb == "add" %}
           <td>Add</td>
         {% else %}
           <td>Time Travel</td>
@@ -34,7 +34,7 @@
         {% else %}
           <td><a href="{{ url_for(".fetch_category_page", category_id=change.object.id, category_name=slugify(change.object.name)) }}">{{ change.object.name }}</a> ({{ change.object_type }})</td>
         {% endif %}
-        <td>{{ change.object.edit_msg }}</td>
+        <td>{{ change.object_version.edit_msg }}</td>
       </tr>
     {% endfor %}
     </tbody>
