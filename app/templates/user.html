@@ -112,13 +112,13 @@
                   <td>
                     {% if category_edit.previous %}
                     <a href="{{ url_for(".view_category_diff", category_id=category_edit.id, older=category_edit.previous.transaction_id, newer=category_edit.transaction_id) }}"
-                       title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
-                      {{ category_edit.edit_time.strftime('%B %d, %Y') }}
+                       title="{{ category_edit.edit_time }}">
+                      {{ category_edit.edit_time | timesince }}
                     </a>
                     {% else %}
                     <a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=slugify(category_edit.name)) }}"
-                       title="{{ category_edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
-                      {{ category_edit.edit_time.strftime('%B %d, %Y') }}
+                       title="{{ category_edit.edit_time }}">
+                      {{ category_edit.edit_time | timesince }}
                     </a>
                     {% endif %}
                   </td>
