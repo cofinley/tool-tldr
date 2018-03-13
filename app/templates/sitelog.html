@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "bootstrap/pagination.html" import render_pagination %}
+
+{% block title %}Site Log{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>Site Log</h1>
+  </div>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">Edit Time</th>
+      <th scope="col">Edit Author</th>
+      <th scope="col">Action</th>
+      <th scope="col">Page</th>
+      <th scope="col">Edit Message</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for change in pagination.items %}
+      <tr>
+        <td title="{{ change.object_version.edit_time }}">{{ change.object_version.edit_time | timesince }}</td>
+        <td><a href="{{ url_for(".user", user_id=change.object.author.id) }}">{{ change.object.author.username }}</a></td>
+        {% if change.verb == "edit" %}
+          <td>Edit</td>
+        {% elif change.verb == "add" %}
+          <td>Add</td>
+        {% else %}
+          <td>Time Travel</td>
+        {% endif %}
+        {% if change.object_type == "Tool" %}
+          <td><a href="{{ url_for(".fetch_tool_page", tool_id=change.object.id, tool_name=slugify(change.object.name)) }}">{{ change.object.name }}</a> ({{ change.object_type }})</td>
+        {% else %}
+          <td><a href="{{ url_for(".fetch_category_page", category_id=change.object.id, category_name=slugify(change.object.name)) }}">{{ change.object.name }}</a> ({{ change.object_type }})</td>
+        {% endif %}
+        <td>{{ change.object_version.edit_msg }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-center">
+    {{ render_pagination(pagination, prev="Previous", next="Next") }}
+  </div>
+{% endblock %}

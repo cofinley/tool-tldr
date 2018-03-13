@@ -7,7 +7,7 @@ from .. import cache, utils, db
 from app.main.forms import *
 from ..decorators import admin_required
 from flask_login import login_required, current_user
-from sqlalchemy_continuum import version_class
+from sqlalchemy_continuum import version_class, versioning_manager
 from slugify import slugify
 
 
@@ -235,9 +235,11 @@ def user(user_id):
 						   category_edits=category_edits[-11:])
 
 
-@main.route("/users/<int:id>/edits/<page_type>", defaults={'page_number': 1})
-@main.route("/users/<int:id>/edits/<page_type>/<int:page_number>")
-def view_user_edits(id, page_type, page_number):
+@main.route("/users/<int:id>/edits/<page_type>")
+def view_user_edits(id, page_type):
+	page_number = 1
+	if request.args.get("page"):
+		page_number = int(request.args.get("page"))
 
 	user = models.User.query.get_or_404(id)
 
@@ -329,17 +331,21 @@ def render_edits(page_type, page_id, page_number):
 						   previous_versions=versions[:-1])
 
 
-@main.route("/tools/<int:id>/edits", defaults={'page_number': 1})
-@main.route("/tools/<int:id>/edits/<int:page_number>")
-def view_tool_edits(id, page_number):
+@main.route("/tools/<int:id>/edits")
+def view_tool_edits(id):
 
+	page_number = 1
+	if request.args.get("page"):
+		page_number = int(request.args.get("page"))
 	return render_edits(page_type="tools", page_id=id, page_number=page_number)
 
 
-@main.route("/categories/<int:id>/edits", defaults={'page_number': 1})
-@main.route("/categories/<int:id>/edits/<int:page_number>")
-def view_category_edits(id, page_number):
+@main.route("/categories/<int:id>/edits")
+def view_category_edits(id):
 
+	page_number = 1
+	if request.args.get("page"):
+		page_number = int(request.args.get("page"))
 	return render_edits(page_type="categories", page_id=id, page_number=page_number)
 
 
@@ -390,6 +396,8 @@ def edit_category_page(category_id):
 		category.edits += 1
 		category.is_time_travel_edit = False
 		db.session.add(category)
+
+		utils.create_activity(verb="edit", object=category)
 
 		edit_author.edits += 1
 		db.session.add(edit_author)
@@ -449,6 +457,8 @@ def edit_tool_page(tool_id):
 		tool.edits += 1
 		tool.is_time_travel_edit = False
 		db.session.add(tool)
+
+		utils.create_activity(verb="edit", object=tool)
 
 		edit_author.edits += 1
 		db.session.add(edit_author)
@@ -531,12 +541,12 @@ def render_time_travel(page_type, page_id, target_version_id):
 
 	# Make sure user hasn't made more than three reverts within past 24 hours
 	if not current_user.is_authenticated:
-		edit_author = create_temp_user().id
+		edit_author = create_temp_user()
 	else:
-		edit_author = current_user.id
+		edit_author = current_user
 
 	# Enforce three-revision rule
-	if utils.check_if_three_time_travels(edit_author, cls, page_id):
+	if utils.check_if_three_time_travels(edit_author.id, cls, page_id):
 		flash("You have already reverted this page three times within a 24 hour period. Try again later.", "warning")
 		return redirect(url_for(three_revision_route, id=page_id))
 
@@ -561,9 +571,15 @@ def render_time_travel(page_type, page_id, target_version_id):
 		current_version = utils.overwrite(current_version, destination_version, page_type)
 		current_version.edit_msg = form.edit_msg.data
 		current_version.edit_time = datetime.utcnow()
-		current_version.edit_author = edit_author
+		current_version.edit_author = edit_author.id
 		current_version.is_time_travel_edit = True
 		db.session.add(current_version)
+
+		utils.create_activity(verb="time_travel", object=current_version)
+
+		edit_author.edits += 1
+		db.session.add(edit_author)
+
 		cache.clear()
 		flash('This {} has been updated.'.format(page_type), 'success')
 		destination_slug = slugify(destination_version.name)
@@ -591,10 +607,10 @@ def tool_time_travel(tool_id, target_version_id):
 	return render_time_travel(page_type="tools", page_id=tool_id, target_version_id=target_version_id)
 
 
-@main.route("/categories/<int:tool_id>/edit/time-travel/<int:target_version_id>", methods=["GET", "POST"])
-def category_time_travel(tool_id, target_version_id):
+@main.route("/categories/<int:category_id>/edit/time-travel/<int:target_version_id>", methods=["GET", "POST"])
+def category_time_travel(category_id, target_version_id):
 
-	return render_time_travel(page_type="categories", page_id=tool_id, target_version_id=target_version_id)
+	return render_time_travel(page_type="categories", page_id=category_id, target_version_id=target_version_id)
 
 
 # CREATE ROUTES
@@ -636,6 +652,8 @@ def add_new_tool(parent_category_id=None):
 			edit_time=datetime.utcnow()
 		)
 		db.session.add(tool)
+
+		utils.create_activity(verb="add", object=tool)
 
 		edit_author.edits += 1
 		db.session.add(edit_author)
@@ -683,6 +701,8 @@ def add_new_category():
 		)
 		db.session.add(category)
 
+		utils.create_activity(verb="add", object=category)
+
 		edit_author.edits += 1
 		db.session.add(edit_author)
 
@@ -693,6 +713,24 @@ def add_new_category():
 		cache.clear()
 		return redirect(url_for('.fetch_category_page', category_id=category.id))
 	return render_template('add_new_category.html', form=form)
+
+
+# SITE LOG
+
+@main.route("/sitelog")
+def sitelog():
+	page_number = 1
+	if request.args.get("page"):
+		page_number = int(request.args.get("page"))
+	Activity = versioning_manager.activity_cls
+	pagination = Activity.query \
+		.order_by(Activity.id.desc()) \
+		.paginate(page_number, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
+
+	return render_template("sitelog.html",
+						   pagination=pagination)
+
+# OTHER
 
 
 @main.route('/sitemap.xml', methods=['GET'])
@@ -714,8 +752,41 @@ def sitemap():
 	return response
 
 
+# TEMPLATE ADDONS
+
+
 @main.context_processor
 def utility_processor():
+	# Functions to be used inside jinja functions
 	def jinja_slugify(s):
 		return slugify(s)
 	return dict(slugify=jinja_slugify)
+
+
+@main.app_template_filter("timesince")
+def timesince(dt, default="Just now"):
+	"""
+    Returns string representing "time since" e.g.
+    3 days ago, 5 hours ago etc.
+    """
+
+	now = datetime.utcnow()
+	diff = now - dt
+
+	periods = (
+		(diff.days / 365, "year", "years"),
+		(diff.days / 30, "month", "months"),
+		(diff.days / 7, "week", "weeks"),
+		(diff.days, "day", "days"),
+		(diff.seconds / 3600, "hour", "hours"),
+		(diff.seconds / 60, "minute", "minutes"),
+		(diff.seconds, "second", "seconds"),
+	)
+
+	for period, singular, plural in periods:
+		if period >= 1:
+			return "%d %s ago" % (period, singular if period == 1 else plural)
+
+	return default
+
+

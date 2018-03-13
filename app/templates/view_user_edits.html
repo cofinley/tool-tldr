@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% import "_macros.html" as macros %}
+{% from "bootstrap/pagination.html" import render_pagination %}
+
 {% block title %}{{ user.username }} Edits ({{ type.title() }}){% endblock %}
 {% block content %}
-  <h1>Edits by <a href="/users/{{ user.id }}">{{ user.username }}</a> ({{ type.title() }})</h1>
+  <h1>Edits by <a href="{{ url_for(".user", user_id=user.id) }}">{{ user.username }}</a> ({{ type.title() }})</h1>
   <table class="table table-striped">
     <thead>
     <tr>
-      <th>Edit</th>
+      <th>Edit Time</th>
       <th>{{ type.title() }} Name (at the time)</th>
       <th>Edit Message</th>
     </tr>
@@ -15,17 +16,39 @@
     {% for edit in edits|sort(attribute="edit_time", reverse=True) %}
       <tr>
         <td>
-          <a href="/{{ type }}/{{ edit.id }}/edits/diff/{{ edit.previous.transaction_id }}/{{ edit.transaction_id }}"
-             title="{{ edit.edit_time.strftime('%d %B %Y, %H:%M') }}">
-            {{ edit.edit_time.strftime('%B %d, %Y') }}
-          </a>
+          {% if type == "tool" %}
+            {% if edit.previous %}
+              <a href="{{ url_for(".view_tool_diff", tool_id=edit.id, newer=edit.transaction_id, older=edit.previous.transaction_id) }}"
+                 title="{{ edit.edit_time }}">
+                {{ edit.edit_time | timesince }}
+              </a>
+            {% else %}
+              <a href="{{ url_for(".fetch_tool_page", tool_id=edit.id, tool_name=slugify(edit.name)) }}"
+                 title="{{ edit.edit_time }}">
+                {{ edit.edit_time | timesince }}
+              </a>
+            {% endif %}
+
+          {% else %}
+            {% if edit.previous %}
+              <a href="{{ url_for(".view_category_diff", category_id=edit.id, newer=edit.transaction_id, older=edit.previous.transaction_id) }}"
+                 title="{{ edit.edit_time }}">
+                {{ edit.edit_time | timesince }}
+              </a>
+            {% else %}
+              <a href="{{ url_for(".fetch_category_page", category_id=edit.id, category_name=slugify(edit.name)) }}"
+                 title="{{ edit.edit_time }}">
+                {{ edit.edit_time | timesince }}
+              </a>
+            {% endif %}
+          {% endif %}
         </td>
         <td><a href="/{{ type }}/{{ edit.id }}">{{ edit.name }}</a></td>
         <td>{{ edit.edit_msg }}</td>
       </tr>
     {% endfor %}
   </table>
-  <div class="pagination">
-    {{ macros.edits_pagination_widget(pagination, '.view_user_edits', id=user.id, type=type) }}
+  <div class="d-flex justify-content-center">
+    {{ render_pagination(pagination, prev="Previous", next="Next") }}
   </div>
 {% endblock %}

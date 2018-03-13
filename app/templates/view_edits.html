@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import "_macros.html" as macros %}
+{% from "bootstrap/pagination.html" import render_pagination %}
 {% block title %}{{ current_version.name }} Edits{% endblock %}
 {% block content %}
   {% if type == "tools" %}
@@ -54,7 +54,7 @@
           </label>
         </div>
       </td>
-      <td>{{ current_version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
+      <td title="{{ current_version.edit_time }}">{{ current_version.edit_time | timesince }}</td>
       <td><a href="/users/{{ current_version.author.id }}">{{ current_version.author.username }}</a></td>
       <td>{{ current_version.edit_msg }}</td>
       <td></td>
@@ -88,7 +88,7 @@
             </div>
           {% endif %}
         </td>
-        <td>{{ version.edit_time.strftime('%d %B %Y, %H:%M') }}</td>
+        <td title="{{ version.edit_time }}">{{ version.edit_time | timesince }}</td>
         <td><a href="{{ url_for(".user", user_id=version.author.id) }}">{{ version.author.username }}</a></td>
         <td>{{ version.edit_msg }}</td>
         <td><a class="btn btn-sm btn-secondary" href="edit/time-travel/{{ version.transaction_id }}"
@@ -96,11 +96,7 @@
       </tr>
     {% endfor %}
   </table>
-  <div class="pagination">
-    {% if type == "tools" %}
-      {{ macros.edits_pagination_widget(pagination, '.view_tool_edits', id=id, type=type) }}
-    {% elif type == "categories " %}
-      {{ macros.edits_pagination_widget(pagination, '.view_category_edits', id=id, type=type) }}
-    {% endif %}
+  <div class="d-flex justify-content-center">
+    {{ render_pagination(pagination, prev="Previous", next="Next") }}
   </div>
 {% endblock %}
