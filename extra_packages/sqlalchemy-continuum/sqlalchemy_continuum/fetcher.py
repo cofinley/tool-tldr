@@ -75,7 +75,7 @@ class VersionObjectFetcher(object):
                 )],
                 from_obj=[table]
             )
-            .where(
+                .where(
                 sa.and_(
                     op(
                         getattr(attrs, tx_column_name(obj)),
@@ -88,7 +88,7 @@ class VersionObjectFetcher(object):
                     ]
                 )
             )
-            .correlate(table)
+                .correlate(table)
         )
         return query
 
@@ -97,7 +97,7 @@ class VersionObjectFetcher(object):
 
         return (
             session.query(obj.__class__)
-            .filter(
+                .filter(
                 sa.and_(
                     getattr(
                         obj.__class__,
@@ -132,7 +132,7 @@ class VersionObjectFetcher(object):
         query = (
             # sa.select([subquery], from_obj=[obj.__table__])
             sa.select([sa.func.count('1')], from_obj=[obj.__table__])
-            .where(
+                .where(
                 # sa.and_(*eqmap(identity, (obj.__class__, obj)))
                 sa.and_(
                     getattr(obj.__class__, tx_column_name(obj))
@@ -173,7 +173,7 @@ class ValidityFetcher(VersionObjectFetcher):
 
         return (
             session.query(obj.__class__)
-            .filter(
+                .filter(
                 sa.and_(
                     getattr(obj.__class__, tx_column_name(obj))
                     ==
@@ -192,7 +192,7 @@ class ValidityFetcher(VersionObjectFetcher):
 
         return (
             session.query(obj.__class__)
-            .filter(
+                .filter(
                 sa.and_(
                     getattr(obj.__class__, end_tx_column_name(obj))
                     ==
