@@ -19,22 +19,23 @@
   <div class="row">
     <h2 class="col-md-6 text-center" id="comparison-info">Current: {{ current_time }}</h2>
     <h2 class="col-md-6 text-center" id="comparison-info">Destination: {{ destination_time }}</h2>
-    {% for diff in diffs %}
+    {% for diff_name, changes in diffs.items() %}
+      {% set before, after = changes %}
       <div class="col-sm-6">
         <div class="card">
-          <h3 class="card-header">{{ diff }}</h3>
+          <h3 class="card-header">{{ diff_name }}</h3>
           <div class="card-block">
             <p class="card-text text-muted">Current</p>
-            <p class="card-wrapped-text card-text pl-3">{{ diffs[diff]["left"]|safe }}</p>
+            <p class="card-wrapped-text card-text pl-3">{{ before|safe }}</p>
           </div>
         </div>
       </div>
       <div class="col-sm-6">
         <div class="card">
-          <h3 class="card-header">{{ diff }}</h3>
+          <h3 class="card-header">{{ diff_name }}</h3>
           <div class="card-block">
             <p class="card-text text-muted">Destination</p>
-            <p class="card-wrapped-text card-text pl-3">{{ diffs[diff]["right"]|safe }}</p>
+            <p class="card-wrapped-text card-text pl-3">{{ after|safe }}</p>
           </div>
         </div>
       </div>
