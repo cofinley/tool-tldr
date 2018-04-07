@@ -77,34 +77,5 @@ class VersionIndexTestCase(BasicsTestCase):
         assert tool.versions[1].index == 1
 
 
-class FindDiffTestCase(BasicsTestCase):
-
-    def test_find_diff(self):
-        self.tool=self.models.Tool(
-            name="Foo",
-            parent_category_id=0,
-            avatar_url="",
-            env="",
-            created=2017,
-            project_version="",
-            is_active=1,
-            link="",
-            why="",
-            edit_author=0,
-            edit_time=datetime.utcnow()
-        )
-        self.session.add(self.tool)
-        self.session.commit()
-        self.tool.name = "Bar"
-        self.tool.env = "Env 1"
-        self.session.commit()
-        self.tool.name = "Baz"
-        self.tool.env = "Env 2"
-        self.session.commit()
-
-        diffs = utils.find_diff(self.tool.versions[0], self.tool.versions[2], "tools")
-        print(diffs)
-
-
 if __name__ == "__main__":
     unittest.main()
