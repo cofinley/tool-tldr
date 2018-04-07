@@ -9,6 +9,7 @@ from sqlalchemy_continuum import make_versioned
 from sqlalchemy_continuum.plugins import ActivityPlugin
 from flask_admin import Admin
 from flask_talisman import Talisman
+from flask_debugtoolbar import DebugToolbarExtension
 
 from .admin.model_views import UserModelView, PageModelView
 from .admin.views import FlaskAdminIndexView
@@ -22,6 +23,7 @@ activityPlugin = ActivityPlugin()
 make_versioned(plugins=[activityPlugin])
 db = SQLAlchemy()
 cache = Cache()
+toolbar = DebugToolbarExtension()
 
 login_manager = LoginManager()
 login_manager.session_protection = "strong"
@@ -51,6 +53,8 @@ def create_app(config_name):
 		"CACHE_DEFAULT_TIMEOUT": app.config["CACHE_DEFAULT_TIMEOUT"]
 	}
 	cache.init_app(app, config=cache_config)
+
+	toolbar.init_app(app)
 
 	flask_whooshalchemyplus.init_app(app)
 	app.jinja_env.add_extension('jinja2.ext.loopcontrols')

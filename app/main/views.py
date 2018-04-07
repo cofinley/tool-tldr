@@ -9,6 +9,7 @@ from ..decorators import admin_required
 from flask_login import login_required, current_user
 from sqlalchemy_continuum import version_class, versioning_manager
 from slugify import slugify
+from flask_sqlalchemy import Pagination
 
 
 @main.before_app_request
@@ -237,10 +238,6 @@ def user(user_id):
 
 @main.route("/users/<int:id>/edits/<page_type>")
 def view_user_edits(id, page_type):
-	page_number = 1
-	if request.args.get("page"):
-		page_number = int(request.args.get("page"))
-
 	user = models.User.query.get_or_404(id)
 
 	if page_type == "categories":
@@ -252,7 +249,7 @@ def view_user_edits(id, page_type):
 
 	pagination = version_class(cls).query.filter_by(edit_author=id) \
 		.order_by(version_class(cls).transaction_id.desc()) \
-		.paginate(page_number, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
+		.paginate(per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
 	edits = list(reversed(pagination.items))
 
 	return render_template("view_user_edits.html",
@@ -302,7 +299,7 @@ def edit_profile_admin():
 # EDIT ROUTES
 
 
-def render_edits(page_type, page_id, page_number):
+def render_edits(page_type, page_id):
 
 	if page_type == "tools":
 		cls = models.Tool
@@ -312,41 +309,34 @@ def render_edits(page_type, page_id, page_number):
 		abort(404)
 
 	# Check to make sure id exists first, otherwise 404
-	cls.query.get_or_404(page_id)
+	versions = cls.query.get_or_404(page_id).versions
+	total = versions.count()
 
-	all = version_class(cls).query.filter_by(id=page_id).all()
-	latest_version_id = all[-1].transaction_id
-	first_version_id = all[0].transaction_id
-	pagination = version_class(cls).query.filter_by(id=page_id) \
-		.order_by(version_class(cls).transaction_id.desc()) \
-		.paginate(page_number, per_page=current_app.config['EDITS_PER_PAGE'], error_out=False)
-	versions = list(reversed(pagination.items))
+	page = int(request.args.get('page', 1))
+	per_page = current_app.config["EDITS_PER_PAGE"]
+	items = utils.version_paginate(versions, page, per_page, total)
+	pagination = Pagination(query=None, page=page, per_page=per_page, total=total, items=items)
+
 	return render_template("view_edits.html",
 						   id=page_id,
 						   type=page_type,
 						   pagination=pagination,
-						   latest_version_id=latest_version_id,
-						   first_version_id=first_version_id,
+						   latest_version_num=total,
 						   current_version=versions[-1],
-						   previous_versions=versions[:-1])
+						   previous_versions=total > 1,
+						   versions=pagination.items)
 
 
 @main.route("/tools/<int:id>/edits")
 def view_tool_edits(id):
 
-	page_number = 1
-	if request.args.get("page"):
-		page_number = int(request.args.get("page"))
-	return render_edits(page_type="tools", page_id=id, page_number=page_number)
+	return render_edits(page_type="tools", page_id=id)
 
 
 @main.route("/categories/<int:id>/edits")
 def view_category_edits(id):
 
-	page_number = 1
-	if request.args.get("page"):
-		page_number = int(request.args.get("page"))
-	return render_edits(page_type="categories", page_id=id, page_number=page_number)
+	return render_edits(page_type="categories", page_id=id)
 
 
 def create_temp_user():
@@ -494,12 +484,14 @@ def render_diff(page_type, page_id, older, newer):
 	else:
 		abort(404)
 
-	newer_data = version_class(cls).query.get_or_404((page_id, newer))
-	older_data = version_class(cls).query.get_or_404((page_id, older))
+	page = cls.query.get_or_404(page_id)
+	newer_data = page.versions[newer-1]
+	older_data = page.versions[older-1]
 
 	diffs = utils.find_diff(older_data, newer_data, page_type)
 	for key in diffs:
-		diffs[key] = utils.gen_diff_html(diffs[key][1], diffs[key][2])
+		before, after = diffs[key]
+		diffs[key] = utils.gen_diff_html(before, after)
 
 	older_time = older_data.edit_time.strftime('%d %B %Y, %H:%M')
 	newer_time = newer_data.edit_time.strftime('%d %B %Y, %H:%M')
@@ -507,6 +499,7 @@ def render_diff(page_type, page_id, older, newer):
 	return render_template("view_diff.html",
 						   id=page_id,
 						   type=page_type,
+						   page_name=page.name,
 						   older_data=older_data,
 						   newer_data=newer_data,
 						   older_time=older_time,
@@ -551,8 +544,8 @@ def render_time_travel(page_type, page_id, target_version_id):
 		return redirect(url_for(three_revision_route, id=page_id))
 
 	# Load whole states of current and destination
-	destination_version = version_class(cls).query.get_or_404((page_id, target_version_id))
 	current_version = cls.query.get_or_404(page_id)
+	destination_version = current_version.versions[target_version_id-1]
 
 	current_time = current_version.edit_time.strftime('%d %B %Y, %H:%M')
 	destination_time = destination_version.edit_time.strftime('%d %B %Y, %H:%M')
@@ -717,6 +710,7 @@ def add_new_category():
 
 # SITE LOG
 
+
 @main.route("/sitelog")
 def sitelog():
 	page_number = 1
@@ -729,6 +723,7 @@ def sitelog():
 
 	return render_template("sitelog.html",
 						   pagination=pagination)
+
 
 # OTHER
 
