@@ -1,12 +1,15 @@
+import datetime
+
 from flask import render_template, redirect, request, url_for, flash
 from flask_login import login_user, logout_user, login_required, \
     current_user
+
 from . import auth
-from .. import db, models
-from ..models import User
-from ..email import send_email
-from .forms import LoginForm, RegistrationForm, ChangePasswordForm,\
+from .forms import LoginForm, RegistrationForm, ChangePasswordForm, \
     PasswordResetRequestForm, PasswordResetForm, ChangeEmailForm
+from .. import db, models
+from ..email import send_email
+from ..models import User
 
 
 @auth.before_app_request
@@ -180,4 +183,13 @@ def change_email(token):
         flash('Your email address has been updated.', 'success')
     else:
         flash('Invalid request.', 'danger')
+    return redirect(url_for('main.index'))
+
+
+@auth.route("/delete-account")
+@login_required
+def delete_account():
+    current_user.deleted = datetime.datetime.utcnow()
+    logout_user()
+    flash('Your account was successfully deleted.', 'success')
     return redirect(url_for('main.index'))
