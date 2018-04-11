@@ -6,18 +6,22 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'Wjqjll33tKq1dOtTJo3Sued129ohlSNf'
 
+    # Flask-SQLAlchemy
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
+    # Flask-WhooshAlchemyPlus
     WHOOSH_BASE = os.path.join(basedir, 'search.db')
     WTF_CSRF_ENABLED = True
 
+    # Flask-WTF
     RECAPTCHA_USE_SSL = True
     RECAPTCHA_PUBLIC_KEY = os.environ.get("TOOLTLDR_RECAPTCHA_SITE_KEY")
     RECAPTCHA_PRIVATE_KEY = os.environ.get("TOOLTLDR_RECAPTCHA_SECRET_KEY")
     RECAPTCHA_DATA_ATTRS = {'bind': 'recaptcha-submit', 'callback': 'onRecaptchaSubmitCallback', 'size': 'invisible'}
 
+    # Flask-Mail
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "tooltldr@gmail.com"
     MAIL_SENDER = os.environ.get('MAIL_SENDER') or "tooltldr@gmail.com"
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "mrdtwuqkliivoxvv"
@@ -26,18 +30,26 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_SUBJECT_PREFIX = '[Tool TL;DR]'
 
+    # Flask Admin
     ADMIN = os.environ.get('TOOL_TLDR_ADMIN')
 
+    # Flask-Cache
     CACHE_TYPE = "filesystem"
     CACHE_DIR = "/tmp/website_cache"
     CACHE_DEFAULT_TIMEOUT = 50
 
+    # Pagination Limits
     EDITS_PER_PAGE = 20
     ALTS_PER_LIST = 10
 
+    # Are we blocking users?
     BLOCKING_USERS = True
 
+    # Flask-Talisman
     CSP = {}
+
+    # Flask Debug Toolbar
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
 
     @staticmethod
     def init_app(app):
