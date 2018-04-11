@@ -3,8 +3,7 @@ from datetime import timedelta, datetime
 from difflib import ndiff
 from urllib.parse import urlsplit
 
-from sqlalchemy_continuum import version_class
-from sqlalchemy_continuum import versioning_manager
+from sqlalchemy_continuum import version_class, versioning_manager
 
 from app import models, db
 
@@ -127,7 +126,7 @@ def find_diff(old, new, type):
             old_parent_category_name = ""
 
         if old_what != new_what:
-            diffs["What"] = ("what", old_what, new_what)
+            diffs["What"] = [old_what, new_what]
             diffs["What"] = [old_what, new_what]
         if old_where != new_where:
             diffs["Where"] = [old_where, new_where]
