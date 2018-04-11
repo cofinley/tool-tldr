@@ -15,11 +15,12 @@ class MyModelView(ModelView):
 class UserModelView(MyModelView):
     edit_modal = True
     can_delete = False
-    column_exclude_list = ["password_hash"]
+    column_exclude_list = ["password_hash", "edits"]
     column_export_exclude_list = ["password_hash"]
     form_excluded_columns = ["password_hash",
                              "tool_edits",
                              "category_edits",
+                             "edits",
                              "member_since",
                              "last_seen"]
     column_searchable_list = ["username", "email"]
