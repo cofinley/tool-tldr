@@ -27,13 +27,14 @@ def make_cache_key(*args, **kwargs):
 
 @main.route("/")
 def index():
-    categories = models.Category.query.order_by(models.Category.edits.desc()).all()
-    show_more = False
-    if len(categories) > 16:
-        show_more = True
+    pages_to_show = current_app.config["POPULAR_PAGE_COUNT"]
+    # TODO: popularity score
+    # TODO: include popular tools
+    categories = models.Category.query \
+        .order_by(models.Category.id.desc()) \
+        .limit(pages_to_show)
     return render_template("index.html",
-                           categories=categories[:16],
-                           show_more=show_more)
+                           categories=categories)
 
 
 @main.route("/explore")
@@ -234,17 +235,22 @@ def search_tools():
 
 @main.route('/users/<int:user_id>')
 def user(user_id):
+    edits_to_show = current_app.config["USER_EDITS_SHOWN"]
     user = models.User.query.get_or_404(user_id)
-    tool_edits = version_class(models.Tool).query.filter_by(edit_author=user_id).all()
-    category_edits = version_class(models.Category).query.filter_by(edit_author=user_id).all()
-
-    total_edits = len(tool_edits) + len(category_edits)
+    tool_edits = version_class(models.Tool).query \
+        .filter_by(edit_author=user_id) \
+        .order_by(version_class(models.Tool).transaction_id.desc()) \
+        .limit(edits_to_show)
+    category_edits = version_class(models.Category).query \
+        .filter_by(edit_author=user_id) \
+        .order_by(version_class(models.Category).transaction_id.desc()) \
+        .limit(edits_to_show)
 
     return render_template('user.html',
                            user=user,
-                           total_edits=total_edits,
-                           tool_edits=tool_edits[-11:],
-                           category_edits=category_edits[-11:])
+                           total_edits=user.edits,
+                           tool_edits=tool_edits,
+                           category_edits=category_edits)
 
 
 @main.route("/users/<int:id>/edits/<page_type>")
@@ -396,7 +402,6 @@ def edit_category_page(category_id):
         else:
             edit_author = current_user
         category.edit_author = edit_author.id
-        category.edits += 1
         category.is_time_travel_edit = False
         db.session.add(category)
 
@@ -459,7 +464,6 @@ def edit_tool_page(tool_id):
         tool.edit_msg = form.edit_msg.data
         tool.edit_time = datetime.utcnow()
         tool.edit_author = edit_author.id
-        tool.edits += 1
         tool.is_time_travel_edit = False
         db.session.add(tool)
 
@@ -501,6 +505,7 @@ def render_diff(page_type, page_id, older, newer):
     page = cls.query.get_or_404(page_id)
     newer_data = page.versions[newer - 1]
     older_data = page.versions[older - 1]
+    # TODO: input validation on version index
 
     diffs = utils.find_diff(older_data, newer_data, page_type)
     for key in diffs:
@@ -756,42 +761,3 @@ def sitemap():
     response.headers["Content-Type"] = "application/xml"
 
     return response
-
-
-# TEMPLATE ADDONS
-
-
-@main.context_processor
-def utility_processor():
-    # Functions to be used inside jinja functions
-    def jinja_slugify(s):
-        return slugify(s)
-
-    return dict(slugify=jinja_slugify)
-
-
-@main.app_template_filter("timesince")
-def timesince(dt, default="Just now"):
-    """
-    Returns string representing "time since" e.g.
-    3 days ago, 5 hours ago etc.
-    """
-
-    now = datetime.utcnow()
-    diff = now - dt
-
-    periods = (
-        (diff.days / 365, "year", "years"),
-        (diff.days / 30, "month", "months"),
-        (diff.days / 7, "week", "weeks"),
-        (diff.days, "day", "days"),
-        (diff.seconds / 3600, "hour", "hours"),
-        (diff.seconds / 60, "minute", "minutes"),
-        (diff.seconds, "second", "seconds"),
-    )
-
-    for period, singular, plural in periods:
-        if period >= 1:
-            return "%d %s ago" % (period, singular if period == 1 else plural)
-
-    return default

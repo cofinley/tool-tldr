@@ -1,20 +1,19 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_cache import Cache
-from flask_mail import Mail
-from flask_login import LoginManager
-from config import config
 import flask_whooshalchemyplus
+from flask import Flask
+from flask_admin import Admin
+from flask_cache import Cache
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_login import LoginManager
+from flask_mail import Mail
+from flask_sqlalchemy import SQLAlchemy
+from flask_talisman import Talisman
 from sqlalchemy_continuum import make_versioned
 from sqlalchemy_continuum.plugins import ActivityPlugin
-from flask_admin import Admin
-from flask_talisman import Talisman
-from flask_debugtoolbar import DebugToolbarExtension
 
+from config import config
+from extra_packages.flask_bootstrap import Bootstrap
 from .admin.model_views import UserModelView, PageModelView
 from .admin.views import FlaskAdminIndexView
-
-from extra_packages.flask_bootstrap import Bootstrap
 
 admin = Admin(index_view=FlaskAdminIndexView(), template_mode="bootstrap3")
 bootstrap = Bootstrap()
@@ -70,5 +69,8 @@ def create_app(config_name):
 
 	from .auth import auth as auth_blueprint
 	app.register_blueprint(auth_blueprint, url_prefix="/auth")
+
+	from .comments import comments as comments_blueprint
+	app.register_blueprint(comments_blueprint)
 
 	return app

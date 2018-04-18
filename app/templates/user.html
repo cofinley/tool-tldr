@@ -66,7 +66,7 @@
 
             {% if tool_edits %}
               <tbody>
-              {% for tool_edit in tool_edits|sort(attribute="edit_time", reverse=True) %}
+              {% for tool_edit in tool_edits %}
                 <tr>
                   <td>
                     {% if tool_edit.previous %}
@@ -107,7 +107,7 @@
 
             {% if category_edits %}
               <tbody>
-              {% for category_edit in category_edits|sort(attribute="edit_time", reverse=True) %}
+              {% for category_edit in category_edits %}
                 <tr>
                   <td>
                     {% if category_edit.previous %}

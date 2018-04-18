@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% from "comments/_macros.html" import comment_list with context %}
+
+{% block title %}Comments{% endblock %}
+
+{% block content %}
+
+  {# Page Title #}
+  <h1>
+    {% if page_type == "tools" %}
+      <a href="{{ url_for("main.fetch_tool_page", tool_id=page.id, tool_name=slugify(page.name)) }}">{{ page.name }}</a>
+    {% else %}
+      <a href="{{ url_for("main.fetch_category_page", category_id=page.id, category_name=slugify(page.name)) }}">{{ page.name }}</a>
+      : Discussion
+    {% endif %}
+  </h1>
+
+  {# Comment Form #}
+  <div class="row">
+    <form class="col-md-6" method="post">
+      {{ form.hidden_tag() }}
+      {{ wtf.form_errors(form, hiddens="only") }}
+      {% set max = 500 %}
+
+      {{ wtf.form_field(form.body, maxlength=max) }}
+      <span id="body-count" class="char-count text-muted">{{ max }}</span>
+      <div class="d-flex justify-content-end mb-1 mt-1 w-100">
+        <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
+      </div>
+    </form>
+  </div>
+
+  {# Comment List #}
+  {{ comment_list(page_type, page, comments) }}
+
+{% endblock %}

@@ -28,4 +28,5 @@ $(document).ready(function(){
     characterCount.init("#where");
     characterCount.init("#why");
     characterCount.init("#edit_msg", 100);
+    characterCount.init("#body", 500);
 });

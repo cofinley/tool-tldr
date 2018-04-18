@@ -60,9 +60,9 @@ class Tool(db.Model):
     edit_msg = db.Column(db.String(100), default="Initial edit")
     edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
     edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
-    edits = db.Column(db.Integer, default=1)
     is_time_travel_edit = db.Column(db.Boolean, default=False)
     deleted = db.Column(db.DateTime())
+    comments = db.relationship("Comment", backref="parent_tool_page", lazy="dynamic")
 
     def __repr__(self):
         return "<Tool %d: %r>" % (self.id, self.name)
@@ -86,12 +86,30 @@ class Category(db.Model):
     edit_msg = db.Column(db.String(100), default="Initial edit")
     edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
     edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
-    edits = db.Column(db.Integer, default=1)
     is_time_travel_edit = db.Column(db.Boolean, default=False)
     deleted = db.Column(db.DateTime())
+    comments = db.relationship("Comment", backref="parent_category_page", lazy="dynamic")
 
     def __repr__(self):
         return "<Category %d: %r>" % (self.id, self.name)
+
+
+class Comment(db.Model):
+    __tablename__ = "comments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(500))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    timestamp = db.Column(db.DateTime(), default=datetime.utcnow)
+    edit_time = db.Column(db.DateTime())
+    deleted = db.Column(db.DateTime())
+    parent_comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
+    parent_comment = db.relationship('Comment', remote_side=[id], backref='replies')
+    parent_category_page_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
+    parent_tool_page_id = db.Column(db.Integer, db.ForeignKey("tools.id"))
+
+    def __repr__(self):
+        return "<Comment %d>" % self.id
 
 
 class User(db.Model, UserMixin):
@@ -111,6 +129,7 @@ class User(db.Model, UserMixin):
     tool_edits = db.relationship('Tool', backref="author", lazy="dynamic")
     category_edits = db.relationship('Category', backref="author", lazy="dynamic")
     edits = db.Column(db.Integer, default=0)
+    comments = db.relationship("Comment", backref="author")
     is_blocked = db.Column(db.Boolean, default=False)
     deleted = db.Column(db.DateTime())
 

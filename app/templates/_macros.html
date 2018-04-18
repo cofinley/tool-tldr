@@ -13,6 +13,8 @@
         </a>
 
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item"
+             href="{{ url_for("comments.list_all", page_type=type, page_id=obj.id) }}">Discuss</a>
           {% if type == "categories" %}
           <a class="dropdown-item" href="{{ url_for(".add_new_tool", parent_category_id=obj.id) }}">Add a tool for this category</a>
           {% endif %}
