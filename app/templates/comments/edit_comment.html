@@ -19,6 +19,7 @@
       {{ wtf.form_field(form.body, maxlength=max) }}
       <span id="body-count" class="char-count text-muted">{{ max }}</span>
       <div class="d-flex justify-content-end mb-1 mt-1 w-100">
+        <button type="button" class="btn btn-outline-danger mr-auto form-button cancel-button">Cancel</button>
         <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
       </div>
     </form>
