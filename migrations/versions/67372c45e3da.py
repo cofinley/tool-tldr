@@ -36,14 +36,12 @@ def upgrade():
                     sa.PrimaryKeyConstraint('id')
                     )
     with op.batch_alter_table('categories', schema=None) as batch_op:
-        batch_op.drop_constraint('categories_ibfk_3', type_='foreignkey')
         batch_op.drop_column('edits')
 
     with op.batch_alter_table('categories_version', schema=None) as batch_op:
         batch_op.drop_column('edits')
 
     with op.batch_alter_table('tools', schema=None) as batch_op:
-        batch_op.drop_constraint('tools_ibfk_3', type_='foreignkey')
         batch_op.drop_column('edits')
 
     with op.batch_alter_table('tools_version', schema=None) as batch_op:
@@ -60,14 +58,12 @@ def downgrade():
 
     with op.batch_alter_table('tools', schema=None) as batch_op:
         batch_op.add_column(sa.Column('edits', mysql.INTEGER(display_width=11), autoincrement=False, nullable=True))
-        batch_op.create_foreign_key('tools_ibfk_3', 'commentables', ['commentable_id'], ['id'])
 
     with op.batch_alter_table('category_version', schema=None) as batch_op:
         batch_op.add_column(sa.Column('edits', mysql.INTEGER(display_width=11), autoincrement=False, nullable=True))
 
     with op.batch_alter_table('categories', schema=None) as batch_op:
         batch_op.add_column(sa.Column('edits', mysql.INTEGER(display_width=11), autoincrement=False, nullable=True))
-        batch_op.create_foreign_key('categories_ibfk_3', 'commentables', ['commentable_id'], ['id'])
 
     op.drop_table('comments')
     # ### end Alembic commands ###
