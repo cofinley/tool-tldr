@@ -4,7 +4,7 @@ from flask import redirect, url_for, render_template, abort, flash
 from flask_login import current_user, login_required
 
 from . import comments, forms
-from .. import db, models, cache
+from .. import db, models
 from ..main.views import create_temp_user
 
 
@@ -17,7 +17,6 @@ def anonymous_warning():
 
 
 @comments.route("/<page_type>/<int:page_id>/comments/", methods=["GET", "POST"])
-@cache.cached()
 def list_all(page_type: str, page_id: int):
     anonymous_warning()
     if "categories" == page_type:
@@ -68,15 +67,14 @@ def list_all(page_type: str, page_id: int):
 @comments.route("/<page_type>/<int:page_id>/comments/<int:comment_id>/")
 def show_single(page_type: str, page_id: int, comment_id: int):
     if "categories" == page_type:
-        cls = models.Category
         comment = models.Comment.query.filter_by(id=comment_id, parent_category_page_id=page_id).first_or_404()
+        page = comment.parent_category_page
     elif "tools" == page_type:
-        cls = models.Tool
         comment = models.Comment.query.filter_by(id=comment_id, parent_tool_page_id=page_id).first_or_404()
+        page = comment.parent_tool_page
     else:
         abort(404)
 
-    page = cls.query.get_or_404(page_id)
     return render_template("comments/comment.html",
                            comment=comment,
                            page=page,
@@ -87,10 +85,8 @@ def show_single(page_type: str, page_id: int, comment_id: int):
 @login_required
 def delete(page_type: str, page_id: int, comment_id: int):
     if "categories" == page_type:
-        cls = models.Category
         comment = models.Comment.query.filter_by(id=comment_id, parent_category_page_id=page_id).first_or_404()
     elif "tools" == page_type:
-        cls = models.Tool
         comment = models.Comment.query.filter_by(id=comment_id, parent_tool_page_id=page_id).first_or_404()
     else:
         abort(404)
@@ -110,11 +106,9 @@ def delete(page_type: str, page_id: int, comment_id: int):
 def edit(page_type: str, page_id: int, comment_id: int):
     anonymous_warning()
     if "categories" == page_type:
-        cls = models.Category
         comment = models.Comment.query.filter_by(id=comment_id, parent_category_page_id=page_id).first_or_404()
         page = comment.parent_category_page
     elif "tools" == page_type:
-        cls = models.Tool
         comment = models.Comment.query.filter_by(id=comment_id, parent_tool_page_id=page_id).first_or_404()
         page = comment.parent_tool_page
     else:
@@ -146,14 +140,13 @@ def edit(page_type: str, page_id: int, comment_id: int):
 def reply(page_type: str, page_id: int, comment_id: int):
     anonymous_warning()
     if "categories" == page_type:
-        cls = models.Category
+        comment = models.Comment.query.filter_by(id=comment_id, parent_category_page_id=page_id).first_or_404()
+        page = comment.parent_category_page
     elif "tools" == page_type:
-        cls = models.Tool
+        comment = models.Comment.query.filter_by(id=comment_id, parent_tool_page_id=page_id).first_or_404()
+        page = comment.parent_tool_page
     else:
         abort(404)
-
-    page = cls.query.get_or_404(page_id)
-    comment = models.Comment.query.get_or_404(comment_id)
 
     form = forms.CommentForm()
     if form.validate_on_submit():
