@@ -1,0 +1,70 @@
+{% macro comment_list(page_type, page, comment_list, root) %}
+  <ul class="comment-list">
+    {% for comment in comment_list recursive %}
+      <li>
+        {{ single_comment(page_type, page, comment, root) }}
+        {% if comment.replies %}
+          <ul class="comment-replies">{{ loop(comment.replies) }}</ul>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endmacro %}
+
+{% macro single_comment(page_type, page, comment, root) %}
+  <div class="card mb-2">
+    <div class="card-body p-2">
+      <span>
+        <h6 class="mt-1 mb-3">
+          <span class="card-subtitle mb-3 text-muted mt-1">
+            {% if comment.author.deleted %}
+              deleted
+            {% else %}
+              <a href="{{ url_for("main.user", user_id=comment.author.id) }}">{{ comment.author.username }}</a>
+            {% endif %}
+          </span>
+          <span class="font-light">&nbsp;
+            {%- if comment.edit_time -%}
+              <i>edited</i> {{ comment.edit_time | timesince }}
+            {%- else -%}
+              {{ comment.timestamp | timesince }}
+            {% endif %}
+          </span>
+        </h6>
+      </span>
+      <p class="card-text pl-1">
+        {{ comment.body }}
+      </p>
+      <span class="comment-links">
+        {% if not comment.deleted %}
+          <h6 class="comment-link mr-2">
+            <a href="{{ url_for("comments.reply", page_type=page_type, page_id=page.id, comment_id=comment.id) }}"
+               class="card-link">Reply</a>
+          </h6>
+        {% endif %}
+        <h6 class="comment-link mr-2">
+          <a href="{{ url_for("comments.show_single", page_type=page_type, page_id=page.id, comment_id=comment.id) }}"
+             class="card-link">Permalink</a>
+        </h6>
+        {% if comment.parent_comment and root==comment %}
+          <h6 class="comment-link mr-2">
+            <a href="{{ url_for("comments.show_single", page_type=page_type, page_id=page.id, comment_id=comment.parent_comment_id) }}"
+               class="card-link">Parent</a>
+          </h6>
+        {% endif %}
+        {% if comment.author == current_user %}
+          {% if not comment.deleted %}
+            <h6 class="comment-link mr-2">
+              <a href="{{ url_for("comments.edit", page_type=page_type, page_id=page.id, comment_id=comment.id) }}"
+                 class="card-link">Edit</a>
+            </h6>
+            <h6 class="comment-link">
+              <a href="{{ url_for("comments.delete", page_type=page_type, page_id=page.id, comment_id=comment.id) }}"
+                 class="card-link comment-delete" data-id="{{ comment.id }}">Delete</a>
+            </h6>
+          {% endif %}
+        {% endif %}
+      </span>
+    </div>
+  </div>
+{% endmacro %}

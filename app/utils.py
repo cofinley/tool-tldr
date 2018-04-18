@@ -34,6 +34,7 @@ def build_bottom_up_tree(parent_category_id):
     parent_list = []
 
     while parent_category_id is not None:
+        # TODO: can we just use category.parent?
         parent_category = models.Category.query.get(parent_category_id)
         parent_list.insert(0, parent_category)
         parent_category_id = parent_category.parent_category_id

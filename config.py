@@ -39,7 +39,9 @@ class Config:
     CACHE_DEFAULT_TIMEOUT = 50
 
     # Pagination Limits
+    POPULAR_PAGE_COUNT = 16
     EDITS_PER_PAGE = 20
+    USER_EDITS_SHOWN = 11
     ALTS_PER_LIST = 10
 
     # Are we blocking users?

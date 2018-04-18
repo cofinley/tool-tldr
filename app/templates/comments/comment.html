@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% from "comments/_macros.html" import comment_list with context %}
+
+{% block title %}Comment{% endblock %}
+
+{% block content %}
+
+  {# Page Title #}
+  <h1>
+    {%- if page_type == "tools" -%}
+      <a href="{{ url_for("main.fetch_tool_page", tool_id=page.id, tool_name=slugify(page.name)) }}">{{ page.name }}</a>
+    {%- else -%}
+      <a href="{{ url_for("main.fetch_category_page", category_id=page.id, category_name=slugify(page.name)) }}">{{ page.name }}</a>
+    {%- endif -%}
+    : <a href="{{ url_for("comments.list_all", page_type=page_type, page_id=page.id) }}">Discussion</a>
+  </h1>
+
+  {# Comment List #}
+  {{ comment_list(page_type, page, [comment], root=comment) }}
+
+{% endblock %}
