@@ -11,7 +11,7 @@ def inject_permissions():
     return dict(Permission=Permission)
 
 
-@main.context_processor
+@main.app_context_processor
 def utility_processor():
     # Functions to be used inside jinja functions
     def jinja_slugify(s):
