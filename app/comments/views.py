@@ -29,6 +29,9 @@ def list_all(page_type: str, page_id: int):
     page = cls.query.get_or_404(page_id)
 
     form = forms.CommentForm()
+    if form.is_submitted():
+        # Browser renders newlines in textarea as \r\n, convert to just \n
+        form.body.data = "\n".join(form.body.data.splitlines())
     if form.validate_on_submit():
         if not current_user.is_authenticated:
             author = create_temp_user()
@@ -118,6 +121,8 @@ def edit(page_type: str, page_id: int, comment_id: int):
         abort(401)
 
     form = forms.CommentForm()
+    if form.is_submitted():
+        form.body.data = "\n".join(form.body.data.splitlines())
     if form.validate_on_submit():
         comment.body = form.body.data
         comment.edit_time = datetime.utcnow()
@@ -149,6 +154,8 @@ def reply(page_type: str, page_id: int, comment_id: int):
         abort(404)
 
     form = forms.CommentForm()
+    if form.is_submitted():
+        form.body.data = "\n".join(form.body.data.splitlines())
     if form.validate_on_submit():
         if not current_user.is_authenticated:
             author = create_temp_user()

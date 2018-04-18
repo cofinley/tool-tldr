@@ -9,6 +9,11 @@
   margin-bottom: 100px;
 }
 
+.comment-body {
+  white-space: pre-line;
+  margin-top: -1em !important;
+}
+
 .comment-replies {
   list-style: none;
   padding-left: 15px;
