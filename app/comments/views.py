@@ -83,8 +83,8 @@ def show_single(page_type: str, page_id: int, comment_id: int):
                            page_type=page_type)
 
 
-@login_required
 @comments.route("/<page_type>/<int:page_id>/comments/<int:comment_id>/delete")
+@login_required
 def delete(page_type: str, page_id: int, comment_id: int):
     if "categories" == page_type:
         cls = models.Category
@@ -105,8 +105,8 @@ def delete(page_type: str, page_id: int, comment_id: int):
     return redirect(url_for(".list_all", page_type=page_type, page_id=page_id))
 
 
-@login_required
 @comments.route("/<page_type>/<int:page_id>/comments/<int:comment_id>/edit", methods=["GET", "POST"])
+@login_required
 def edit(page_type: str, page_id: int, comment_id: int):
     anonymous_warning()
     if "categories" == page_type:
