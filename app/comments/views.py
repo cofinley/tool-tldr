@@ -1,30 +1,25 @@
 from datetime import datetime
 
-from flask import request, redirect, url_for, render_template, abort
+from flask import redirect, url_for, render_template, abort, flash
 from flask_login import current_user, login_required
 
 from . import comments, forms
-from .. import db, models
+from .. import db, models, cache
+from ..main.views import create_temp_user
 
 
-def create_temp_user():
-    ip = request.remote_addr
-    existing_temp_user = models.User.query.filter_by(username=ip).first()
-    if not existing_temp_user:
-        new_temp_user = models.User(
-            email="",
-            username=ip,
-            password="",
-            role_id=models.Role.query.filter_by(name="Anonymous").first().id)
-        db.session.add(new_temp_user)
-        db.session.commit()
-        return new_temp_user
-    else:
-        return existing_temp_user
+def anonymous_warning():
+    if not current_user.is_authenticated:
+        flash(
+            "You are currently not logged in. Any comments you make will publicly display your IP address. \
+            Log in or sign up to hide it.",
+            "danger")
 
 
 @comments.route("/<page_type>/<int:page_id>/comments/", methods=["GET", "POST"])
+@cache.cached()
 def list_all(page_type: str, page_id: int):
+    anonymous_warning()
     if "categories" == page_type:
         cls = models.Category
     elif "tools" == page_type:
@@ -113,6 +108,7 @@ def delete(page_type: str, page_id: int, comment_id: int):
 @login_required
 @comments.route("/<page_type>/<int:page_id>/comments/<int:comment_id>/edit", methods=["GET", "POST"])
 def edit(page_type: str, page_id: int, comment_id: int):
+    anonymous_warning()
     if "categories" == page_type:
         cls = models.Category
         comment = models.Comment.query.filter_by(id=comment_id, parent_category_page_id=page_id).first_or_404()
@@ -148,6 +144,7 @@ def edit(page_type: str, page_id: int, comment_id: int):
 @comments.route("/<page_type>/<int:page_id>/comments/<int:comment_id>/reply",
                 methods=["GET", "POST"])
 def reply(page_type: str, page_id: int, comment_id: int):
+    anonymous_warning()
     if "categories" == page_type:
         cls = models.Category
     elif "tools" == page_type:

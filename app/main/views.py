@@ -25,6 +25,13 @@ def make_cache_key(*args, **kwargs):
     return path + args
 
 
+def anonymous_warning():
+    if not current_user.is_authenticated:
+        flash(
+            "You are currently not logged in. Any edits you make will publicly display your IP address. \
+            Log in or sign up to hide it.",
+            "danger")
+
 @main.route("/")
 def index():
     pages_to_show = current_app.config["POPULAR_PAGE_COUNT"]
@@ -373,10 +380,7 @@ def create_temp_user():
 
 @main.route("/categories/<int:category_id>/edit", methods=["GET", "POST"])
 def edit_category_page(category_id):
-    if not current_user.is_authenticated:
-        flash(
-            "You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.",
-            "danger")
+    anonymous_warning()
     category = models.Category.query.get_or_404(category_id)
 
     if current_user.is_confirmed:
@@ -434,10 +438,7 @@ def edit_category_page(category_id):
 
 @main.route("/tools/<int:tool_id>/edit", methods=["GET", "POST"])
 def edit_tool_page(tool_id):
-    if not current_user.is_authenticated:
-        flash(
-            "You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.",
-            "danger")
+    anonymous_warning()
     tool = models.Tool.query.get_or_404(tool_id)
 
     if current_user.is_confirmed:
@@ -572,10 +573,7 @@ def render_time_travel(page_type, page_id, target_version_id):
         before, after = diffs[key]
         diffs[key] = utils.gen_diff_html(before, after)
 
-    if not current_user.is_authenticated:
-        flash(
-            "You are currently not logged in. Any edits you make will publicly display your IP address. Log in or sign up to hide it.",
-            "danger")
+    anonymous_warning()
 
     form = TimeTravelForm()
     if form.validate_on_submit():

@@ -8,12 +8,12 @@
 
   {# Page Title #}
   <h1>
-    {% if page_type == "tools" %}
+    {%- if page_type == "tools" -%}
       <a href="{{ url_for("main.fetch_tool_page", tool_id=page.id, tool_name=slugify(page.name)) }}">{{ page.name }}</a>
-    {% else %}
+    {%- else -%}
       <a href="{{ url_for("main.fetch_category_page", category_id=page.id, category_name=slugify(page.name)) }}">{{ page.name }}</a>
-      : Discussion
-    {% endif %}
+    {%- endif -%}
+    : Discussion
   </h1>
 
   {# Comment Form #}
