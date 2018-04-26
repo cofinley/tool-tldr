@@ -130,7 +130,7 @@ class User(db.Model, UserMixin):
     category_edits = db.relationship('Category', backref="author", lazy="dynamic")
     edits = db.Column(db.Integer, default=0)
     comments = db.relationship("Comment", backref="author")
-    is_blocked = db.Column(db.Boolean, default=False)
+    blocked = db.Column(db.DateTime())
     deleted = db.Column(db.DateTime())
 
     @property
@@ -223,6 +223,10 @@ class User(db.Model, UserMixin):
         return self.can(Permission.ADMINISTER)
 
     @property
+    def is_time_traveler(self):
+        return self.can(Permission.TIME_TRAVEL)
+
+    @property
     def is_confirmed(self):
         # confirmed users don't need captcha to change links
         # 0x0f == 15 == shortcut for all permissions included in confirmed user
@@ -281,7 +285,7 @@ class Permission:
     CREATE = 0x02
     UPLOAD = 0x04
     MOVE = 0x08
-    UNDO = 0x10
+    TIME_TRAVEL = 0x10
     DELETE = 0x20
     LOCK = 0x40
     ADMINISTER = 0x80
@@ -303,11 +307,11 @@ class Role(db.Model):
                           Permission.CHANGE_LINKS |
                           Permission.UPLOAD |
                           Permission.MOVE, False),
-            "Rollback": (Permission.CREATE |
-                         Permission.CHANGE_LINKS |
-                         Permission.UPLOAD |
-                         Permission.MOVE |
-                         Permission.UNDO, False),
+            "Time Traveler": (Permission.CREATE |
+                              Permission.CHANGE_LINKS |
+                              Permission.UPLOAD |
+                              Permission.MOVE |
+                              Permission.TIME_TRAVEL, False),
             "Administrator": (0xff, False)
         }
         for r in roles:

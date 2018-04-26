@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from flask import current_app
 
 from app import create_app, db, utils, models
+from scheduled_tasks import promote_user_roles
 
 
 class BasicsTestCase(unittest.TestCase):
@@ -93,6 +94,25 @@ class SoftDeleteTestCase(BasicsTestCase):
         deleted_query = self.models.Tool.query.with_deleted().filter_by(name="Foo").all()
         assert len(deleted_query) == 1
 
+
+class PromotionTestCase(BasicsTestCase):
+    def test_is_registered_promotable(self):
+        days_required = self.app.config["REGISTERED_TO_CONFIRMED_EDITS"]
+        edits_required = self.app.config["REGISTERED_TO_CONFIRMED_DAYS"]
+        member_since = datetime.utcnow() - timedelta(days=days_required, minutes=1)
+        total_edits = 20
+        is_promotable = promote_user_roles.check_promotion_eligibility(member_since, days_required, total_edits,
+                                                                       edits_required)
+        assert is_promotable
+
+    def test_is_confirmed_promotable(self):
+        days_required = self.app.config["CONFIRMED_TO_TIME_TRAVELER_DAYS"]
+        edits_required = self.app.config["CONFIRMED_TO_TIME_TRAVELER_EDITS"]
+        member_since = datetime.utcnow() - timedelta(days=days_required, minutes=1)
+        total_edits = 100
+        is_promotable = promote_user_roles.check_promotion_eligibility(member_since, days_required, total_edits,
+                                                                       edits_required)
+        assert is_promotable
 
 if __name__ == "__main__":
     unittest.main()

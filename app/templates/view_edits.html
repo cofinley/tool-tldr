@@ -25,7 +25,9 @@
       <th>Edit Time</th>
       <th>Edit Author</th>
       <th>Edit Message</th>
-      <th>Time Travel</th>
+      {% if current_user.is_time_traveler %}
+        <th>Time Travel</th>
+      {% endif %}
     </tr>
     </thead>
     <tbody>
@@ -78,8 +80,10 @@
         <td title="{{ version.edit_time }}">{{ version.edit_time | timesince }}</td>
         <td><a href="{{ url_for(".user", user_id=version.author.id) }}">{{ version.author.username }}</a></td>
         <td>{{ version.edit_msg }}</td>
-        <td><a class="btn btn-sm btn-secondary" href="edit/time-travel/{{ idx }}"
-               title="Time travel to this edit in time. This will make a new, overwriting edit.">Time Travel</a></td>
+        {% if current_user.is_time_traveler %}
+          <td><a class="btn btn-sm btn-secondary" href="edit/time-travel/{{ idx }}"
+                 title="Time travel to this edit in time. This will make a new, overwriting edit.">Time Travel</a></td>
+        {% endif %}
       </tr>
     {% endfor %}
   </table>

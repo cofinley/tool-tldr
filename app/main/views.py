@@ -9,8 +9,8 @@ from sqlalchemy_continuum import version_class, versioning_manager
 
 from app.main.forms import *
 from . import main
-from .. import cache, utils, db, models as models
-from ..decorators import admin_required
+from .. import cache, utils, db, models
+from ..decorators import admin_required, permission_required
 
 
 @main.before_app_request
@@ -612,11 +612,15 @@ def render_time_travel(page_type, page_id, target_version_id):
 
 
 @main.route("/tools/<int:tool_id>/edit/time-travel/<int:target_version_id>", methods=["GET", "POST"])
+@permission_required(models.Permission.TIME_TRAVEL)
+@login_required
 def tool_time_travel(tool_id, target_version_id):
     return render_time_travel(page_type="tools", page_id=tool_id, target_version_id=target_version_id)
 
 
 @main.route("/categories/<int:category_id>/edit/time-travel/<int:target_version_id>", methods=["GET", "POST"])
+@permission_required(models.Permission.TIME_TRAVEL)
+@login_required
 def category_time_travel(category_id, target_version_id):
     return render_time_travel(page_type="categories", page_id=category_id, target_version_id=target_version_id)
 
