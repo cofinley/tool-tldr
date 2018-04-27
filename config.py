@@ -4,7 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'Wjqjll33tKq1dOtTJo3Sued129ohlSNf'
+    SECRET_KEY = os.environ.get('TOOLTLDR_SECRET_KEY')
 
     # Flask-SQLAlchemy
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
@@ -22,11 +22,11 @@ class Config:
     RECAPTCHA_DATA_ATTRS = {'bind': 'recaptcha-submit', 'callback': 'onRecaptchaSubmitCallback', 'size': 'invisible'}
 
     # Flask-Mail
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "tooltldr@gmail.com"
-    MAIL_SENDER = os.environ.get('MAIL_SENDER') or "tooltldr@gmail.com"
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "mrdtwuqkliivoxvv"
-    MAIL_SERVER = 'smtp.googlemail.com'
-    MAIL_PORT = 587
+    MAIL_USERNAME = os.environ.get('TOOLTLDR_MAIL_USERNAME')
+    MAIL_SENDER = os.environ.get('TOOLTLDR_MAIL_SENDER')
+    MAIL_PASSWORD = os.environ.get('TOOLTLDR_MAIL_PASSWORD')
+    MAIL_SERVER = os.environ.get("TOOLTLDR_MAIL_SERVER")
+    MAIL_PORT = os.environ.get("TOOLTLDR_MAIL_PORT")
     MAIL_USE_TLS = True
     MAIL_SUBJECT_PREFIX = '[Tool TL;DR]'
 
@@ -43,6 +43,14 @@ class Config:
     EDITS_PER_PAGE = 20
     USER_EDITS_SHOWN = 11
     ALTS_PER_LIST = 10
+
+    # Promotion Edit Thresholds
+    REGISTERED_TO_CONFIRMED_EDITS = 20
+    CONFIRMED_TO_TIME_TRAVELER_EDITS = 100
+
+    # Promotion Time Thresholds
+    REGISTERED_TO_CONFIRMED_DAYS = 14
+    CONFIRMED_TO_TIME_TRAVELER_DAYS = 42
 
     # Are we blocking users?
     BLOCKING_USERS = True
