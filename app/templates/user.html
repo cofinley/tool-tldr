@@ -5,7 +5,7 @@
 
 {% block content %}
   <div class="content-page-header">
-    <h1>{{ user.username }}{% if user.is_blocked %}<span class="red-text"> [blocked]</span>{% endif %}</h1>
+    <h1>{{ user.username }}{% if user.blocked %}<span class="red-text"> [blocked]</span>{% endif %}</h1>
     <div id="edit-buttons" class="user-edit-buttons">
       {% if current_user.is_administrator %}
         <p id="user-email-button" class="mr-2"><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>

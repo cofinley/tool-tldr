@@ -15,7 +15,7 @@ from ..decorators import admin_required, permission_required
 
 @main.before_app_request
 def check_if_blocked():
-    if current_user.is_authenticated and current_app.config['BLOCKING_USERS'] and current_user.is_blocked:
+    if current_user.is_authenticated and current_app.config['BLOCKING_USERS'] and current_user.blocked:
         abort(403)
 
 
