@@ -21,10 +21,7 @@
       {{ wtf.form_field(form.where, help_text="Where in the application design/pipeline is this category of tools used?", maxlength=max) }}
       <span id="where-count" class="char-count text-muted">{{ max }}</span>
 
-      <div class="d-flex justify-content-end mb-5 w-100">
-        <button type="button" class="btn btn-outline-danger mr-auto form-button cancel-button">Cancel</button>
-        <input class="btn btn-outline-success form-button" id="submit" name="submit" type="submit" value="Submit">
-      </div>
+      {% include "includes/form_actions.html" %}
     </form>
     <div id="tree-pane" class="col-md-7">
       <label>Pick a parent category</label>

@@ -34,10 +34,7 @@
 
       {{ wtf.form_field(form.edit_msg, class="form-control edit-msg-input", maxlength=edit_msg_max) }}
       <span id="edit_msg-count" class="char-count text-muted">{{ edit_msg_max }}</span>
-      <div class="d-flex justify-content-end mb-5">
-        <button type="button" class="btn btn-outline-danger mr-auto form-button cancel-button">Cancel</button>
-        <input class="btn btn-success form-button" id="submit" name="submit" type="submit" value="Submit">
-      </div>
+      {% include "includes/form_actions.html" %}
     </form>
     <div id="tree-pane" class="col-md-7 initially-hidden-field">
       <label>Pick a parent category</label>
