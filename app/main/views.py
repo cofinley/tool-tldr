@@ -32,6 +32,7 @@ def anonymous_warning():
             Log in or sign up to hide it.",
             "danger")
 
+
 @main.route("/")
 def index():
     pages_to_show = current_app.config["POPULAR_PAGE_COUNT"]
@@ -299,8 +300,8 @@ def edit_profile():
 
 
 @main.route('/edit-profile-admin', methods=['GET', 'POST'])
-@login_required
 @admin_required
+@login_required
 def edit_profile_admin():
     id = request.args.get("id")
     user = models.User.query.get_or_404(id)
@@ -419,17 +420,18 @@ def edit_category_page(category_id):
         flash('This category has been updated.', 'success')
         cache.clear()
         return redirect(url_for('.fetch_category_page', category_id=category.id, category_name=slugify(category.name)))
-    form.name.data = category.name
-    if current_user.is_confirmed:
-        form.move_parent.data = False
-        if category.parent:
-            form.parent_category.data = category.parent.name
-        else:
-            form.parent_category.data = "/"
-    form.what.data = category.what
-    form.why.data = category.why
-    form.where.data = category.where
-    form.edit_msg.data = ""
+    if not form.is_submitted():
+        form.name.data = category.name
+        if current_user.is_confirmed:
+            form.move_parent.data = False
+            if category.parent:
+                form.parent_category.data = category.parent.name
+            else:
+                form.parent_category.data = "/"
+        form.what.data = category.what
+        form.why.data = category.why
+        form.where.data = category.where
+        form.edit_msg.data = ""
     return render_template('edit_category.html',
                            form=form,
                            category=category,
@@ -477,18 +479,19 @@ def edit_tool_page(tool_id):
         flash('This tool has been updated.', 'success')
         cache.clear()
         return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
-    form.name.data = tool.name
-    form.env.data = tool.env.title()
-    form.created.data = tool.created
-    form.project_version.data = tool.project_version
-    form.is_active.data = tool.is_active
-    form.avatar_url.data = tool.avatar_url
-    form.link.data = tool.link
-    if current_user.is_confirmed:
-        form.parent_category_id.data = tool.parent_category_id
-        form.parent_category.data = tool.category.name
-    form.why.data = tool.why
-    form.edit_msg.data = ""
+    if not form.is_submitted():
+        form.name.data = tool.name
+        form.env.data = tool.env.title()
+        form.created.data = tool.created
+        form.project_version.data = tool.project_version
+        form.is_active.data = tool.is_active
+        form.avatar_url.data = tool.avatar_url
+        form.link.data = tool.link
+        if current_user.is_confirmed:
+            form.parent_category_id.data = tool.parent_category_id
+            form.parent_category.data = tool.category.name
+        form.why.data = tool.why
+        form.edit_msg.data = ""
     return render_template('edit_tool.html',
                            form=form,
                            tool=tool,

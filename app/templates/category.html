@@ -37,8 +37,11 @@
       </div>
       <div class="question-block category-question-block col-lg-4">
         <h1 class="question-title">The Where</h1>
-        <p class="help-text mb-0">Where does it fall in the application stack? Where would I
-          use it in my application?</p>
+        <p class="help-text mb-0">
+          Where in the
+          {% if category.parent %}{{ category.parent.name }}{% else %}application{% endif %} design/pipeline is this
+          category of tools used? <a href="/about#categories-where">Learn more.</a>
+        </p>
         <p>{{ category.where }}</p>
       </div>
     </div>

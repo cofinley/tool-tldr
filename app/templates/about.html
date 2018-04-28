@@ -20,26 +20,26 @@
         <img src="{{ url_for('static', filename='img/0days.png') }}" alt="Javascript Frameworks">
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-6">
-        <h2>Organization</h2>
+        <h2 id="organization">Organization<a class="anchorlink" href="#organization"></a></h2>
         <p>The wiki is broken down by categories and tools. Tools and categories can go in other categories.
           You can rearrange this structure to find the best fit for information.
         </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <h2>Format</h2>
-        <h3>Categories</h3>
+
+        <h2 id="format">Format<a class="anchorlink" href="#format"></a></h2>
+        <h3 id="categories">Categories<a class="anchorlink" href="#categories"></a></h3>
         <p>Categories have three main parts: the <b>what</b>, <b>why</b>, and <b>where</b>.</p>
-        <h4 class="text-muted">What</h4>
+
+        <h4 id="categories-what">What<a class="anchorlink" href="#categories-what"></a></h4>
         <p>The TL;DR of the category. Explain what the category's tools do.</p>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-6">
-        <h4 class="text-muted">Why</h4>
+        <h4 id="categories-why">Why<a class="anchorlink" href="#categories-why"></a></h4>
         <p>
           Why is the category of tools is needed in the first place? For those just starting out, this
           can be valuable when you don't know what you don't know. It also aims to answer why someone would need to <i>start</i>
@@ -48,21 +48,21 @@
         </p>
       </div>
       <div class="col-md-6 align-self-center">
-        <img id="know-img" src="{{ url_for('static', filename='img/know.svg') }}" alt="You don't know what you don't know">
+        <img id="know-img" src="{{ url_for('static', filename='img/know.svg') }}"
+             alt="You don't know what you don't know">
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-6">
-        <h4 class="text-muted">Where</h4>
-        <p>Where, in an application, would the category of tool would go? For example,
-          the <i>Web Server</i> category would describe tools that go (virtually/logically) in front of an <i>Application Server</i> and would
-          be the first in line to handle incoming web traffic. This question exists simply to <b>help people create a
-            mental image of all the pieces in the puzzle.</b> You can also think about it like describing a pipeline, each part playing a role at a certain time and place.</p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <h4 class="text-muted">Naming</h4>
+        <h4 id="categories-where">Where<a class="anchorlink" href="#categories-where"></a></h4>
+        <p>Where, in an application, would the category of tools go? This isn't talking about physical location,
+          instead, you can also think about it like describing a pipeline, each part playing a role at a certain time
+          and place. For example, the <i>Web Server</i> category would describe tools that go (virtually/logically) in
+          front of an <i>Application Server</i> and would be the first in line to handle incoming web traffic. This
+          question exists simply to <b>help people create a mental image of all the pieces in the puzzle.</b></p>
+
+        <h4 id="categories-naming">Naming<a class="anchorlink" href="#categories-naming"></a></h4>
         <p>Some simple guidelines for naming categories:</p>
         <ul>
           <li>Spell out acronyms. You can put the acronym in parentheses at the end of the name.</li>
@@ -70,15 +70,23 @@
         </ul>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-6">
-        <h3>Tools</h3>
+
+        <h3 id="tools">Tools<a class="anchorlink" href="#tools"></a></h3>
         <p>Tools have one main question: <b>why</b> use this tool over one of its alternatives in the same category?</p>
-        <h4 class="text-muted">Why</h4>
+
+        <h4 id="tools-why">Why<a class="anchorlink" href="#tools-why"></a></h4>
         <p>Tools will often have neighbors in the same space, but when exploring what's out there in a TL;DR fashion,
           you probably want answers as to what separates the tools in a quick and concise way. This section, just like the
           others, cuts out the jargon and clears up any blurred lines.</p>
-        <h4 class="text-muted">Tool Details</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h4 id="tools-details">Tool Details<a class="anchorlink" href="#tools-details"></a></h4>
         <p>There are several other descriptors for tools on their pages.</p>
         <ul>
           <li><b>Environment</b>: the type of programming environment this tool is found. This is usually a programming
@@ -91,9 +99,10 @@
         </ul>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-6">
-        <h2>Roles</h2>
+        <h2 id="roles">Roles<a class="anchorlink" href="#roles"></a></h2>
         <p>To learn more about roles, go <a href="{{ url_for('main.get_roles') }}">here</a>.</p>
       </div>
     </div>

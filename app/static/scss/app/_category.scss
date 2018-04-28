@@ -17,12 +17,16 @@
     background-color: $dark-gray;
     color: $white;
     border-radius: 20px;
-    padding: 15px;
+    padding: 7px 15px;
 
     .help-text {
-      color: $white;
-      opacity: .5;
+      color: mix($white, $dark-gray, 50%);
+
+      a {
+        color: mix($white, $dark-gray, 70%);
+      }
     }
+
   }
 
   #category-content-bottom {

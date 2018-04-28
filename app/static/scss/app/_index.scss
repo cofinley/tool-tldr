@@ -32,7 +32,7 @@
   color: $light-gray;
 }
 
-#categories {
+#home-page-categories {
   margin-top: 60px;
 
   #category-title {
@@ -72,7 +72,7 @@
     }
   }
 
-  #categories {
+  #home-page-categories {
     #category-columns {
       .category-list-item {
         font-size: 1.2rem;
@@ -95,7 +95,7 @@
     }
   }
 
-  #categories {
+  #home-page-categories {
     margin-top: 80px;
 
     #category-columns {
@@ -109,7 +109,7 @@
 
 // Medium devices (tablets, 768px and up)
 @media (min-width: 768px) {
-  #categories {
+  #home-page-categories {
     #category-columns {
       grid-template-columns: repeat(2, 1fr) !important;
     }
@@ -123,7 +123,7 @@
     font-size: 1.75em;
   }
 
-  #categories {
+  #home-page-categories {
     #category-columns {
       grid-template-columns: repeat(3, 1fr) !important;
     }
@@ -132,7 +132,7 @@
 
 // Extra large devices (large desktops, 1200px and up)
 @media (min-width: 1800px) {
-  #categories {
+  #home-page-categories {
     #category-columns {
       width: 72%;
       grid-template-columns: repeat(4, 1fr) !important;
@@ -142,7 +142,7 @@
 
 // Super large devices (4K, 2000px and up)
 @media (min-width: 2000px) {
-  #categories {
+  #home-page-categories {
     #category-columns {
       width: 50%;
     }
