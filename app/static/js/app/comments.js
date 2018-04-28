@@ -1,7 +1,7 @@
 var comments = (function () {
 
     var init = function () {
-        $(".comment-delete").on("click", deleteComment)
+        $(".comment-delete").on("click", deleteComment);
     };
 
     var deleteComment = function (e) {
