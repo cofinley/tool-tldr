@@ -60,6 +60,10 @@ gulp.task('scripts', function () {
         .pipe(gulp.dest(staticPath + 'dist'))
         .pipe(rename('all.min.js'))
         .pipe(uglify())
+        .on('error', function (err) {
+            console.log(err.toString());
+            this.emit('end');
+        })
         .pipe(gulp.dest(staticPath + 'dist'));
 });
 
