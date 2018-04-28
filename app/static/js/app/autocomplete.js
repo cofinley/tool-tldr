@@ -1,6 +1,6 @@
 function autoCompleteAjax(selector) {
 
-    var bigSize = selector !== "#search-input";
+    var bigSize = selector === "#big-search-bar-input";
     var loaderDiv = bigSize ? '#big-loader' : '#small-loader';
 
     var xhr;
@@ -34,8 +34,11 @@ function autoCompleteAjax(selector) {
 
             return suggestionDiv.outerHTML;
         },
-        onSelect: function (e) {
-            var itemData = e.target.dataset;
+        onSelect: function (e, term, item) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+            }
+            var itemData = item.dataset;
             if (itemData.type === 't') {
                 window.location.href = window.location.origin + '/tools/' + itemData.id;
             }
@@ -48,3 +51,4 @@ function autoCompleteAjax(selector) {
 
 autoCompleteAjax("#big-search-bar-input");
 autoCompleteAjax("#search-input");
+autoCompleteAjax("#mobile-search-input");
