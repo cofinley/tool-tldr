@@ -109,6 +109,8 @@ class ProductionConfig(Config):
         # Email errors to the administrators
         import logging
         from logging.handlers import SMTPHandler
+        from logging import StreamHandler, Formatter
+
         credentials = None
         secure = None
         if getattr(cls, 'MAIL_USERNAME', None) is not None:
@@ -123,7 +125,26 @@ class ProductionConfig(Config):
             credentials=credentials,
             secure=secure)
         mail_handler.setLevel(logging.ERROR)
+        mail_handler.setFormatter(Formatter('''
+        Message type:       %(levelname)s
+        Location:           %(pathname)s:%(lineno)d
+        Module:             %(module)s
+        Function:           %(funcName)s
+        Time:               %(asctime)s
+
+        Message:
+
+        %(message)s
+        '''))
         app.logger.addHandler(mail_handler)
+
+        file_handler = StreamHandler()
+        file_handler.setLevel(logging.WARNING)
+        file_handler.setFormatter(Formatter(
+            '%(asctime)s %(levelname)s: %(message)s '
+            '[in %(pathname)s:%(lineno)d]'
+        ))
+        app.logger.addHandler(file_handler)
 
 config = {
     'dev': DevelopmentConfig,
