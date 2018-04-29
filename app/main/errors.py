@@ -1,9 +1,11 @@
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, current_app
+
 from . import main
 
 
 @main.app_errorhandler(403)
 def forbidden(e):
+    current_app.logger.warning("Forbidden: {}".format(request.path))
     if request.accept_mimetypes.accept_json and \
             not request.accept_mimetypes.accept_html:
         response = jsonify({'error': 'forbidden'})
@@ -14,6 +16,7 @@ def forbidden(e):
 
 @main.app_errorhandler(404)
 def page_not_found(e):
+    current_app.logger.warning("Page not found: {}".format(request.path))
     if request.accept_mimetypes.accept_json and \
             not request.accept_mimetypes.accept_html:
         response = jsonify({'error': 'not found'})
