@@ -106,7 +106,7 @@ class ProductionConfig(Config):
     def init_app(cls, app):
         Config.init_app(app)
 
-        # email errors to the administrators
+        # Email errors to the administrators
         import logging
         from logging.handlers import SMTPHandler
         credentials = None
@@ -119,7 +119,7 @@ class ProductionConfig(Config):
             mailhost=(cls.MAIL_SERVER, cls.MAIL_PORT),
             fromaddr=cls.MAIL_USERNAME,
             toaddrs=[cls.MAIL_USERNAME],
-            subject='[Tool TL;DR] Application Error',
+            subject=cls.MAIL_SUBJECT_PREFIX + ' Application Error',
             credentials=credentials,
             secure=secure)
         mail_handler.setLevel(logging.ERROR)
