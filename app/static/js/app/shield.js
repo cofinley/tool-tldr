@@ -47,7 +47,16 @@ var shield = (function () {
             .addClass("shield-link-copy-img")
             .attr({
                 src: "/static/img/copyclip.svg",
-                title: "Copy link to clipboard"
+                title: "Copied"
+            })
+            .tooltip({
+                trigger: "click",
+                placement: "right"
+            })
+            .on("shown.bs.tooltip", function () {
+                setTimeout(function () {
+                    $(".shield-link-copy-img").tooltip("hide");
+                }, 2000);
             });
         $shieldLinkRow.append([$shieldLink, $copyClipboardSvg]);
 
