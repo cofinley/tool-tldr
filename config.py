@@ -92,7 +92,8 @@ class ProductionConfig(Config):
             "https://cdnjs.cloudflare.com",
             "https://maxcdn.bootstrapcdn.com",
             "https://www.google.com/recaptcha/",
-            "https://www.gstatic.com/recaptcha/"
+            "https://www.gstatic.com/recaptcha/",
+            "https://www.googletagmanager.com"
         ],
         "img-src": "https:",
         "style-src": "'self' https://fonts.googleapis.com 'unsafe-inline'",
