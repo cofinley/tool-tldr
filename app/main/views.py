@@ -41,7 +41,6 @@ def index():
     categories = models.Category.query \
         .order_by(models.Category.id.desc()) \
         .limit(pages_to_show)
-    categories = 0
     return render_template("index.html",
                            categories=categories)
 

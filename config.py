@@ -109,7 +109,7 @@ class ProductionConfig(Config):
         # Email errors to the administrators
         import logging
         from logging.handlers import SMTPHandler
-        from logging import StreamHandler, Formatter
+        from logging import Formatter
 
         credentials = None
         secure = None
@@ -138,13 +138,6 @@ class ProductionConfig(Config):
         '''))
         app.logger.addHandler(mail_handler)
 
-        file_handler = StreamHandler()
-        file_handler.setLevel(logging.WARNING)
-        file_handler.setFormatter(Formatter(
-            '%(asctime)s %(levelname)s: %(message)s '
-            '[in %(pathname)s:%(lineno)d]'
-        ))
-        app.logger.addHandler(file_handler)
 
 config = {
     'dev': DevelopmentConfig,
