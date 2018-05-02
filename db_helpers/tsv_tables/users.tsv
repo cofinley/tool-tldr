@@ -1,5 +1,5 @@
 id	username	email	password_hash	name	about_me	member_since	role	confirmed	last_seen
 1	Test Admin	admin@testing.com	pbkdf2:sha256:50000$ZYb0THnE$2f07a4c7b8efb3e6107e8748cea9dcab6d1cb0d3e4708bc5dd2886cfe97f8b52	Mr. Admin	About me	2017-06-24 19:35:32.501650	Administrator	1	2017-06-24 19:35:32.501650
-2	Test Rollback	mod@testing.com	pbkdf2:sha256:50000$peZExUGK$8c269c23bd44408c551f43e8313a8d4530578c5dd2da571bcdba1f4bdc97859c	Mr. Roll	About me	2017-06-24 19:35:32.503650	Rollback	1	2017-06-24 19:35:32.503650
+2	Test Rollback	mod@testing.com	pbkdf2:sha256:50000$peZExUGK$8c269c23bd44408c551f43e8313a8d4530578c5dd2da571bcdba1f4bdc97859c	Mr. Roll	About me	2017-06-24 19:35:32.503650	Time Traveler	1	2017-06-24 19:35:32.503650
 3	Test Confirmed	user@testing.com	pbkdf2:sha256:50000$qCDj4lrb$52eede667e111895f4157a914b33d76ccb87f0db1fa7580e428581608aed00f8	Mr. Conf	About me	2017-06-24 19:35:32.504650	Confirmed	1	2017-06-24 19:35:32.504650
 4	Test Registered	registered@testing.com	pbkdf2:sha256:50000$qCDj4lrb$52eede667e111895f4157a914b33d76ccb87f0db1fa7580e428581608aed00f8	Mr. Reg	About me	2017-06-24 19:35:32.504650	Registered	1	2017-06-24 19:35:32.504650
