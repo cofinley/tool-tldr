@@ -4,7 +4,7 @@ from wtforms import StringField, TextAreaField, BooleanField, SelectField, Submi
 from wtforms.validators import DataRequired, InputRequired, Length, Email, Regexp, URL
 
 from .. import db
-from ..models import Role, User, Tool, Category
+from ..models import Role, User, Category
 from ..utils import is_at_or_below_category
 
 category_what_description = "What is the tl;dr of the category? What do tools in this category let you do?"
