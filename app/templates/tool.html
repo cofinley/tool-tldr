@@ -9,7 +9,9 @@
     <div id="tool-left-content" class="col-md-10 col-lg-6">
       <div class="question-block tool-question-block">
         <h1 class="question-title">The What</h1>
-        <p>This tool falls within the <a href={{ url_for("main.fetch_category_page", category_id=tree[-1].id, category_name=slugify(tree[-1].name)) }}>{{ tree[-1].name }}</a> category.</p>
+        <p>This tool falls within the <a
+                href={{ url_for("main.fetch_category_page", category_id=tree[-1].id, category_name=slugify(tree[-1].name)) }}>{{ tree[-1].name }}</a>
+          category.</p>
       </div>
       <div class="question-block tool-question-block">
         <h1 class="question-title">The Why</h1>
@@ -18,44 +20,49 @@
       </div>
       <div class="question-block tool-question-block">
         <h1 class="question-title">Alternatives</h1>
-        {% if env_alts or other_alts %}
-          <div class="row ml-0">
-            {% if env_alts %}
-              <div class="env-alts-section col-md-6">
-                <h3 class="env-alts-env-title"><i>For {{ tool.env.title() }}</i></h3>
-                <ul class="env-alts-list">
-                  {% for alt in env_alts %}
-                    <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a></li>
-                    {%- if loop.index == ALTS_PER_LIST %}
-                      <p class="alts-more-link"><a
-                              href={{ url_for("main.browse_categories", id=tool.category.id, env=tool.env) }}>More
-                        for {{ tool.env.title() }}...</a></p>
-                      {% break %}
-                    {% endif %}
-                  {%- endfor %}
-                </ul>
-              </div>
-            {% endif %}
-            {% if other_alts %}
-              <div class="env-alts-section col-md-6">
-                <h3 class="env-alts-env-title"><i>For other environments</i></h3>
-                <ul class="env-alts-list">
-                  {% for alt in other_alts %}
-                    <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a> ({{ alt.env.title() }})</li>
-                    {%- if loop.index == ALTS_PER_LIST %}
-                      <p class="alts-more-link"><a href={{ url_for("main.browse_categories", id=tool.category.id) }}>More
-                        for
-                        all environments...</a></p>
-                      {% break %}
-                    {% endif %}
-                  {%- endfor %}
-                </ul>
-              </div>
+        <div class="row ml-0">
+
+          <div class="env-alts-section col-md-6">
+            <h3 class="env-alts-env-title"><i>For {{ tool.env.title() }}</i></h3>
+            {% if env_alts.count() %}
+              <ul class="env-alts-list">
+                {% for alt in env_alts %}
+                  <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a></li>
+                  {%- if loop.index == ALTS_PER_LIST %}
+                    <p class="alts-more-link"><a
+                            href={{ url_for("main.browse_categories", id=tool.category.id, env=tool.env) }}>More
+                      for {{ tool.env.title() }}...</a></p>
+                    {% break %}
+                  {% endif %}
+                {%- endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted"><i>No alternatives added yet</i></p>
             {% endif %}
           </div>
-        {% else %}
-          <p class="text-muted"><i>No alternatives added yet</i></p>
-        {% endif %}
+
+          <div class="env-alts-section col-md-6">
+            <h3 class="env-alts-env-title"><i>For other environments</i></h3>
+            {% if other_alts.count() %}
+              <ul class="env-alts-list">
+              {% for alt in other_alts %}
+                <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a>
+                  ({{ alt.env.title() }})
+                </li>
+                {%- if loop.index == ALTS_PER_LIST %}
+                  <p class="alts-more-link"><a href={{ url_for("main.browse_categories", id=tool.category.id) }}>More
+                    for
+                    all environments...</a></p>
+                  {% break %}
+                {% endif %}
+              {%- endfor %}
+            {% else %}
+              <p class="text-muted"><i>No alternatives added yet</i></p>
+            {% endif %}
+            </ul>
+          </div>
+
+        </div>
       </div>
     </div>
     <div id="tool-right-content" class="col-md-auto">
@@ -77,7 +84,8 @@
                   <span class="tool-parents">...</span>
                 {% endif %}
                 {% for parent in tree[-3:] %}
-                  <span class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a href={{ url_for("main.fetch_category_page", category_id=parent.id, category_name=slugify(parent.name)) }}>{{ parent.name }}</a></span>
+                  <span class="tool-parents">{{ (loop.index0 * 2 * ' ') }}<a
+                          href={{ url_for("main.fetch_category_page", category_id=parent.id, category_name=slugify(parent.name)) }}>{{ parent.name }}</a></span>
                 {% endfor %}
               </td>
             </tr>

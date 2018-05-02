@@ -11,7 +11,7 @@ class Config:
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_RECORD_QUERIES = True
-    SLOW_DB_QUERY_TIME = 0.5
+    SLOW_DB_QUERY_TIME = 1
 
     # Flask-WhooshAlchemyPlus
     WHOOSH_BASE = os.path.join(basedir, 'search.db')
