@@ -93,7 +93,8 @@ class ProductionConfig(Config):
             "https://maxcdn.bootstrapcdn.com",
             "https://www.google.com/recaptcha/",
             "https://www.gstatic.com/recaptcha/",
-            "https://www.googletagmanager.com"
+            "https://www.googletagmanager.com",
+            "https://www.google-analytics.com"
         ],
         "img-src": "https:",
         "style-src": "'self' https://fonts.googleapis.com 'unsafe-inline'",
