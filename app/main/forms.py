@@ -203,6 +203,6 @@ class AddNewCategoryForm(FlaskForm):
             self.parent_category.errors.append("Pick a parent category.")
             raise ValidationError("Pick a parent category.")
         if int(field.data) != 0:
-            if not db.session.query(Tool.id).filter_by(id=int(field.data)).scalar():
+            if not db.session.query(Category.id).filter_by(id=int(field.data)).scalar():
                 self.parent_category.errors.append("Invalid parent category")
                 raise ValidationError("Invalid parent category.")
