@@ -147,7 +147,7 @@ class EditToolPageFormConfirmed(EditToolPageForm):
     link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
 
     def validate_parent_category_id(self, field):
-        if not db.session.query(Tool.id).filter_by(id=int(field.data)).scalar():
+        if not db.session.query(Category.id).filter_by(id=int(field.data)).scalar():
             self.parent_category.errors.append("Invalid parent category")
             raise ValidationError("Invalid parent category.")
 
@@ -178,7 +178,7 @@ class AddNewToolForm(FlaskForm):
     submit = SubmitField('Submit')
 
     def validate_parent_category_id(self, field):
-        if not db.session.query(Tool.id).filter_by(id=int(field.data)).scalar():
+        if not db.session.query(Category.id).filter_by(id=int(field.data)).scalar():
             self.parent_category.errors.append("Invalid parent category")
             raise ValidationError("Invalid parent category.")
 
