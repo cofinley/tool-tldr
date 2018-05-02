@@ -85,7 +85,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_POOL_RECYCLE = 280
 
     CSP = {
-        "default-src": "'none'",
+        "default-src": "'self'",
         "script-src": [
             "'self'",
             "https://ajax.googleapis.com",
@@ -98,7 +98,10 @@ class ProductionConfig(Config):
         "img-src": "https:",
         "style-src": "'self' https://fonts.googleapis.com 'unsafe-inline'",
         "connect-src": "'self'",
-        "font-src": "https://fonts.gstatic.com",
+        "font-src": [
+            "'self'",
+            "https://fonts.gstatic.com"
+        ],
         "manifest-src": "'self'",
         "frame-src": "https://www.google.com/recaptcha/"
     }
