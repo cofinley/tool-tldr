@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app, session, \
     make_response
 from flask_login import login_required, current_user
-from flask_sqlalchemy import Pagination
+from flask_sqlalchemy import Pagination, get_debug_queries
 from slugify import slugify
 from sqlalchemy_continuum import version_class, versioning_manager
 
@@ -17,6 +17,18 @@ from ..decorators import admin_required, permission_required
 def check_if_blocked():
     if current_user.is_authenticated and current_app.config['BLOCKING_USERS'] and current_user.blocked:
         abort(403)
+
+
+@main.after_app_request
+def after_request(response):
+    for query in get_debug_queries():
+        if query.duration >= current_app.config["SLOW_DB_QUERY_TIME"]:
+            current_app.logger.warning(
+                "Slow query: {}\n\tParameters: {}\n\tDuration: {}\n\tContext: {}\n".format(query.statement,
+                                                                                           query.parameters,
+                                                                                           query.duration,
+                                                                                           query.context))
+    return response
 
 
 def make_cache_key(*args, **kwargs):
