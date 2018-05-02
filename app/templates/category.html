@@ -13,7 +13,7 @@
             <span>  /  </span>
           {% endif %}
           {% if loop.last %}
-            <span class="breadcrumb-item">{{ item.name }}</span>
+            <span class="breadcrumb-item">.</span>
           {% endif %}
         {% endfor %}
       </div>
@@ -51,10 +51,13 @@
         <h1 class="env-alts-env-title">Subcategories</h1>
         {% if subcategories %}
           <ul class="category-content-list text-left">
-            {% for category in subcategories %}
-              <li class="alt-list-item"><a href="{{ url_for(".fetch_category_page", category_id=category.id, category_name=slugify(category.name)) }}">{{ category.name }}</a></li>
-              {%- if loop.index > 5 %}
-                <p class="alts-more-link"><a href="#">Show more</a></p>
+            {% for subcategory in subcategories %}
+              <li class="alt-list-item"><a
+                      href="{{ url_for(".fetch_category_page", category_id=subcategory.id, category_name=slugify(subcategory.name)) }}">{{ subcategory.name }}</a>
+              </li>
+              {%- if loop.index == ALTS_PER_LIST %}
+                <p class="alts-more-link"><a href="{{ url_for(".browse_categories", id=category.id) }}">Show
+                  more...</a></p>
                 {% break %}
               {% endif %}
             {%- endfor %}
@@ -72,8 +75,9 @@
             {% for tool in subtools %}
               <li class="alt-list-item"><a href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=slugify(tool.name)) }}">{{ tool.name }}</a> ({{ tool.env.title() }})
               </li>
-              {%- if loop.index > 5 %}
-                <p class="alts-more-link"><a href="#">Show more</a></p>
+              {%- if loop.index == ALTS_PER_LIST %}
+                <p class="alts-more-link"><a href="{{ url_for(".browse_categories", id=category.id) }}">Show more...</a>
+                </p>
                 {% break %}
               {% endif %}
             {%- endfor %}

@@ -5,6 +5,7 @@ from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
 from flask_sqlalchemy import BaseQuery
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash, check_password_hash
 from whoosh.analysis import FancyAnalyzer
 
@@ -78,7 +79,7 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     parent_category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
-    parent = db.relationship('Category', remote_side=[id], backref='children')
+    parent = db.relationship('Category', remote_side=[id], backref=backref('children', lazy="dynamic"))
     tools = db.relationship("Tool", backref="category", lazy="dynamic")
     what = db.Column(db.String(250))
     why = db.Column(db.String(250))

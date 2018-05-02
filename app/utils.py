@@ -14,6 +14,7 @@ def is_at_or_below_category(chosen_category_id, current_category_id):
     If so, chosen_category_id is below current_category_id and user trying to move page down (illegal)
     This is used in page move validation.
     Moving can only go up, not down. Otherwise circular dependencies.
+    Chosen should be above current!
 
     :param chosen_category_id: parent category picked in form explore tree
     :param current_category_id: current category id of page
@@ -21,23 +22,22 @@ def is_at_or_below_category(chosen_category_id, current_category_id):
     """
 
     current_category = models.Category.query.get(current_category_id)
-    return current_category in build_bottom_up_tree(chosen_category_id)
+    chosen_category = models.Category.query.get(chosen_category_id)
+    return current_category in build_bottom_up_tree(chosen_category)
 
 
-def build_bottom_up_tree(parent_category_id):
+def build_bottom_up_tree(parent_category):
     """
     Used for tool page hierarchy tree.
 
-    :param parent_category_id: end parent_category id
+    :param parent_category: end parent_category
     :return List of categories going up
     """
     parent_list = []
 
-    while parent_category_id is not None:
-        # TODO: can we just use category.parent?
-        parent_category = models.Category.query.get(parent_category_id)
+    while parent_category is not None:
         parent_list.insert(0, parent_category)
-        parent_category_id = parent_category.parent_category_id
+        parent_category = parent_category.parent
 
     return parent_list
 

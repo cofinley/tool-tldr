@@ -173,15 +173,18 @@ def fetch_category_page(category_id, category_name):
     category_name_slug = slugify(category.name)
     if category_name != category_name_slug:
         return redirect(url_for('.fetch_category_page', category_id=category_id, category_name=category_name_slug))
-    subcategories = category.children
-    subtools = category.tools.all()
-    category_tree = utils.build_bottom_up_tree(category.id)
+
+    ALTS_PER_LIST = current_app.config["ALTS_PER_LIST"]
+    subcategories = category.children.limit(ALTS_PER_LIST).all()
+    subtools = category.tools.limit(ALTS_PER_LIST).all()
+    category_tree = utils.build_bottom_up_tree(category)
 
     return render_template("category.html",
                            category=category,
                            subcategories=subcategories,
                            subtools=subtools,
-                           breadcrumbs=category_tree)
+                           breadcrumbs=category_tree,
+                           ALTS_PER_LIST=ALTS_PER_LIST)
 
 
 @main.route("/tools/<int:tool_id>", defaults={"tool_name": ""})
@@ -194,18 +197,20 @@ def fetch_tool_page(tool_id, tool_name):
     if tool_name != tool_name_slug:
         return redirect(url_for('.fetch_tool_page', tool_id=tool_id, tool_name=tool_name_slug))
 
+    ALTS_PER_LIST = current_app.config["ALTS_PER_LIST"]
     alts_for_this_env = models.Tool.query \
-                            .filter_by(parent_category_id=tool.parent_category_id) \
-                            .filter_by(env=tool.env) \
-                            .filter(models.Tool.id != tool.id) \
-                            .all()[:current_app.config['ALTS_PER_LIST']]
+        .filter_by(parent_category_id=tool.parent_category_id) \
+        .filter_by(env=tool.env) \
+        .filter(models.Tool.id != tool.id) \
+        .limit(ALTS_PER_LIST)
+
     alts_for_other_envs = models.Tool.query \
-                              .filter(models.Tool.parent_category_id == tool.parent_category_id) \
-                              .filter(models.Tool.env != tool.env) \
-                              .all()[:current_app.config['ALTS_PER_LIST']]
+        .filter(models.Tool.parent_category_id == tool.parent_category_id) \
+        .filter(models.Tool.env != tool.env) \
+        .limit(ALTS_PER_LIST)
 
     # Get four levels up in tree
-    category_tree = utils.build_bottom_up_tree(tool.parent_category_id)[-4:]
+    category_tree = utils.build_bottom_up_tree(tool.category)[-4:]
 
     project_link = utils.get_hostname(tool.link)
 
@@ -214,7 +219,8 @@ def fetch_tool_page(tool_id, tool_name):
                            env_alts=alts_for_this_env,
                            other_alts=alts_for_other_envs,
                            tree=category_tree,
-                           link=project_link)
+                           link=project_link,
+                           ALTS_PER_LIST=ALTS_PER_LIST)
 
 
 @main.route("/tip/<int:category_id>")
@@ -644,9 +650,6 @@ def add_new_tool(parent_category_id=None):
     else:
         form = AddNewToolForm()
 
-    if form.is_submitted():
-        if form.parent_category.data == "":
-            flash("You must pick a parent category from the tree.", "danger")
     if form.validate_on_submit():
         if not current_user.is_authenticated:
             edit_author = create_temp_user()
@@ -699,8 +702,8 @@ def add_new_category():
             edit_author = create_temp_user()
         else:
             edit_author = current_user
-        if form.parent_category.data == "" or form.parent_category.data == "/" or int(
-                form.parent_category_id.data) == 0:
+        if form.parent_category.data == "/" or int(form.parent_category_id.data) == 0:
+            # User must specify parent category, even if root
             parent_category_id = None
         else:
             parent_category_id = form.parent_category_id.data

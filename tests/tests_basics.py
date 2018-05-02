@@ -60,6 +60,31 @@ class PaginationTestCase(unittest.TestCase):
         self.assertTrue(p1 == actual)
 
 
+class TreeTestCase(BasicsTestCase):
+    def setUp(self):
+        super(TreeTestCase, self).setUp()
+        self.c_top = self.models.Category(name="Top", parent_category_id=None)
+        self.session.add(self.c_top)
+        self.session.commit()
+        self.c_mid = self.models.Category(name="Mid", parent_category_id=self.c_top.id)
+        self.session.add(self.c_mid)
+        self.session.commit()
+        self.c_bottom = self.models.Category(name="Bottom", parent_category_id=self.c_mid.id)
+        self.session.add(self.c_bottom)
+        self.session.commit()
+
+    def test_bottom_up_tree(self):
+        tree = utils.build_bottom_up_tree(self.c_bottom)
+        assert tree == [self.c_top, self.c_mid, self.c_bottom]
+
+    def test_is_at_or_below_category(self):
+        # Chosen category should be above current
+        chosen_id = self.c_top.id
+        current_id = self.c_bottom.id
+        assert not utils.is_at_or_below_category(chosen_id, current_id)
+        assert utils.is_at_or_below_category(current_id, chosen_id)
+
+
 class VersionIndexTestCase(BasicsTestCase):
     def test_version_index(self):
         tool = self.models.Tool(

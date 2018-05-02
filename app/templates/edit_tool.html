@@ -13,7 +13,6 @@
       {% set max = 250 %}
       {% set edit_msg_max = 100 %}
       {{ form.hidden_tag() }}
-      {{ wtf.form_errors(form, hiddens="only") }}
 
       {{ wtf.form_field(form.name) }}
       {% if is_confirmed %}

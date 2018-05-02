@@ -3,7 +3,8 @@ from wtforms import StringField, TextAreaField, BooleanField, SelectField, Submi
     ValidationError
 from wtforms.validators import DataRequired, InputRequired, Length, Email, Regexp, URL
 
-from ..models import Role, User
+from .. import db
+from ..models import Role, User, Tool, Category
 from ..utils import is_at_or_below_category
 
 category_what_description = "What is the tl;dr of the category? What do tools in this category let you do?"
@@ -96,6 +97,13 @@ class EditCategoryPageFormConfirmed(EditCategoryPageForm):
     def validate(self):
         if not super().validate():
             return False
+        if self.parent_category_id.data == "":
+            self.parent_category.errors.append("Pick a parent category.")
+            return False
+        if int(self.parent_category_id.data) != 0:
+            if not db.session.query(Category.id).filter_by(id=int(self.parent_category_id.data)).scalar():
+                self.parent_category.errors.append("Invalid parent category")
+                return False
         if self.move_parent.data:
             if is_at_or_below_category(int(self.parent_category_id.data), self.current_category_id):
                 self.parent_category_id.errors.append(
@@ -138,6 +146,11 @@ class EditToolPageFormConfirmed(EditToolPageForm):
     avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
     link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
 
+    def validate_parent_category_id(self, field):
+        if not db.session.query(Tool.id).filter_by(id=int(field.data)).scalar():
+            self.parent_category.errors.append("Invalid parent category")
+            raise ValidationError("Invalid parent category.")
+
 
 class TimeTravelForm(FlaskForm):
     edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
@@ -164,6 +177,11 @@ class AddNewToolForm(FlaskForm):
     recaptcha = RecaptchaField()
     submit = SubmitField('Submit')
 
+    def validate_parent_category_id(self, field):
+        if not db.session.query(Tool.id).filter_by(id=int(field.data)).scalar():
+            self.parent_category.errors.append("Invalid parent category")
+            raise ValidationError("Invalid parent category.")
+
 
 class AddNewToolFormConfirmed(AddNewToolForm):
     # Remove recaptcha requirement
@@ -179,3 +197,12 @@ class AddNewCategoryForm(FlaskForm):
     why = TextAreaField("Why", description=category_why_description, validators=[DataRequired(), Length(1, 250)])
     where = TextAreaField("Where", description=category_where_description, validators=[DataRequired(), Length(1, 250)])
     submit = SubmitField('Submit')
+
+    def validate_parent_category_id(self, field):
+        if field.data == "":
+            self.parent_category.errors.append("Pick a parent category.")
+            raise ValidationError("Pick a parent category.")
+        if int(field.data) != 0:
+            if not db.session.query(Tool.id).filter_by(id=int(field.data)).scalar():
+                self.parent_category.errors.append("Invalid parent category")
+                raise ValidationError("Invalid parent category.")
