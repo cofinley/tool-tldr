@@ -477,7 +477,7 @@ def edit_tool_page(tool_id):
                     tool.parent_category_id = form.parent_category_id.data
         else:
             edit_author = create_temp_user()
-        tool.env = form.env.data.lower()
+        tool.env = form.env.data
         tool.created = form.created.data
         tool.project_version = form.project_version.data
         tool.is_active = form.is_active.data
@@ -671,7 +671,7 @@ def add_new_tool(parent_category_id=None):
             name=form.name.data,
             parent_category_id=form.parent_category_id.data,
             avatar_url=form.avatar_url.data,
-            env=form.env.data.lower(),
+            env=form.env.data,
             created=form.created.data,
             project_version=form.project_version.data,
             is_active=form.is_active.data,
