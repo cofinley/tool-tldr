@@ -20,7 +20,7 @@
       {{ wtf.form_field(form.project_version) }}
       {{ wtf.form_field(form.is_active) }}
       {{ wtf.form_field(form.link) }}
-      {{ wtf.form_field(form.why) }}
+      {{ wtf.form_field(form.why, maxlength=max) }}
       <span id="why-count" class="char-count text-muted">{{ max }}</span>
       {% if not is_confirmed %}
         {{ form.recaptcha }}

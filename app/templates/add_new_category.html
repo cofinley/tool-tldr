@@ -14,11 +14,11 @@
 
       {{ wtf.form_field(form.name) }}
       {{ wtf.form_field(form.parent_category, readonly=True) }}
-      {{ wtf.form_field(form.what, help_text="What is the tl;dr of the category? What do tools in this category let you do?", maxlength=max) }}
+      {{ wtf.form_field(form.what, maxlength=max) }}
       <span id="what-count" class="char-count text-muted">{{ max }}</span>
-      {{ wtf.form_field(form.why, help_text="Why would I need to use it? Why would I need to <i>start</i> using it?", maxlength=max) }}
+      {{ wtf.form_field(form.why, maxlength=max) }}
       <span id="why-count" class="char-count text-muted">{{ max }}</span>
-      {{ wtf.form_field(form.where, help_text="Where in the application design/pipeline is this category of tools used?", maxlength=max) }}
+      {{ wtf.form_field(form.where, maxlength=max) }}
       <span id="where-count" class="char-count text-muted">{{ max }}</span>
 
       {% include "includes/form_actions.html" %}
