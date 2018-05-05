@@ -100,7 +100,7 @@ def load_children_tools(id, env):
                 result["id"],
                 utils.escape_html(slugify(result["name"])),
                 utils.escape_html(result["name"]),
-                utils.escape_html(result["env"].title())
+                utils.escape_html(result["env"])
             )
         result.pop("name")
         result["label"] = label_link
@@ -499,7 +499,7 @@ def edit_tool_page(tool_id):
         return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
     if not form.is_submitted():
         form.name.data = tool.name
-        form.env.data = tool.env.title()
+        form.env.data = tool.env
         form.created.data = tool.created
         form.project_version.data = tool.project_version
         form.is_active.data = tool.is_active

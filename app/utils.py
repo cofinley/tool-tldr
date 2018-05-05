@@ -151,7 +151,7 @@ def find_diff(old, new, type):
         if old_avatar_url != new_avatar_url:
             diffs["Avatar URL"] = [old_avatar_url, new_avatar_url]
         if old_env != new_env:
-            diffs["Environment"] = [old_env.title(), new_env.title()]
+            diffs["Environment"] = [old_env, new_env]
         if old_created != new_created:
             diffs["Created Date"] = [old_created, new_created]
         if old_project_version != new_project_version:

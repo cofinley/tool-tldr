@@ -11,7 +11,7 @@
     categories of tools.</p>
   {% if environment %}
     <div class="d-flex align-items-center">
-      <p class="filter-text">Filter: {{ environment.title() }} environment</p>
+      <p class="filter-text">Filter: {{ environment }} environment</p>
       <a class="btn btn-secondary btn-sm ml-3" href={{ url_for("main.browse_categories", id=id) }}>Remove Filter</a>
     </div>
   {% endif %}

@@ -23,7 +23,7 @@
         <div class="row ml-0">
 
           <div class="env-alts-section col-md-6">
-            <h3 class="env-alts-env-title"><i>For {{ tool.env.title() }}</i></h3>
+            <h3 class="env-alts-env-title"><i>For {{ tool.env }}</i></h3>
             {% if env_alts.count() %}
               <ul class="env-alts-list">
                 {% for alt in env_alts %}
@@ -31,7 +31,7 @@
                   {%- if loop.index == ALTS_PER_LIST %}
                     <p class="alts-more-link"><a
                             href={{ url_for("main.browse_categories", id=tool.category.id, env=tool.env) }}>More
-                      for {{ tool.env.title() }}...</a></p>
+                      for {{ tool.env }}...</a></p>
                     {% break %}
                   {% endif %}
                 {%- endfor %}
@@ -47,7 +47,7 @@
               <ul class="env-alts-list">
               {% for alt in other_alts %}
                 <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a>
-                  ({{ alt.env.title() }})
+                  ({{ alt.env }})
                 </li>
                 {%- if loop.index == ALTS_PER_LIST %}
                   <p class="alts-more-link"><a href={{ url_for("main.browse_categories", id=tool.category.id) }}>More
@@ -91,7 +91,7 @@
             </tr>
             <tr class="tool-metadata-row">
               <td class="tool-metadata-name">Environment</td>
-              <td class="tool-metadata-value">{{ tool.env.title() }}</td>
+              <td class="tool-metadata-value">{{ tool.env }}</td>
             </tr>
             <tr class="tool-metadata-row">
               <td class="tool-metadata-name">Created</td>
