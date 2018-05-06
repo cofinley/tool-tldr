@@ -124,7 +124,6 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(64))
     about_me = db.Column(db.Text(500))
     user_since = db.Column(db.DateTime(), default=datetime.utcnow)
-    member_since = db.Column(db.DateTime())
     role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
     confirmed = db.Column(db.Boolean, default=False)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
