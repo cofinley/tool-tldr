@@ -22,7 +22,6 @@ class UserModelView(MyModelView):
                              "category_edits",
                              "edits",
                              "user_since",
-                             "member_since",
                              "last_seen",
                              "comments"]
     column_searchable_list = ["username", "email"]
