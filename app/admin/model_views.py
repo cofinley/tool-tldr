@@ -21,6 +21,7 @@ class UserModelView(MyModelView):
                              "tool_edits",
                              "category_edits",
                              "edits",
+                             "user_since",
                              "member_since",
                              "last_seen",
                              "comments"]

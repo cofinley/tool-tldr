@@ -123,7 +123,8 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
     name = db.Column(db.String(64))
     about_me = db.Column(db.Text(500))
-    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
+    user_since = db.Column(db.DateTime(), default=datetime.utcnow)
+    member_since = db.Column(db.DateTime())
     role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
     confirmed = db.Column(db.Boolean, default=False)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
@@ -228,7 +229,7 @@ class User(db.Model, UserMixin):
         return self.can(Permission.TIME_TRAVEL)
 
     @property
-    def is_confirmed(self):
+    def is_member(self):
         # confirmed users don't need captcha to change links
         # 0x0f == 15 == shortcut for all permissions included in confirmed user
         return self.can(0x0f)
@@ -269,7 +270,7 @@ class AnonymousUser(AnonymousUserMixin):
         return False
 
     @property
-    def is_confirmed(self):
+    def is_member(self):
         return False
 
 
@@ -302,9 +303,9 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            "Anonymous": (Permission.CHANGE_LINKS, True),
-            "Registered": (Permission.CREATE | Permission.CHANGE_LINKS, True),
-            "Confirmed": (Permission.CREATE |
+            "Anonymous User": (Permission.CHANGE_LINKS, True),
+            "User": (Permission.CREATE | Permission.CHANGE_LINKS, True),
+            "Member": (Permission.CREATE |
                           Permission.CHANGE_LINKS |
                           Permission.UPLOAD |
                           Permission.MOVE, False),

@@ -68,12 +68,12 @@ def register():
             user.email = form.email.data
             user.username = form.username.data
             user.password = form.password.data
-            user.role_id = models.Role.query.filter_by(name="Registered").first().id
+            user.role_id = models.Role.query.filter_by(name="User").first().id
         else:
             user = User(email=form.email.data,
                         username=form.username.data,
                         password=form.password.data,
-                        role_id=models.Role.query.filter_by(name="Registered").first().id)
+                        role_id=models.Role.query.filter_by(name="User").first().id)
         db.session.add(user)
         db.session.commit()
         token = user.generate_confirmation_token()

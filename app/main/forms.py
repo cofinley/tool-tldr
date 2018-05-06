@@ -44,9 +44,10 @@ class EditProfileAdminForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Length(1, 64),
                                              Email()])
     username = StringField('Username', validators=[
-        DataRequired(), Length(1, 64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-                                              'Usernames must have only letters, '
-                                              'numbers, dots or underscores')])
+        DataRequired(),
+        Length(1, 64),
+        Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0, 'Usernames must have only letters, numbers, dots or underscores')
+    ])
     confirmed = BooleanField('Confirmed')
     role = SelectField('Role', coerce=int)
     name = StringField('Real name', validators=[Length(0, 64)])
@@ -84,14 +85,14 @@ class EditCategoryPageForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-class EditCategoryPageFormConfirmed(EditCategoryPageForm):
+class EditCategoryPageFormMember(EditCategoryPageForm):
     move_parent = BooleanField("Move page?")
     parent_category = StringField("Parent Category", description=parent_category_description,
                                   validators=[RequiredIf("move_parent"), Length(max=64)])
     parent_category_id = HiddenField()
 
     def __init__(self, current_category_id, *args, **kwargs):
-        super(EditCategoryPageFormConfirmed, self).__init__(*args, **kwargs)
+        super(EditCategoryPageFormMember, self).__init__(*args, **kwargs)
         self.current_category_id = current_category_id
 
     def validate(self):
@@ -134,7 +135,7 @@ class EditToolPageForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-class EditToolPageFormConfirmed(EditToolPageForm):
+class EditToolPageFormMember(EditToolPageForm):
     # Remove recaptcha requirement
     recaptcha = None
 
@@ -183,7 +184,7 @@ class AddNewToolForm(FlaskForm):
             raise ValidationError("Invalid parent category.")
 
 
-class AddNewToolFormConfirmed(AddNewToolForm):
+class AddNewToolFormMember(AddNewToolForm):
     # Remove recaptcha requirement
     recaptcha = None
 

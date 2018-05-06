@@ -15,7 +15,7 @@
       {{ form.hidden_tag() }}
 
       {{ wtf.form_field(form.name) }}
-      {% if is_confirmed %}
+      {% if is_member %}
         <div class="form-group">
           {{ wtf.form_field(form.move_parent, checked=False) }}
         </div>
