@@ -389,7 +389,7 @@ def create_temp_user():
             email="",
             username=ip,
             password="",
-            role_id=models.Role.query.filter_by(name="Anonymous").first().id)
+            role_id=models.Role.query.filter_by(name="Anonymous User").first().id)
         db.session.add(new_temp_user)
         db.session.commit()
         return new_temp_user
