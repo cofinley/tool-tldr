@@ -75,7 +75,7 @@ class Helper:
             next(tsvin, None)  # skip header
 
             for row in tsvin:
-                id, username, email, password_hash, name, about_me, member_since, role_name, confirmed, last_seen = row
+                id, username, email, password_hash, name, about_me, user_since, role_name, confirmed, last_seen = row
                 u = models.User(
                     id=int(id),
                     username=username,
@@ -83,7 +83,7 @@ class Helper:
                     password_hash=password_hash,
                     name=name,
                     about_me=about_me,
-                    member_since=datetime.strptime(member_since, "%Y-%m-%d %H:%M:%S.%f"),
+                    user_since=datetime.strptime(user_since, "%Y-%m-%d %H:%M:%S.%f"),
                     role_id=models.Role.query.filter_by(name=role_name).first().id,
                     confirmed=bool(confirmed),
                     last_seen=datetime.strptime(last_seen, "%Y-%m-%d %H:%M:%S.%f")

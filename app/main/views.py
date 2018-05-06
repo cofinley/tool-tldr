@@ -389,7 +389,7 @@ def create_temp_user():
             email="",
             username=ip,
             password="",
-            role_id=models.Role.query.filter_by(name="Anonymous").first().id)
+            role_id=models.Role.query.filter_by(name="Anonymous User").first().id)
         db.session.add(new_temp_user)
         db.session.commit()
         return new_temp_user
@@ -402,14 +402,14 @@ def edit_category_page(category_id):
     anonymous_warning()
     category = models.Category.query.get_or_404(category_id)
 
-    if current_user.is_confirmed:
-        form = EditCategoryPageFormConfirmed(category.id)
+    if current_user.is_member:
+        form = EditCategoryPageFormMember(category.id)
     else:
         form = EditCategoryPageForm()
 
     if form.validate_on_submit():
         category.name = form.name.data
-        if current_user.is_confirmed:
+        if current_user.is_member:
             if form.move_parent.data:
                 if int(form.parent_category_id.data) == 0 or form.parent_category.data == "/":
                     category.parent_category_id = None
@@ -440,7 +440,7 @@ def edit_category_page(category_id):
         return redirect(url_for('.fetch_category_page', category_id=category.id, category_name=slugify(category.name)))
     if not form.is_submitted():
         form.name.data = category.name
-        if current_user.is_confirmed:
+        if current_user.is_member:
             form.move_parent.data = False
             if category.parent:
                 form.parent_category.data = category.parent.name
@@ -453,7 +453,7 @@ def edit_category_page(category_id):
     return render_template('edit_category.html',
                            form=form,
                            category=category,
-                           is_confirmed=current_user.is_confirmed)
+                           is_member=current_user.is_member)
 
 
 @main.route("/tools/<int:tool_id>/edit", methods=["GET", "POST"])
@@ -461,8 +461,8 @@ def edit_tool_page(tool_id):
     anonymous_warning()
     tool = models.Tool.query.get_or_404(tool_id)
 
-    if current_user.is_confirmed:
-        form = EditToolPageFormConfirmed()
+    if current_user.is_member:
+        form = EditToolPageFormMember()
     else:
         form = EditToolPageForm()
 
@@ -472,7 +472,7 @@ def edit_tool_page(tool_id):
         tool.link = form.link.data
         if current_user.is_authenticated:
             edit_author = current_user
-            if current_user.is_confirmed:
+            if current_user.is_member:
                 if form.move_parent.data:
                     tool.parent_category_id = form.parent_category_id.data
         else:
@@ -505,7 +505,7 @@ def edit_tool_page(tool_id):
         form.is_active.data = tool.is_active
         form.avatar_url.data = tool.avatar_url
         form.link.data = tool.link
-        if current_user.is_confirmed:
+        if current_user.is_member:
             form.parent_category_id.data = tool.parent_category_id
             form.parent_category.data = tool.category.name
         form.why.data = tool.why
@@ -513,7 +513,7 @@ def edit_tool_page(tool_id):
     return render_template('edit_tool.html',
                            form=form,
                            tool=tool,
-                           is_confirmed=current_user.is_confirmed)
+                           is_member=current_user.is_member)
 
 
 def render_diff(page_type, page_id, older, newer):
@@ -657,8 +657,8 @@ def add_new_tool(parent_category_id=None):
         flash(
             "You must log in or sign up to add new pages.")
         return redirect(url_for("auth.login"))
-    if current_user.is_confirmed:
-        form = AddNewToolFormConfirmed()
+    if current_user.is_member:
+        form = AddNewToolFormMember()
     else:
         form = AddNewToolForm()
 
@@ -702,7 +702,7 @@ def add_new_tool(parent_category_id=None):
 
     return render_template('add_new_tool.html',
                            form=form,
-                           is_confirmed=current_user.is_confirmed)
+                           is_member=current_user.is_member)
 
 
 @main.route("/add-new-category", methods=["GET", "POST"])

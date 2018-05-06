@@ -22,12 +22,12 @@
       {{ wtf.form_field(form.link) }}
       {{ wtf.form_field(form.why, maxlength=max) }}
       <span id="why-count" class="char-count text-muted">{{ max }}</span>
-      {% if not is_confirmed %}
+      {% if not is_member %}
         {{ form.recaptcha }}
       {% endif %}
       <div class="d-flex justify-content-end mb-5 w-100">
         <button type="button" class="btn btn-outline-danger mr-auto form-button cancel-button">Cancel</button>
-        {% if not is_confirmed %}
+        {% if not is_member %}
           <button type="button" class="btn btn-success form-button" id="recaptcha-submit">Submit</button>
         {% else %}
           <input type="submit" class="btn btn-success form-button" id="recaptcha-submit" value="Submit" name="Submit">

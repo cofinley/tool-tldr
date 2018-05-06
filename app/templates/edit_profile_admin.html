@@ -13,9 +13,7 @@
 
     {{ wtf.form_field(form.email) }}
     {{ wtf.form_field(form.username) }}
-    <div class="mb-3 mt-4">
-      {{ wtf.form_field(form.confirmed) }}
-    </div>
+    {{ wtf.form_field(form.confirmed) }}
     {{ wtf.form_field(form.role) }}
 
     {% include "includes/form_actions.html" %}
