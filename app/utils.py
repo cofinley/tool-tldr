@@ -1,6 +1,7 @@
 import html
 from datetime import timedelta, datetime
 from difflib import ndiff
+from typing import List
 from urllib.parse import urlsplit
 
 from sqlalchemy_continuum import version_class, versioning_manager
@@ -254,3 +255,7 @@ def version_paginate(itr, page, per_page, total):
     oldest = latest - per_page
     oldest = oldest if oldest > 0 else 0
     return itr[oldest:latest]
+
+
+def get_model_attributes(model: db.Model, cols: List[str]) -> List:
+    return [getattr(model, col) for col in cols]

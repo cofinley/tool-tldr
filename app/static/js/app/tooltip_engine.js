@@ -23,7 +23,7 @@ var tooltip_engine = (function(){
         }
 
         var route = $(this).attr('href');
-        var idPattern = new RegExp("^\\/categories\\/(\\d+)\\/([a-z-]*)$");
+        var idPattern = new RegExp("^\\/categories\\/(\\d+)\\/([a-z0-9-]*)$");
         var categoryIdMatch = idPattern.exec(route);
 
         if ((null !== categoryIdMatch) && ($.inArray(categoryIdMatch[2], excludedSubRoutes) === -1)){
@@ -44,7 +44,9 @@ var tooltip_engine = (function(){
             placement: 'auto',
             trigger: 'hover',
             delay: 400,
-            title: loadCategoryInfo
+            title: loadCategoryInfo,
+            html: true,
+            template: '<div class="tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner text-left"></div></div>'
         })
             .on("show.bs.tooltip", function () {
                 // Fix bug on explore, only allow one tooltip instance visible at a time

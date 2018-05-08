@@ -11,7 +11,7 @@ class Config:
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_RECORD_QUERIES = True
-    SLOW_DB_QUERY_TIME = 1
+    SLOW_DB_QUERY_TIME = 0.5
 
     # Flask-WhooshAlchemyPlus
     WHOOSH_BASE = os.path.join(basedir, 'search.db')
@@ -62,6 +62,7 @@ class Config:
 
     # Flask Debug Toolbar
     DEBUG_TB_INTERCEPT_REDIRECTS = False
+    DEBUG_TB_PROFILER_ENABLED = False
 
     @staticmethod
     def init_app(app):
@@ -72,6 +73,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TOOLTLDR_DATABASE_URL_DEV')
     TEMPLATES_AUTO_RELOAD = True
+    SQLALCHEMY_ECHO = False
 
 
 class TestingConfig(Config):

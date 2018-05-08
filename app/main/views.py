@@ -24,10 +24,12 @@ def after_request(response):
     for query in get_debug_queries():
         if query.duration >= current_app.config["SLOW_DB_QUERY_TIME"]:
             current_app.logger.warning(
-                "Slow query: {}\n\tParameters: {}\n\tDuration: {}\n\tContext: {}\n".format(query.statement,
-                                                                                           query.parameters,
-                                                                                           query.duration,
-                                                                                           query.context))
+                "Slow query: {}\n\tParameters: {}\n\tDuration: {}\n\tContext: {}\n".format(
+                    query.statement,
+                    query.parameters,
+                    query.duration,
+                    query.context)
+            )
     return response
 
 
@@ -238,7 +240,15 @@ def fetch_tool_page(tool_id, tool_name):
 @main.route("/tip/<int:category_id>")
 @cache.memoize()
 def get_tooltip(category_id):
-    return models.Category.query.get_or_404(category_id).what
+    columns = utils.get_model_attributes(models.Category, ["name", "what"])
+    result = db.session.query(*columns).filter_by(id=category_id).first()
+    if result:
+        name, what = result
+        bold_name = "<b>" + utils.escape_html(name) + "</b>"
+        escaped_what = utils.escape_html(what)
+        return bold_name + "<br>" + escaped_what
+    else:
+        abort(404)
 
 
 @main.route("/search")
@@ -444,8 +454,10 @@ def edit_category_page(category_id):
             form.move_parent.data = False
             if category.parent:
                 form.parent_category.data = category.parent.name
+                form.parent_category_id.data = category.parent.id
             else:
                 form.parent_category.data = "/"
+                form.parent_category_id.data = 0
         form.what.data = category.what
         form.why.data = category.why
         form.where.data = category.where
