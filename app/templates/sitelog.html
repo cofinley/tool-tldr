@@ -20,7 +20,30 @@
     <tbody>
     {% for change in pagination.items %}
       <tr>
-        <td title="{{ change.object_version.edit_time }}">{{ change.object_version.edit_time | timesince }}</td>
+        <td>
+          <a title="{{ change.object_version.edit_time }}"
+                  {% if change.object_type == "Category" %}
+                    {% if change.object_version.previous %}
+             href="{{ url_for(".view_category_diff", category_id=change.object_id, newer=change.object_version.index + 1, older=change.object_version.previous.index + 1) }}"
+                      >
+                    {% else %}
+                      href="
+                      {{ url_for(".fetch_category_page", category_id=change.object_id, category_name=slugify(change.object.name)) }}
+                      ">
+                    {% endif %}
+                  {% elif change.object_type == "Tool" %}
+                    {% if change.object_version.previous %}
+                      href="
+                      {{ url_for(".view_tool_diff", tool_id=change.object_id, newer=change.object_version.index + 1, older=change.object_version.previous.index + 1) }}
+                      ">
+                    {% else %}
+                      href="
+                      {{ url_for(".fetch_tool_page", tool_id=change.object_id, tool_name=slugify(change.object.name)) }}
+                      ">
+                    {% endif %}
+                  {% endif %}
+          {{ change.object_version.edit_time | timesince }}</a>
+        </td>
         <td><a href="{{ url_for(".user", user_id=change.object.author.id) }}">{{ change.object.author.username }}</a></td>
         {% if change.verb == "edit" %}
           <td>Edit</td>
@@ -30,9 +53,15 @@
           <td>Time Travel</td>
         {% endif %}
         {% if change.object_type == "Tool" %}
-          <td><a href="{{ url_for(".fetch_tool_page", tool_id=change.object.id, tool_name=slugify(change.object.name)) }}">{{ change.object.name }}</a> ({{ change.object_type }})</td>
+          <td>
+            <a href="{{ url_for(".fetch_tool_page", tool_id=change.object_id, tool_name=slugify(change.object.name)) }}">{{ change.object.name }}</a>
+            ({{ change.object_type }})
+          </td>
         {% else %}
-          <td><a href="{{ url_for(".fetch_category_page", category_id=change.object.id, category_name=slugify(change.object.name)) }}">{{ change.object.name }}</a> ({{ change.object_type }})</td>
+          <td>
+            <a href="{{ url_for(".fetch_category_page", category_id=change.object_id, category_name=slugify(change.object.name)) }}">{{ change.object.name }}</a>
+            ({{ change.object_type }})
+          </td>
         {% endif %}
         <td>{{ change.object_version.edit_msg }}</td>
       </tr>
