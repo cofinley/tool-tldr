@@ -44,7 +44,9 @@
                   {% endif %}
           {{ change.object_version.edit_time | timesince }}</a>
         </td>
-        <td><a href="{{ url_for(".user", user_id=change.object.author.id) }}">{{ change.object.author.username }}</a></td>
+        <td>
+          <a href="{{ url_for(".user", user_id=change.object_version.author.id) }}">{{ change.object_version.author.username }}</a>
+        </td>
         {% if change.verb == "edit" %}
           <td>Edit</td>
         {% elif change.verb == "add" %}
