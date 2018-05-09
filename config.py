@@ -47,12 +47,12 @@ class Config:
     ALTS_PER_LIST = 10
 
     # Promotion Edit Thresholds
-    USER_TO_MEMBER_EDITS = 20
-    MEMBER_TO_TIME_TRAVELER_EDITS = 100
+    USER_TO_MEMBER_EDITS = 5
+    MEMBER_TO_TIME_TRAVELER_EDITS = 30
 
     # Promotion Time Thresholds
-    USER_TO_MEMBER_DAYS = 14
-    MEMBER_TO_TIME_TRAVELER_DAYS = 42
+    USER_TO_MEMBER_DAYS = 5
+    MEMBER_TO_TIME_TRAVELER_DAYS = 30
 
     # Are we blocking users?
     BLOCKING_USERS = True
