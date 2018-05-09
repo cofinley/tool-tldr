@@ -16,7 +16,7 @@
     {% for edit in edits|sort(attribute="edit_time", reverse=True) %}
       <tr>
         <td>
-          {% if type == "tool" %}
+          {% if type == "tools" %}
             {% if edit.previous %}
               <a href="{{ url_for(".view_tool_diff", tool_id=edit.id, newer=edit.index + 1, older=edit.previous.index + 1) }}"
                  title="{{ edit.edit_time }}">

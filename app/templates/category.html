@@ -75,7 +75,9 @@
             {% for tool in subtools %}
               <li class="alt-list-item"><a
                       href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=slugify(tool.name)) }}">{{ tool.name }}</a>
-                ({{ tool.env }})
+                {% if tool.env %}
+                  ({{ tool.env }})
+                {% endif %}
               </li>
               {%- if loop.index == ALTS_PER_LIST %}
                 <p class="alts-more-link"><a href="{{ url_for(".browse_categories", id=category.id) }}">Show more...</a>

@@ -14,6 +14,8 @@
       {% set edit_msg_max = 100 %}
       {{ form.hidden_tag() }}
 
+      <p><span class="red-text">*</span> fields are required</p>
+
       {{ wtf.form_field(form.name) }}
       {% if is_member %}
         <div class="form-group">

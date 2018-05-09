@@ -98,12 +98,13 @@ def load_children_tools(id, env):
                 utils.escape_html(result["name"])
             )
         else:
-            label_link = "<a href='/tools/{}/{}'>{}</a> ({})".format(
+            label_link = "<a href='/tools/{}/{}'>{}</a>".format(
                 result["id"],
                 utils.escape_html(slugify(result["name"])),
                 utils.escape_html(result["name"]),
-                utils.escape_html(result["env"])
             )
+            if result["env"]:
+                label_link += " ({})".format(utils.escape_html(result["env"]))
         result.pop("name")
         result["label"] = label_link
 
@@ -228,7 +229,10 @@ def fetch_tool_page(tool_id, tool_name):
     # Get four levels up in tree
     category_tree = utils.build_bottom_up_tree(tool.category)[-4:]
 
-    project_link = utils.get_hostname(tool.link)
+    if tool.link:
+        project_link = utils.get_hostname(tool.link)
+    else:
+        project_link = None
 
     return render_template("tool.html",
                            tool=tool,
@@ -482,8 +486,8 @@ def edit_tool_page(tool_id):
 
     if form.validate_on_submit():
         tool.name = form.name.data
-        tool.avatar_url = form.avatar_url.data
-        tool.link = form.link.data
+        tool.avatar_url = form.avatar_url.data or None
+        tool.link = form.link.data or None
         if current_user.is_authenticated:
             edit_author = current_user
             if current_user.is_member:
@@ -491,10 +495,10 @@ def edit_tool_page(tool_id):
                     tool.parent_category_id = form.parent_category_id.data
         else:
             edit_author = create_temp_user()
-        tool.env = form.env.data
-        tool.created = form.created.data
-        tool.project_version = form.project_version.data
-        tool.is_active = form.is_active.data
+        tool.env = form.env.data or None
+        tool.created = form.created.data or None
+        tool.project_version = form.project_version.data or None
+        tool.is_active = form.is_active.data or None
         tool.why = form.why.data
         tool.edit_msg = form.edit_msg.data
         tool.edit_time = datetime.utcnow()
@@ -685,12 +689,12 @@ def add_new_tool(parent_category_id=None):
         tool = models.Tool(
             name=form.name.data,
             parent_category_id=form.parent_category_id.data,
-            avatar_url=form.avatar_url.data,
-            env=form.env.data,
-            created=form.created.data,
-            project_version=form.project_version.data,
-            is_active=form.is_active.data,
-            link=form.link.data,
+            avatar_url=form.avatar_url.data or None,
+            env=form.env.data or None,
+            created=form.created.data or None,
+            project_version=form.project_version.data or None,
+            is_active=form.is_active.data or None,
+            link=form.link.data or None,
             why=form.why.data,
             edit_author=edit_author.id,
             edit_time=datetime.utcnow()

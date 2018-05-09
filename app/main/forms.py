@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, TextAreaField, BooleanField, SelectField, SubmitField, HiddenField, IntegerField, \
     ValidationError
-from wtforms.validators import DataRequired, InputRequired, Length, Email, Regexp, URL
+from wtforms.validators import DataRequired, Length, Email, Regexp, URL, Optional
 
 from .. import db
 from ..models import Role, User, Category
@@ -114,24 +114,25 @@ class EditCategoryPageFormMember(EditCategoryPageForm):
 
 
 class EditToolPageForm(FlaskForm):
-    name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
+    # Required
+    name = StringField("Name*", validators=[DataRequired(), Length(1, 64)])
+    why = TextAreaField("Why*", description=tool_why_description, validators=[DataRequired(), Length(1, 250)])
+    edit_msg = StringField("Edit Message*", validators=[DataRequired(), Length(1, 100)])
 
+    # Optional
     env = StringField("Environment", description=tool_environment_description,
-                      validators=[DataRequired(), Length(1, 64)])
-    created = IntegerField("Date Created", validators=[DataRequired()])
-    project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
-    is_active = SelectField("Actively Developed?", description=tool_active_description,
-                            choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
-                            coerce=lambda x: x == "True")
+                      validators=[Optional(), Length(1, 64)])
+    created = IntegerField("Date Created", validators=[Optional()])
+    project_version = StringField("Project Version", validators=[Optional(), Length(1, 10)])
+    is_active = SelectField("Actively Developed?", description=tool_active_description, validators=[Optional()],
+                            choices=[(True, "Yes"), (False, "No")], coerce=lambda x: x == "True")
 
-    avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200),
+    avatar_url = StringField("Avatar URL", validators=[Optional(), URL(), Length(1, 200),
                                                        Regexp("^https://",
                                                               message="Image link must be hosted under https://")])
-    link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
-    recaptcha = RecaptchaField()
+    link = StringField("Project URL", validators=[Optional(), URL(), Length(1, 200)])
 
-    why = TextAreaField("Why", description=tool_why_description, validators=[DataRequired(), Length(1, 250)])
-    edit_msg = StringField("Edit Message", validators=[DataRequired(), Length(1, 100)])
+    recaptcha = RecaptchaField()
     submit = SubmitField('Submit')
 
 
@@ -140,12 +141,12 @@ class EditToolPageFormMember(EditToolPageForm):
     recaptcha = None
 
     move_parent = BooleanField("Move page?")
-    parent_category = StringField("Parent Category", description=parent_category_description,
+    parent_category = StringField("Parent Category*", description=parent_category_description,
                                   validators=[RequiredIf("move_parent"), Length(max=64)])
     parent_category_id = HiddenField()
 
-    avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200)])
-    link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
+    avatar_url = StringField("Avatar URL", validators=[Optional(), URL(), Length(1, 200)])
+    link = StringField("Project URL", validators=[Optional(), URL(), Length(1, 200)])
 
     def validate_parent_category_id(self, field):
         if not db.session.query(Category.id).filter_by(id=int(field.data)).scalar():
@@ -159,22 +160,25 @@ class TimeTravelForm(FlaskForm):
 
 
 class AddNewToolForm(FlaskForm):
-    name = StringField("Name", validators=[DataRequired(), Length(1, 64)])
-    parent_category = StringField("Parent Category", description=parent_category_description,
+    # Required
+    name = StringField("Name*", validators=[DataRequired(), Length(1, 64)])
+    parent_category = StringField("Parent Category*", description=parent_category_description,
                                   validators=[DataRequired(), Length(max=64)])
     parent_category_id = HiddenField()
-    avatar_url = StringField("Avatar URL", validators=[DataRequired(), URL(), Length(1, 200),
+    why = TextAreaField("Why*", description=tool_why_description, validators=[DataRequired(), Length(1, 250)])
+
+    # Optional
+    avatar_url = StringField("Avatar URL", validators=[Optional(), URL(), Length(1, 200),
                                                        Regexp("^https://",
                                                               message="Image link must be hosted under https://")])
     env = StringField("Environment", description=tool_environment_description,
-                      validators=[DataRequired(), Length(1, 64)])
-    created = IntegerField("Date Created", validators=[DataRequired()])
-    project_version = StringField("Project Version", validators=[DataRequired(), Length(1, 10)])
-    is_active = SelectField("Actively Developed?", description=tool_active_description,
-                            choices=[(True, "Yes"), (False, "No")], validators=[InputRequired()],
-                            coerce=lambda x: x == "True", default="True")
-    link = StringField("Project URL", validators=[DataRequired(), URL(), Length(1, 200)])
-    why = TextAreaField("Why", description=tool_why_description, validators=[DataRequired(), Length(1, 250)])
+                      validators=[Optional(), Length(1, 64)])
+    created = IntegerField("Date Created", validators=[Optional()])
+    project_version = StringField("Project Version", validators=[Optional(), Length(1, 10)])
+    is_active = SelectField("Actively Developed?", description=tool_active_description, validators=[Optional()],
+                            choices=[(True, "Yes"), (False, "No")], coerce=lambda x: x == "True", default="True")
+    link = StringField("Project URL", validators=[Optional(), URL(), Length(1, 200)])
+
     recaptcha = RecaptchaField()
     submit = SubmitField('Submit')
 

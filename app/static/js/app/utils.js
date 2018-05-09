@@ -64,3 +64,12 @@ function extractPageInfoFromUrl(url) {
         };
     }
 }
+
+$.each($(".form-control-label"), function (i, label) {
+    var text = $(label).text();
+    if (text.includes("*")) {
+        var html = $(label).html();
+        var redAsterisk = $("<span>*</span>").addClass("red-text");
+        $(label).html(html.replace("*", redAsterisk.get(0).outerHTML));
+    }
+});

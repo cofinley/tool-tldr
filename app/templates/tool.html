@@ -23,7 +23,8 @@
         <div class="row ml-0">
 
           <div class="env-alts-section col-md-6">
-            <h3 class="env-alts-env-title"><i>For {{ tool.env }}</i></h3>
+            <h3 class="env-alts-env-title"><i>For
+              {% if tool.env %}{{ tool.env }}{% else %}this environment{% endif %}</i></h3>
             {% if env_alts | length %}
               <ul class="env-alts-list">
                 {% for alt in env_alts %}
@@ -31,7 +32,7 @@
                   {%- if loop.index == ALTS_PER_LIST %}
                     <p class="alts-more-link"><a
                             href={{ url_for("main.browse_categories", id=tool.category.id, env=tool.env) }}>More
-                      for {{ tool.env }}...</a></p>
+                      for {% if tool.env %}{{ tool.env }}{% else %}this environment{% endif %}...</a></p>
                     {% break %}
                   {% endif %}
                 {%- endfor %}
@@ -91,15 +92,25 @@
             </tr>
             <tr class="tool-metadata-row">
               <td class="tool-metadata-name">Environment</td>
-              <td class="tool-metadata-value">{{ tool.env }}</td>
+              <td class="tool-metadata-value">
+                {% if tool.env %}
+                  {{ tool.env }}
+                {% endif %}
+              </td>
             </tr>
             <tr class="tool-metadata-row">
               <td class="tool-metadata-name">Created</td>
-              <td class="tool-metadata-value">{{ tool.created }}</td>
+              {% if tool.created %}
+                <td class="tool-metadata-value">{{ tool.created }}</td>
+              {% endif %}
             </tr>
             <tr class="tool-metadata-row">
               <td class="tool-metadata-name">Version</td>
-              <td class="tool-metadata-value">{{ tool.project_version }}</td>
+              <td class="tool-metadata-value">
+                {% if tool.project_version %}
+                  {{ tool.project_version }}
+                {% endif %}
+              </td>
             </tr>
             <tr class="tool-metadata-row">
               <td class="tool-metadata-name">Actively Developed?</td>
@@ -107,7 +118,10 @@
             </tr>
             <tr class="tool-metadata-row">
               <td class="tool-metadata-name">Project URL</td>
-              <td class="tool-metadata-value"><a id="tool-link" href={{ tool.link }} target="_blank">{{ link }}</a>
+              <td class="tool-metadata-value">
+                {% if link %}
+                  <a id="tool-link" href={{ tool.link }} target="_blank">{{ link }}</a>
+                {% endif %}
               </td>
             </tr>
           </table>

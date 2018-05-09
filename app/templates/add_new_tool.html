@@ -12,6 +12,8 @@
       {% set max = 250 %}
       {{ form.hidden_tag() }}
 
+      <p><span class="red-text">*</span> fields are required</p>
+
       {{ wtf.form_field(form.name) }}
       {{ wtf.form_field(form.parent_category, readonly=True) }}
       {{ wtf.form_field(form.avatar_url) }}
