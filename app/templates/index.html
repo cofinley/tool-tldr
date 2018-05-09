@@ -9,7 +9,7 @@
     <img id="big-loader" src="{{ url_for('static', filename='img/loader.svg') }}" alt="Loading...">
   </div>
   <div id="home-page-categories">
-    <p id="category-title">Popular Categories</p>
+    <p id="category-title">Recent Categories</p>
     <div id="category-columns">
       {% for category in categories %}
         <a class="category-list-item btn btn-outline-primary btn-lg" href="{{ url_for(".fetch_category_page", category_id=category.id, category_name=slugify(category.name)) }}" data-notitle>{{ category.name }}</a>
