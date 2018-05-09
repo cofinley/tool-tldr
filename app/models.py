@@ -5,7 +5,7 @@ from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
 from flask_sqlalchemy import BaseQuery
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from sqlalchemy.orm import backref
+from sqlalchemy.orm import deferred, backref
 from werkzeug.security import generate_password_hash, check_password_hash
 from whoosh.analysis import FancyAnalyzer
 
@@ -50,20 +50,23 @@ class Tool(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
-    avatar_url = db.Column(db.String(200))
-    parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
-    is_active = db.Column(db.Boolean, default=True)
     env = db.Column(db.String(64))
-    created = db.Column(db.Integer())
-    project_version = db.Column(db.String(10))
-    link = db.Column(db.String(200))
-    why = db.Column(db.String(250))
-    edit_msg = db.Column(db.String(100), default="Initial edit")
-    edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
-    edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
-    is_time_travel_edit = db.Column(db.Boolean, default=False)
     deleted = db.Column(db.DateTime())
+    # Relationships
+    parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
     comments = db.relationship("Comment", backref="parent_tool_page", lazy="dynamic")
+    # Page-specific Columns
+    avatar_url = deferred(db.Column(db.String(200)), group="page")
+    is_active = deferred(db.Column(db.Boolean, default=True), group="page")
+    created = deferred(db.Column(db.Integer()), group="page")
+    project_version = deferred(db.Column(db.String(10)), group="page")
+    link = deferred(db.Column(db.String(200)), group="page")
+    why = deferred(db.Column(db.String(250)), group="page")
+    # Edit-specific columns
+    edit_msg = deferred(db.Column(db.String(100), default="Initial edit"), group="edits")
+    edit_time = deferred(db.Column(db.DateTime(), default=datetime.utcnow), group="edits")
+    edit_author = deferred(db.Column(db.Integer, db.ForeignKey("users.id")), group="edits")
+    is_time_travel_edit = deferred(db.Column(db.Boolean, default=False), group="edits")
 
     def __repr__(self):
         return "<Tool %d: %r>" % (self.id, self.name)
@@ -78,18 +81,21 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
+    what = db.Column(db.String(250))
+    deleted = db.Column(db.DateTime())
+    # Relationships
     parent_category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     parent = db.relationship('Category', remote_side=[id], backref=backref('children', lazy="dynamic"))
     tools = db.relationship("Tool", backref="category", lazy="dynamic")
-    what = db.Column(db.String(250))
-    why = db.Column(db.String(250))
-    where = db.Column(db.String(250))
-    edit_msg = db.Column(db.String(100), default="Initial edit")
-    edit_time = db.Column(db.DateTime(), default=datetime.utcnow)
-    edit_author = db.Column(db.Integer, db.ForeignKey("users.id"))
-    is_time_travel_edit = db.Column(db.Boolean, default=False)
-    deleted = db.Column(db.DateTime())
     comments = db.relationship("Comment", backref="parent_category_page", lazy="dynamic")
+    # Page-specific Columns
+    why = deferred(db.Column(db.String(250)), group="page")
+    where = deferred(db.Column(db.String(250)), group="page")
+    # Page-specific Columns
+    edit_msg = deferred(db.Column(db.String(100), default="Initial edit"), group="edits")
+    edit_time = deferred(db.Column(db.DateTime(), default=datetime.utcnow), group="edits")
+    edit_author = deferred(db.Column(db.Integer, db.ForeignKey("users.id")), group="edits")
+    is_time_travel_edit = deferred(db.Column(db.Boolean, default=False), group="edits")
 
     def __repr__(self):
         return "<Category %d: %r>" % (self.id, self.name)
@@ -100,10 +106,11 @@ class Comment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(500))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     timestamp = db.Column(db.DateTime(), default=datetime.utcnow)
     edit_time = db.Column(db.DateTime())
     deleted = db.Column(db.DateTime())
+    # Relationships
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     parent_comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
     parent_comment = db.relationship('Comment', remote_side=[id], backref='replies')
     parent_category_page_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
@@ -119,20 +126,22 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-    name = db.Column(db.String(64))
-    about_me = db.Column(db.Text(500))
-    user_since = db.Column(db.DateTime(), default=datetime.utcnow)
-    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
+    email = deferred(db.Column(db.String(120), index=True, unique=True))
+    password_hash = deferred(db.Column(db.String(128)))
     confirmed = db.Column(db.Boolean, default=False)
-    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
-    tool_edits = db.relationship('Tool', backref="author", lazy="dynamic")
-    category_edits = db.relationship('Category', backref="author", lazy="dynamic")
-    edits = db.Column(db.Integer, default=0)
-    comments = db.relationship("Comment", backref="author")
     blocked = db.Column(db.DateTime())
     deleted = db.Column(db.DateTime())
+    # Relationships
+    tool_edits = db.relationship('Tool', backref="author", lazy="dynamic")
+    role_id = deferred(db.Column(db.Integer, db.ForeignKey("roles.id")), group="profile")
+    category_edits = db.relationship('Category', backref="author", lazy="dynamic")
+    comments = db.relationship("Comment", backref="author")
+    # Profile-specific columns
+    name = deferred(db.Column(db.String(64)), group="profile")
+    about_me = deferred(db.Column(db.Text(500)), group="profile")
+    user_since = deferred(db.Column(db.DateTime(), default=datetime.utcnow), group="profile")
+    last_seen = deferred(db.Column(db.DateTime(), default=datetime.utcnow), group="profile")
+    edits = deferred(db.Column(db.Integer, default=0), group="profile")
 
     @property
     def password(self):

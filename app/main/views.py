@@ -216,12 +216,14 @@ def fetch_tool_page(tool_id, tool_name):
         .filter_by(parent_category_id=tool.parent_category_id) \
         .filter_by(env=tool.env) \
         .filter(models.Tool.id != tool.id) \
-        .limit(ALTS_PER_LIST)
+        .limit(ALTS_PER_LIST) \
+        .all()
 
     alts_for_other_envs = models.Tool.query \
         .filter(models.Tool.parent_category_id == tool.parent_category_id) \
         .filter(models.Tool.env != tool.env) \
-        .limit(ALTS_PER_LIST)
+        .limit(ALTS_PER_LIST) \
+        .all()
 
     # Get four levels up in tree
     category_tree = utils.build_bottom_up_tree(tool.category)[-4:]
@@ -594,8 +596,9 @@ def render_time_travel(page_type, page_id, target_version_id):
         return redirect(url_for(three_revision_route, id=page_id))
 
     # Load whole states of current and destination
-    current_version = cls.query.get_or_404(page_id)
-    destination_version = current_version.versions[target_version_id - 1]
+    page = cls.query.get_or_404(page_id)
+    current_version = page.versions[-1]
+    destination_version = page.versions[target_version_id - 1]
 
     current_time = current_version.edit_time.strftime('%d %B %Y, %H:%M')
     destination_time = destination_version.edit_time.strftime('%d %B %Y, %H:%M')
@@ -611,14 +614,14 @@ def render_time_travel(page_type, page_id, target_version_id):
     form = TimeTravelForm()
     if form.validate_on_submit():
         # Overwrite entire current state with destination edit state
-        current_version = utils.overwrite(current_version, destination_version, page_type)
-        current_version.edit_msg = form.edit_msg.data
-        current_version.edit_time = datetime.utcnow()
-        current_version.edit_author = edit_author.id
-        current_version.is_time_travel_edit = True
-        db.session.add(current_version)
+        page = utils.overwrite(page, destination_version, page_type)
+        page.edit_msg = form.edit_msg.data
+        page.edit_time = datetime.utcnow()
+        page.edit_author = edit_author.id
+        page.is_time_travel_edit = True
+        db.session.add(page)
 
-        utils.create_activity(verb="time_travel", object=current_version)
+        utils.create_activity(verb="time_travel", object=page)
 
         edit_author.edits += 1
         db.session.add(edit_author)
@@ -632,7 +635,7 @@ def render_time_travel(page_type, page_id, target_version_id):
             return_route = url_for('main.fetch_tool_page', tool_id=page_id, tool_name=destination_slug)
         return redirect(return_route)
 
-    form.edit_msg.data = "Time travel back to {} from {}".format(current_time, destination_time)
+    form.edit_msg.data = "Time travel back to {} from {}".format(destination_time, current_time)
     return render_template("time_travel.html",
                            id=page_id,
                            type=page_type,

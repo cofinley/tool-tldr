@@ -24,7 +24,7 @@
 
           <div class="env-alts-section col-md-6">
             <h3 class="env-alts-env-title"><i>For {{ tool.env }}</i></h3>
-            {% if env_alts.count() %}
+            {% if env_alts | length %}
               <ul class="env-alts-list">
                 {% for alt in env_alts %}
                   <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a></li>
@@ -43,7 +43,7 @@
 
           <div class="env-alts-section col-md-6">
             <h3 class="env-alts-env-title"><i>For other environments</i></h3>
-            {% if other_alts.count() %}
+            {% if other_alts | length %}
               <ul class="env-alts-list">
               {% for alt in other_alts %}
                 <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a>

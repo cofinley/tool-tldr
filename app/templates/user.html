@@ -70,8 +70,8 @@
                 <tr>
                   <td>
                     {% if tool_edit.previous %}
-                    <a href="{{ url_for(".view_tool_diff", tool_id=tool_edit.id, newer=tool_edit.transaction_id, older=tool_edit.previous.transaction_id) }}"
-                       title="{{ tool_edit.edit_time }}">
+                      <a href="{{ url_for(".view_tool_diff", tool_id=tool_edit.id, newer=tool_edit.index + 1, older=tool_edit.previous.index + 1) }}"
+                         title="{{ tool_edit.edit_time }}">
                       {{ tool_edit.edit_time | timesince }}
                     </a>
                     {% else %}
@@ -111,8 +111,8 @@
                 <tr>
                   <td>
                     {% if category_edit.previous %}
-                    <a href="{{ url_for(".view_category_diff", category_id=category_edit.id, older=category_edit.previous.transaction_id, newer=category_edit.transaction_id) }}"
-                       title="{{ category_edit.edit_time }}">
+                      <a href="{{ url_for(".view_category_diff", category_id=category_edit.id, older=category_edit.previous.index + 1, newer=category_edit.index + 1) }}"
+                         title="{{ category_edit.edit_time }}">
                       {{ category_edit.edit_time | timesince }}
                     </a>
                     {% else %}

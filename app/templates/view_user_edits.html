@@ -18,7 +18,7 @@
         <td>
           {% if type == "tool" %}
             {% if edit.previous %}
-              <a href="{{ url_for(".view_tool_diff", tool_id=edit.id, newer=edit.transaction_id, older=edit.previous.transaction_id) }}"
+              <a href="{{ url_for(".view_tool_diff", tool_id=edit.id, newer=edit.index + 1, older=edit.previous.index + 1) }}"
                  title="{{ edit.edit_time }}">
                 {{ edit.edit_time | timesince }}
               </a>
@@ -31,7 +31,7 @@
 
           {% else %}
             {% if edit.previous %}
-              <a href="{{ url_for(".view_category_diff", category_id=edit.id, newer=edit.transaction_id, older=edit.previous.transaction_id) }}"
+              <a href="{{ url_for(".view_category_diff", category_id=edit.id, newer=edit.index + 1, older=edit.previous.index + 1) }}"
                  title="{{ edit.edit_time }}">
                 {{ edit.edit_time | timesince }}
               </a>

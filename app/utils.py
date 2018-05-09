@@ -56,6 +56,7 @@ def gen_diff_html(old_data, new_data):
     # Make sure to escape the content beforehand
     old_data = escape_html(old_data)
     new_data = escape_html(new_data)
+
     has_spaces = " " in old_data and " " in new_data
     if has_spaces:
         diff1 = list(ndiff(old_data.split(" "), new_data.split(" ")))
@@ -115,24 +116,31 @@ def find_diff(old, new, type):
     if type == "categories":
         new_what = new.what
         new_where = new.where
-        if new.parent:
-            new_parent_category_name = new.parent.name
-        else:
-            new_parent_category_name = ""
 
         old_what = old.what
         old_where = old.where
-        if old.parent:
-            old_parent_category_name = old.parent.name
-        else:
-            old_parent_category_name = ""
 
         if old_what != new_what:
             diffs["What"] = [old_what, new_what]
-            diffs["What"] = [old_what, new_what]
         if old_where != new_where:
             diffs["Where"] = [old_where, new_where]
-        if old_parent_category_name != new_parent_category_name:
+
+        if new.parent:
+            new_parent_category_id = new.parent.id
+            new_parent_category_name = new.parent.version_parent.name
+        else:
+            new_parent_category_id = None
+            new_parent_category_name = ""
+
+        if old.parent:
+            old_parent_category_id = old.parent.id
+            old_parent_category_name = old.parent.version_parent.name
+        else:
+            old_parent_category_id = None
+            old_parent_category_name = ""
+
+        # Compare parent category ids at time of edit, but use current name in diff
+        if old_parent_category_id != new_parent_category_id:
             diffs["Parent Category"] = [old_parent_category_name, new_parent_category_name]
 
     else:
@@ -160,9 +168,21 @@ def find_diff(old, new, type):
         if old_link != new_link:
             diffs["Project URL"] = [old_link, new_link]
 
-        new_parent_category_name = new.category.name
-        old_parent_category_name = old.category.name
-        if old_parent_category_name != new_parent_category_name:
+        if new.category:
+            new_parent_category_id = new.category.id
+            new_parent_category_name = new.category.version_parent.name
+        else:
+            new_parent_category_id = None
+            new_parent_category_name = ""
+
+        if old.category:
+            old_parent_category_id = old.category.id
+            old_parent_category_name = old.category.version_parent.name
+        else:
+            old_parent_category_id = None
+            old_parent_category_name = ""
+
+        if old_parent_category_id != new_parent_category_id:
             diffs["Parent Category"] = [old_parent_category_name, new_parent_category_name]
 
     new_name = new.name
