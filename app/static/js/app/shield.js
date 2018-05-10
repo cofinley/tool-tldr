@@ -7,7 +7,10 @@ var shield = (function () {
                 $(".shield-url").select();
                 return false;
             }
-            var page_title = $(".content-page-title").text();
+            var page_title = $(".content-page-title")
+                .text()
+                .replace("-", "--")
+                .replace("_", "__");
             var url = generateShieldUrl(page_title);
             var html = generateShieldHtml(url);
             $dropdownMenu.after(html);
