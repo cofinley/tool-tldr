@@ -7,7 +7,7 @@ from flask_login import login_user, logout_user, login_required, \
 from . import auth
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm, \
     PasswordResetRequestForm, PasswordResetForm, ChangeEmailForm
-from .. import db, models
+from .. import db, models, utils
 from ..email import send_email
 from ..models import User
 
@@ -51,7 +51,7 @@ def logout():
 
 
 def check_temp_user():
-    ip = request.remote_addr
+    ip = utils.get_client_ip()
     is_user = User.query.filter_by(username=ip).first()
     return is_user
 

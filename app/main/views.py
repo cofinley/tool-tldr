@@ -398,7 +398,7 @@ def view_category_edits(id):
 
 
 def create_temp_user():
-    ip = request.remote_addr
+    ip = utils.get_client_ip()
     existing_temp_user = models.User.query.filter_by(username=ip).first()
     if not existing_temp_user:
         new_temp_user = models.User(

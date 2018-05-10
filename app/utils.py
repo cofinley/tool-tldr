@@ -4,6 +4,7 @@ from difflib import ndiff
 from typing import List
 from urllib.parse import urlsplit
 
+from flask import request, current_app
 from sqlalchemy_continuum import version_class, versioning_manager
 
 from app import models, db
@@ -279,3 +280,12 @@ def version_paginate(itr, page, per_page, total):
 
 def get_model_attributes(model: db.Model, cols: List[str]) -> List:
     return [getattr(model, col) for col in cols]
+
+
+def get_client_ip():
+    ip_header = current_app.config["CLIENT_IP_HEADER"]
+    if ip_header in request.headers:
+        ip = request.headers[ip_header]
+    else:
+        ip = request.remote_addr
+    return ip

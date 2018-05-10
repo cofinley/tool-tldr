@@ -64,6 +64,9 @@ class Config:
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     DEBUG_TB_PROFILER_ENABLED = False
 
+    # Client IP Header
+    CLIENT_IP_HEADER = "X-Real-IP"
+
     @staticmethod
     def init_app(app):
         pass
