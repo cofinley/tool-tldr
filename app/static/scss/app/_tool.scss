@@ -1,5 +1,4 @@
 #tool-content {
-  width: 101%;
   margin: 0 auto;
 
   a {
@@ -42,7 +41,7 @@
     width: $tool-content-right-width;
     font-size: 1rem;
     order: -1;
-    margin: 0 auto 30px;
+    margin: 0 auto 40px;
 
     #tool-pane {
       background-color: #efefef;
@@ -137,13 +136,8 @@
 
 // Medium devices (tablets, 768px and up)
 @media (min-width: 768px) {
+  // Can't change until classes towards top of file change from id's to classes
   #tool-content {
-    margin: 0 -15px;
-
-    #tool-left-content {
-      padding-left: 15px;
-    }
-
     #tool-right-content {
       #tool-pane {
         #tool-pane-bottom {

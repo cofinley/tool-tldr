@@ -22,10 +22,12 @@
 <div class="container page">
   {% include "includes/header.html" %}
   <div class="content mt-3">
-    <div class="input-group mobile-search-bar">
-      <input id="mobile-search-input" class="form-control p-2 search-form" placeholder="Search" aria-label="Search">
-      <img id="small-loader" src="{{ url_for('static', filename='img/loader.svg') }}" alt="Small loading...">
-    </div>
+    {% if request.path != "/" %}
+      <div class="input-group mobile-search-bar">
+        <input id="mobile-search-input" class="form-control p-2 search-form" placeholder="Search" aria-label="Search">
+        <img id="small-loader" src="{{ url_for('static', filename='img/loader.svg') }}" alt="Small loading...">
+      </div>
+    {% endif %}
     {% for category, message in get_flashed_messages(with_categories=true) %}
       <div class="alert alert-{% if category == 'message' %}warning{% else %}{{ category }}{% endif %}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
