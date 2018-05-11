@@ -8,8 +8,8 @@
   margin: 0 0 20px 10px;
 }
 
-#explore-tree .jqtree-element {
-  cursor: default;
+.explore-tree-explore .jqtree-element {
+  cursor: default !important;
 }
 
 .filter-text {
@@ -121,6 +121,11 @@
   content: url('/static/img/loader.svg');
   animation: spin 1.1s linear infinite;
   animation-name: loader-spin;
+}
+
+.jqtree-folder li.jqtree_common:not(.jqtree-folder) {
+  // Extra nesting margin for leaves
+  margin-left: 12px;
 }
 
 //@media (min-width: 340px) {}
