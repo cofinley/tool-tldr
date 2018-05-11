@@ -117,3 +117,9 @@ body {
 
 // Extra large devices (large desktops, 1200px and up)
 //@media (min-width: 1200px) {  }
+
+@keyframes loader-spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

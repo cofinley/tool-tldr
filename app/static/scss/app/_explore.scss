@@ -119,8 +119,10 @@
 
 .explore-tree.jqtree-loading::after {
   content: url('/static/img/loader.svg');
+  position: absolute;
   animation: spin 1.1s linear infinite;
   animation-name: loader-spin;
+  transform-origin: 50% 41%;
 }
 
 .jqtree-folder li.jqtree_common:not(.jqtree-folder) {
