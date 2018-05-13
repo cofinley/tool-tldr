@@ -724,9 +724,10 @@ def add_new_tool(parent_category_id=None):
                            is_member=current_user.is_member)
 
 
+@main.route("/categories/<int:parent_category_id>/add-new-category", methods=["GET", "POST"])
 @main.route("/add-new-category", methods=["GET", "POST"])
 @login_required
-def add_new_category():
+def add_new_category(parent_category_id=None):
     form = AddNewCategoryForm()
     if form.validate_on_submit():
         if not current_user.is_authenticated:
@@ -760,6 +761,13 @@ def add_new_category():
         flash('This category has been added.', 'success')
         cache.clear()
         return redirect(url_for('.fetch_category_page', category_id=category.id))
+
+    if parent_category_id:
+        # Subcategory added from category page
+        form.parent_category_id.data = parent_category_id
+        parent_category = models.Category.query.get_or_404(parent_category_id)
+        form.parent_category.data = parent_category.name
+
     return render_template('add_new_category.html', form=form)
 
 
