@@ -56,7 +56,7 @@ class Tool(db.Model):
     parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
     comments = db.relationship("Comment", backref="parent_tool_page", lazy="dynamic")
     # Page-specific Columns
-    avatar_url = deferred(db.Column(db.String(200)), group="page")
+    logo_url = deferred(db.Column(db.String(200)), group="page")
     is_active = deferred(db.Column(db.Boolean, default=True), group="page")
     created = deferred(db.Column(db.Integer()), group="page")
     project_version = deferred(db.Column(db.String(10)), group="page")
