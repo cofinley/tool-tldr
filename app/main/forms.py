@@ -127,8 +127,8 @@ class EditToolPageForm(FlaskForm):
     is_active = SelectField("Actively Developed?", description=tool_active_description, validators=[Optional()],
                             choices=[(True, "Yes"), (False, "No")], coerce=lambda x: x == "True")
 
-    avatar_url = StringField("Avatar URL", validators=[Optional(), URL(), Length(1, 200),
-                                                       Regexp("^https://",
+    logo_url = StringField("Logo URL", validators=[Optional(), URL(), Length(1, 200),
+                                                   Regexp("^https://",
                                                               message="Image link must be hosted under https://")])
     link = StringField("Project URL", validators=[Optional(), URL(), Length(1, 200)])
 
@@ -144,9 +144,6 @@ class EditToolPageFormMember(EditToolPageForm):
     parent_category = StringField("Parent Category*", description=parent_category_description,
                                   validators=[RequiredIf("move_parent"), Length(max=64)])
     parent_category_id = HiddenField()
-
-    avatar_url = StringField("Avatar URL", validators=[Optional(), URL(), Length(1, 200)])
-    link = StringField("Project URL", validators=[Optional(), URL(), Length(1, 200)])
 
     def validate_parent_category_id(self, field):
         if not db.session.query(Category.id).filter_by(id=int(field.data)).scalar():
@@ -168,8 +165,8 @@ class AddNewToolForm(FlaskForm):
     why = TextAreaField("Why*", description=tool_why_description, validators=[DataRequired(), Length(1, 250)])
 
     # Optional
-    avatar_url = StringField("Avatar URL", validators=[Optional(), URL(), Length(1, 200),
-                                                       Regexp("^https://",
+    logo_url = StringField("Logo URL", validators=[Optional(), URL(), Length(1, 200),
+                                                   Regexp("^https://",
                                                               message="Image link must be hosted under https://")])
     env = StringField("Environment", description=tool_environment_description,
                       validators=[Optional(), Length(1, 64)])

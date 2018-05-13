@@ -1,4 +1,5 @@
 import unittest
+
 from app import db, models
 
 
@@ -7,7 +8,7 @@ class AltTestCase(unittest.TestCase):
 		t1 = models.Tool(
 			id=1,
 			name="Flask",
-			avatar_url="https://google.com",
+			logo_url="https://google.com",
 			parent_category_id=18,
 			env="Python",
 			created="April 12, 2010",
@@ -18,7 +19,7 @@ class AltTestCase(unittest.TestCase):
 		t2 = models.Tool(
 			id=2,
 			name="Flask2",
-			avatar_url="https://google2.com",
+			logo_url="https://google2.com",
 			parent_category_id=18,
 			env="Python",
 			created="April 13, 2010",

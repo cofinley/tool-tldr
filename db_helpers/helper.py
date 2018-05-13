@@ -49,12 +49,12 @@ class Helper:
             next(tsvin, None)  # skip header
 
             for row in tsvin:
-                id, name, avatar_url, parent_category_id, is_active, env, created, project_version, link, why, edit_msg, edit_time, edit_author, is_time_travel_edit = row
+                id, name, logo_url, parent_category_id, is_active, env, created, project_version, link, why, edit_msg, edit_time, edit_author, is_time_travel_edit = row
                 parent_category_id = int(parent_category_id) if (parent_category_id != "") else None
                 t = models.Tool(
                     id=int(id),
                     name=name,
-                    avatar_url=avatar_url,
+                    logo_url=logo_url,
                     parent_category_id=parent_category_id,
                     env=env,
                     created=2017,

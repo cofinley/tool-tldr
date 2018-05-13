@@ -146,20 +146,20 @@ def find_diff(old, new, type):
 
     else:
         # Tool
-        new_avatar_url = new.avatar_url
+        new_logo_url = new.logo_url
         new_env = new.env
         new_created = new.created
         new_project_version = new.project_version
         new_link = new.link
 
-        old_avatar_url = old.avatar_url
+        old_logo_url = old.logo_url
         old_env = old.env
         old_created = old.created
         old_project_version = old.project_version
         old_link = old.link
 
-        if old_avatar_url != new_avatar_url:
-            diffs["Avatar URL"] = [old_avatar_url, new_avatar_url]
+        if old_logo_url != new_logo_url:
+            diffs["Logo URL"] = [old_logo_url, new_logo_url]
         if old_env != new_env:
             diffs["Environment"] = [old_env, new_env]
         if old_created != new_created:
@@ -216,7 +216,7 @@ def overwrite(old, new, type):
 
     else:
         # Tool
-        old.avatar_url = new.avatar_url
+        old.logo_url = new.logo_url
         old.env = new.env
         old.created = new.created
         old.project_version = new.project_version

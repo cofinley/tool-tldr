@@ -486,7 +486,7 @@ def edit_tool_page(tool_id):
 
     if form.validate_on_submit():
         tool.name = form.name.data
-        tool.avatar_url = form.avatar_url.data or None
+        tool.logo_url = form.logo_url.data or None
         tool.link = form.link.data or None
         if current_user.is_authenticated:
             edit_author = current_user
@@ -521,7 +521,7 @@ def edit_tool_page(tool_id):
         form.created.data = tool.created
         form.project_version.data = tool.project_version
         form.is_active.data = tool.is_active
-        form.avatar_url.data = tool.avatar_url
+        form.logo_url.data = tool.logo_url
         form.link.data = tool.link
         if current_user.is_member:
             form.parent_category_id.data = tool.parent_category_id
@@ -689,7 +689,7 @@ def add_new_tool(parent_category_id=None):
         tool = models.Tool(
             name=form.name.data,
             parent_category_id=form.parent_category_id.data,
-            avatar_url=form.avatar_url.data or None,
+            logo_url=form.logo_url.data or None,
             env=form.env.data or None,
             created=form.created.data or None,
             project_version=form.project_version.data or None,
