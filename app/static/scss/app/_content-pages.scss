@@ -2,63 +2,61 @@
   margin-top: -15px;
   align-items: baseline !important;
 
-  #edit-buttons {
-    align-items: baseline;
+  .edit-buttons {
+    align-items: center;
+    display: flex;
     margin-bottom: 20px;
 
-    a {
-      font-size: 1.1rem;
+    .edit-button {
+      font-size: 0.9rem;
       vertical-align: middle;
     }
 
     .view-edits-link {
-      vertical-align: middle;
-
-      a {
+      font-size: 1rem;
         @include blue-link;
-      }
     }
   }
-  .content-page-header-dropdown {
-    display: inline-block;
+}
 
-    .dropdown-menu {
-      min-width: 17.5em;
+.content-page-header-dropdown {
+  display: inline-block;
 
-      &.show {
-        display: table;
-      }
+  .dropdown-menu {
+    min-width: 17.5em;
+
+    &.show {
+      display: table;
+    }
+  }
+}
+
+.shield-container {
+  display: block;
+
+  .shield-img {
+    display: block;
+    margin: auto auto 9px;
+  }
+
+  .shield-link-row {
+    width: 87%;
+    margin: auto;
+
+    .shield-url {
+      border: 1px solid $light-gray;
+      text-overflow: ellipsis;
+      width: 100%;
+      margin-right: 5px;
+      padding: 3px 5px;
+      border-radius: 4px;
     }
 
-
-    .shield-container {
-      display: block;
-
-      .shield-img {
-        display: block;
-        margin: auto auto 9px;
-      }
-
-      .shield-link-row {
-        width: 87%;
-        margin: auto;
-
-        .shield-url {
-          border: 1px solid $light-gray;
-          text-overflow: ellipsis;
-          width: 100%;
-          margin-right: 5px;
-          padding: 3px 5px;
-          border-radius: 4px;
-        }
-
-        .shield-link-copy-img {
-          width: 30px;
-          height: 30px;
-          cursor: pointer;
-          padding: 5px;
-        }
-      }
+    .shield-link-copy-img {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      padding: 5px;
     }
   }
 }
@@ -82,23 +80,19 @@
 }
 
 // Small devices (landscape phones, 576px and up)
-@media (min-width: 340px) {
-  .content-page-header {
-    #edit-buttons {
-      a {
-        font-size: 1.3rem;
-      }
-    }
+@include media-breakpoint-up(sm2) {
+  .content-page-header .edit-buttons .edit-button {
+    font-size: 1.2rem;
   }
 }
 
-@media (min-width: 768px) {
+@include media-breakpoint-up(md) {
   .content-page-header {
     display: flex;
     align-items: center !important;
     justify-content: space-between !important;
 
-    #edit-buttons {
+    .edit-buttons {
       display: block;
       align-items: normal;
       margin-bottom: 0;

@@ -30,6 +30,34 @@ $tool-content-right-width: 415px;
 $tool-image: 220px;
 $category-content-width: 50%;
 
+// Responsive Breakpoints
+
+// https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
+$grid-breakpoints: (
+        xs: 0,
+        sm2: 340px, // Going from iPhone 5 to 6
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px
+) !default;
+
+@function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
+  $min: map-get($breakpoints, $name);
+  @return if($min != 0, $min, null);
+}
+
+@mixin media-breakpoint-up($name, $breakpoints: $grid-breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
 // Mixins
 
 @mixin blue-link {
