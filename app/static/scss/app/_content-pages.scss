@@ -13,8 +13,7 @@
     }
 
     .view-edits-link {
-      font-size: 1rem;
-        @include blue-link;
+      @include blue-link;
     }
   }
 }
@@ -79,10 +78,9 @@
   }
 }
 
-// Small devices (landscape phones, 576px and up)
 @include media-breakpoint-up(sm2) {
   .content-page-header .edit-buttons .edit-button {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 }
 
@@ -96,7 +94,10 @@
       display: block;
       align-items: normal;
       margin-bottom: 0;
-      font-size: 1.3em;
+
+      .edit-button {
+        font-size: 1.3rem;
+      }
     }
   }
 
