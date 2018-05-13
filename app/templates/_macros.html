@@ -1,10 +1,10 @@
 {% macro page_header(type, obj) %}
   <div class="content-page-header">
     <h1 class="display-4 content-page-title">{{ obj.name }}</h1>
-    <div id="edit-buttons">
-      <a class="btn btn-lg btn-primary ml-auto mr-3" href="/{{ type }}/{{ obj.id }}/edit">Edit Page</a>
-      <span id="view-edits-link" class="stretch-width-to-content mr-3">
-        <a href="/{{ type }}/{{ obj.id }}/edits">View Edits</a>
+    <div class="edit-buttons">
+      <a class="btn btn-lg btn-primary mr-3 edit-button" href="/{{ type }}/{{ obj.id }}/edit">Edit Page</a>
+      <span class="stretch-width-to-content mr-3 edit-button">
+        <a class="view-edits-link" href="/{{ type }}/{{ obj.id }}/edits">View Edits</a>
       </span>
       <div class="dropdown content-page-header-dropdown">
         <a class="btn btn-secondary" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
