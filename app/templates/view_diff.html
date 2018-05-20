@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block title %}{{ page_name}} Diff{% endblock %}
+{%- block description -%}
+  View the diff for {{ page_name }} between versions {{ older_data.index + 1 }} and
+  {{ newer_data.index + 1 }}.
+{%- endblock -%}
+
 {% block content %}
   <h1><a href="/{{ type }}/{{ id }}">{{ page_name}}</a>:
     Diff</h1>

@@ -3,6 +3,9 @@
 {% from "comments/_macros.html" import comment_list with context %}
 
 {% block title %}Comments{% endblock %}
+{%- block description -%}
+  View the user discussion for {{ page.name }}.
+{%- endblock -%}
 
 {% block content %}
 

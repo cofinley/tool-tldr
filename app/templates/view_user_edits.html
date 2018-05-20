@@ -2,6 +2,10 @@
 {% from "bootstrap/pagination.html" import render_pagination %}
 
 {% block title %}{{ user.username }} Edits ({{ type.title() }}){% endblock %}
+{%- block description -%}
+  View the category and tool edits that {{ user.username }} has contributed.
+{%- endblock -%}
+
 {% block content %}
   <h1>Edits by <a href="{{ url_for(".user", user_id=user.id) }}">{{ user.username }}</a> ({{ type.title() }})</h1>
   <table class="table table-striped">
