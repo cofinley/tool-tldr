@@ -2,6 +2,9 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Edit {{ category.name }}{% endblock %}
+{%- block description -%}
+  Edit the content for the category, {{ category.name }}
+{%- endblock -%}
 
 {% block content %}
   <div class="page-header">

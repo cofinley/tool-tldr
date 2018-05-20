@@ -2,6 +2,9 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Edit {{ tool.name }}{% endblock %}
+{%- block description -%}
+  Edit the content for the tool, {{ tool.name }}
+{%- endblock -%}
 
 {% block content %}
   <div class="page-header">
