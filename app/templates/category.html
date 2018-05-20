@@ -89,8 +89,8 @@
             {% for tool in subtools %}
               <li class="alt-list-item"><a
                       href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=slugify(tool.name)) }}">{{ tool.name }}</a>
-                {% if tool.env %}
-                  ({{ tool.env }})
+                {% if tool.environments %}
+                  {{ tool.environments_html | safe }}
                 {% endif %}
               </li>
               {%- if loop.index == ALTS_PER_LIST %}

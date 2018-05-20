@@ -31,6 +31,11 @@
     font-size: .98em;
     font-weight: 400;
     padding: .2em 0 .2em .5em;
+    background-color: #f5fafd;
+
+    b {
+      background-color: rgba(125, 168, 208, .2);
+    }
 
     &:first-child {
       margin-top: -2px;

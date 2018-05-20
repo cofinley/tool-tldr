@@ -9,12 +9,12 @@
   </div>
   <p class="explore-subtitle">Here, you can dive into the landscape and get a top-down view of all the different
     categories of tools.</p>
-  {% if environment %}
-    <div class="d-flex align-items-center">
-      <p class="filter-text">Filter: {{ environment }} environment</p>
+  {% if environments %}
+    <div class="d-flex align-items-center mb-4">
+      <p class="filter-text">Filter: {{ environments_html | safe }}</p>
       <a class="btn btn-secondary btn-sm ml-3" href={{ url_for("main.browse_categories", id=id) }}>Remove Filter</a>
     </div>
   {% endif %}
   <div class="explore-tree explore-tree-explore" class="col-12"
-       data-url={{ url_for("main.explore_nodes", manual_node=id, env=environment) }}></div>
+       data-url={{ url_for("main.explore_nodes", manual_node=id, envs=environments) }}></div>
 {% endblock %}
