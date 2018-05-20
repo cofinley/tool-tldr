@@ -39,7 +39,7 @@ gulp.task('sass-lint', function () {
 });
 
 gulp.task('sass', function () {
-    return gulp.src(staticPath + 'scss/app/style.scss')
+    return gulp.src(staticPath + 'scss/style.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest(staticPath + 'css'));
 });

@@ -9,7 +9,7 @@ from sqlalchemy.orm import deferred, backref
 from werkzeug.security import generate_password_hash, check_password_hash
 from whoosh.analysis import FancyAnalyzer
 
-from . import db, login_manager
+from . import db, login_manager, utils
 
 
 class QueryWithSoftDelete(BaseQuery):
@@ -41,6 +41,28 @@ class QueryWithSoftDelete(BaseQuery):
         return obj if obj is None or self._with_deleted or not obj.deleted else None
 
 
+envs = db.Table(
+    "tool_environments",
+    db.Column("tool_id", db.Integer, db.ForeignKey("tools.id"), primary_key=True),
+    db.Column("environment_id", db.Integer, db.ForeignKey("environments.id"), primary_key=True)
+)
+
+
+class Environment(db.Model):
+    __tablename__ = "environments"
+    __searchable__ = ["name"]
+    __analyzer__ = FancyAnalyzer()
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+
+    @property
+    def html(self):
+        return "<span class='tool-environment'>{}</span>".format(utils.escape_html(self.name))
+
+    def __repr__(self):
+        return "<Env %d: %r" % (self.id, self.name)
+
+
 class Tool(db.Model):
     __tablename__ = "tools"
     __searchable__ = ["name"]
@@ -50,11 +72,13 @@ class Tool(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
-    env = db.Column(db.String(64))
     deleted = db.Column(db.DateTime())
+    environments_dumped = db.Column(db.String(75))
     # Relationships
     parent_category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
     comments = db.relationship("Comment", backref="parent_tool_page", lazy="dynamic")
+    environments = db.relationship("Environment", secondary=envs,
+                                   backref=db.backref('tools', lazy="dynamic"))
     # Page-specific Columns
     logo_url = deferred(db.Column(db.String(200)), group="page")
     is_active = deferred(db.Column(db.Boolean, default=True), group="page")
@@ -67,6 +91,10 @@ class Tool(db.Model):
     edit_time = deferred(db.Column(db.DateTime(), default=datetime.utcnow), group="edits")
     edit_author = deferred(db.Column(db.Integer, db.ForeignKey("users.id")), group="edits")
     is_time_travel_edit = deferred(db.Column(db.Boolean, default=False), group="edits")
+
+    @property
+    def environments_html(self):
+        return "<div class='tool-environments'>" + "".join([env.html for env in self.environments]) + "</div>"
 
     def __repr__(self):
         return "<Tool %d: %r>" % (self.id, self.name)

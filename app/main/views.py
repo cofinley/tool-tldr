@@ -5,6 +5,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify, a
 from flask_login import login_required, current_user
 from flask_sqlalchemy import Pagination, get_debug_queries
 from slugify import slugify
+from sqlalchemy import not_, and_
 from sqlalchemy_continuum import version_class, versioning_manager
 
 from app.main.forms import *
@@ -68,44 +69,48 @@ def browse_categories():
     else:
         category = None
         category_id = None
-    environment = request.args.get("env")
+    # Comma-separated envs
+    environments = request.args.get("envs")
+    environments_html = ""
+    if environments:
+        environments_html = utils.parse_environments_html(environments)
     return render_template("explore.html",
                            id=category_id,
                            category=category,
-                           environment=environment)
+                           environments=environments,
+                           environments_html=environments_html)
 
 
 @cache.cached(key_prefix=make_cache_key)
-def load_children_tools(id, env):
+def load_children_tools(id, envs: str):
     # Used for explore tree
 
-    if env:
+    if envs:
+        environments = utils.parse_environments(envs)
         child_tools = models.Tool.query \
-            .filter_by(parent_category_id=id, env=env) \
+            .filter_by(parent_category_id=id) \
+            .filter(and_(models.Tool.environments.contains(e) for e in environments)) \
             .order_by(models.Tool.name).all()
     else:
         child_tools = models.Tool.query \
             .filter_by(parent_category_id=id) \
             .order_by(models.Tool.name).all()
-    cols = ["id", "name", "env"]
+    cols = ["id", "name", "environments"]
     results = [{col: getattr(child, col) for col in cols} for child in child_tools]
 
     for result in results:
-        if env:
-            label_link = "<a href='/tools/{}/{}'>{}</a>".format(
-                result["id"],
-                utils.escape_html(slugify(result["name"])),
-                utils.escape_html(result["name"])
-            )
-        else:
-            label_link = "<a href='/tools/{}/{}'>{}</a>".format(
-                result["id"],
-                utils.escape_html(slugify(result["name"])),
-                utils.escape_html(result["name"]),
-            )
-            if result["env"]:
-                label_link += " ({})".format(utils.escape_html(result["env"]))
+        label_link = "<a href='/tools/{}/{}'>{}</a>".format(
+            result["id"],
+            utils.escape_html(slugify(result["name"])),
+            utils.escape_html(result["name"]),
+        )
+        if result["environments"]:
+            label_link += "<div class='tool-environments ml-1'>"
+            for e in result["environments"]:
+                label_link += e.html
+            label_link += "</div>"
         result.pop("name")
+        result.pop("environments")
         result["label"] = label_link
 
     return results
@@ -150,13 +155,13 @@ def explore_nodes():
     # If both, default to `node`. This prevents infinite recursive loop
     if manual_node_id and not node_id:
         node_id = manual_node_id
-    env = request.args.get("env")
+    envs = request.args.get("envs")
     show_root = request.args.get("show-root")
     no_link = request.args.get("no-link", False, type=bool)
 
     results = load_children_categories(node_id, no_link)
     if not no_link:
-        results += load_children_tools(node_id, env)
+        results += load_children_tools(node_id, envs)
 
     if show_root and not node_id:
         # Only show root node if explicit param and jqTree has not added a node id param
@@ -213,16 +218,21 @@ def fetch_tool_page(tool_id, tool_name):
         return redirect(url_for('.fetch_tool_page', tool_id=tool_id, tool_name=tool_name_slug))
 
     ALTS_PER_LIST = current_app.config["ALTS_PER_LIST"]
-    alts_for_this_env = models.Tool.query \
-        .filter_by(parent_category_id=tool.parent_category_id) \
-        .filter_by(env=tool.env) \
-        .filter(models.Tool.id != tool.id) \
-        .limit(ALTS_PER_LIST) \
-        .all()
+    tool_envs = tool.environments
+    alts_for_this_env = []
+    if tool_envs:
+        alts_for_this_env = models.Tool.query \
+            .filter_by(parent_category_id=tool.parent_category_id) \
+            .filter(models.Tool.environments.any()) \
+            .filter(and_(models.Tool.environments.contains(e) for e in tool_envs)) \
+            .filter(models.Tool.id != tool.id) \
+            .limit(ALTS_PER_LIST) \
+            .all()
 
     alts_for_other_envs = models.Tool.query \
-        .filter(models.Tool.parent_category_id == tool.parent_category_id) \
-        .filter(models.Tool.env != tool.env) \
+        .filter_by(parent_category_id=tool.parent_category_id) \
+        .filter(and_(not_(models.Tool.environments.contains(e)) for e in tool_envs)) \
+        .filter(models.Tool.id != tool.id) \
         .limit(ALTS_PER_LIST) \
         .all()
 
@@ -269,6 +279,17 @@ def search_tools():
     for category in search_categories:
         results.append({"label": category.name, "type": "c", "id": category.id})
 
+    return jsonify(results)
+
+
+@main.route("/search-envs")
+@cache.cached(key_prefix=make_cache_key)
+def search_envs():
+    search_query = request.args.get("q")
+    results = []
+    queried_envs = models.Environment.query.whoosh_search(search_query, like=True).all()
+    for env in queried_envs:
+        results.append({"label": env.name, "id": env.id})
     return jsonify(results)
 
 
@@ -495,7 +516,9 @@ def edit_tool_page(tool_id):
                     tool.parent_category_id = form.parent_category_id.data
         else:
             edit_author = create_temp_user()
-        tool.env = form.env.data or None
+        environments = utils.parse_environments(form.environments.data)
+        tool.environments = environments or [None]
+        tool.environments_dumped = utils.dump_environments(environments)
         tool.created = form.created.data or None
         tool.project_version = form.project_version.data or None
         tool.is_active = form.is_active.data or None
@@ -517,7 +540,7 @@ def edit_tool_page(tool_id):
         return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
     if not form.is_submitted():
         form.name.data = tool.name
-        form.env.data = tool.env
+        form.environments.data = utils.dump_environments(tool.environments)
         form.created.data = tool.created
         form.project_version.data = tool.project_version
         form.is_active.data = tool.is_active
@@ -550,7 +573,10 @@ def render_diff(page_type, page_id, older, newer):
     diffs = utils.find_diff(older_data, newer_data, page_type)
     for key in diffs:
         before, after = diffs[key]
-        diffs[key] = utils.gen_diff_html(before, after)
+        if key == "Environment(s)":
+            diffs[key] = utils.gen_environment_diff_html(before, after)
+        else:
+            diffs[key] = utils.gen_diff_html(before, after)
 
     older_time = older_data.edit_time.strftime('%d %B %Y, %H:%M')
     newer_time = newer_data.edit_time.strftime('%d %B %Y, %H:%M')
@@ -611,7 +637,10 @@ def render_time_travel(page_type, page_id, target_version_id):
     diffs = utils.find_diff(current_version, destination_version, page_type)
     for key in diffs:
         before, after = diffs[key]
-        diffs[key] = utils.gen_diff_html(before, after)
+        if key == "Environment(s)":
+            diffs[key] = utils.gen_environment_diff_html(before, after)
+        else:
+            diffs[key] = utils.gen_diff_html(before, after)
 
     anonymous_warning()
 
@@ -686,11 +715,14 @@ def add_new_tool(parent_category_id=None):
             edit_author = create_temp_user()
         else:
             edit_author = current_user
+
+        environments = utils.parse_environments(form.environments.data)
         tool = models.Tool(
             name=form.name.data,
             parent_category_id=form.parent_category_id.data,
             logo_url=form.logo_url.data or None,
-            env=form.env.data or None,
+            environments=environments or [None],
+            environments_dumped=utils.dump_environments(environments),
             created=form.created.data or None,
             project_version=form.project_version.data or None,
             is_active=form.is_active.data or None,

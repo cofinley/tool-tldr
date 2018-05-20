@@ -27,7 +27,7 @@
       {% endif %}
 
       {{ wtf.form_field(form.logo_url) }}
-      {{ wtf.form_field(form.env) }}
+      {{ wtf.form_field(form.environments, autocomplete="off") }}
       {{ wtf.form_field(form.created, min="1970", max="2099", step="1", type="number") }}
       {{ wtf.form_field(form.project_version) }}
       {{ wtf.form_field(form.is_active) }}
