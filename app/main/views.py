@@ -156,7 +156,9 @@ def explore_nodes():
     if manual_node_id and not node_id:
         node_id = manual_node_id
     envs = request.args.get("envs")
+    # Category-only form tree
     show_root = request.args.get("show-root")
+    # Form-only tree
     no_link = request.args.get("no-link", False, type=bool)
 
     results = load_children_categories(node_id, no_link)
