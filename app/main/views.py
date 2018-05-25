@@ -130,14 +130,14 @@ def load_children_categories(id, no_link):
         cleaned_result = {"id": result["id"], "load_on_demand": True}
         if not no_link:
             # anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
-            label_link = "<a href='/categories/{}/{}'>{}</a>".format(
+            label = "<a href='/categories/{}/{}'>{}</a>".format(
                 result["id"],
                 utils.escape_html(slugify(result["name"])),
                 utils.escape_html(result["name"])
             )
-            cleaned_result["label"] = label_link
         else:
-            cleaned_result["name"] = result["name"]
+            label = result["name"]
+        cleaned_result["label"] = label
         cleaned_results.append(cleaned_result)
 
     return cleaned_results
