@@ -4,11 +4,11 @@ from app import models, utils
 
 
 class Node:
-    def __init__(self, id, page_type: str, name, parent=None):
+    def __init__(self, id, page_type: str, label, parent=None):
         self.id = id
         self.parent = parent
         self.page_type = page_type
-        self.name = name
+        self.label = label
         self.children = set()
 
     def __repr__(self):
@@ -42,6 +42,7 @@ class Tree:
                 models.Category.query.whoosh_search(self.query, like=True).all() \
                 + models.Tool.query.whoosh_search(self.query, like=True).all()
         else:
+            # TODO: bring in load_children_[content]() functionality here
             pass
 
     def build_tree_from_results(self):
@@ -60,10 +61,10 @@ class Tree:
                 prev = root
             branch = self.filter_for_ceiling(branch)
             for item in branch:
-                curr = Node(id=item.id, page_type="c", name=item.name, parent=prev)
+                curr = Node(id=item.id, page_type="c", label=item.name, parent=prev)
                 self.add_node(curr)
                 prev = curr
-            endpoint_node = Node(endpoint.id, page_type=prefix, name=endpoint.name, parent=prev)
+            endpoint_node = Node(endpoint.id, page_type=prefix, label=endpoint.name, parent=prev)
             self.add_node(endpoint_node)
 
     def filter_for_ceiling(self, branch: List[models.Category]) -> List[models.Category]:
@@ -74,10 +75,19 @@ class Tree:
             ceiling_idx = 0
         return branch[ceiling_idx:]
 
-    def pprint(self, parent=None, level=0):
-        root = parent or [node for node in self.nodes.values() if node.parent is parent][0]
+    def pprint(self, parent: Node = None, level=0):
+        root = parent or self.nodes[self.ceiling]
         print(("\t" * level) + str(root))
         if root.children:
             level += 1
             for child in root.children:
                 self.pprint(parent=child, level=level)
+
+    def to_json(self, parent: Node = None):
+        root = parent or self.nodes[self.ceiling]
+        d = {"id": root.id, "type": root.page_type, "label": root.label}
+        if root.children:
+            d["children"] = []
+            for child in root.children:
+                d["children"].append(self.to_json(child))
+        return d

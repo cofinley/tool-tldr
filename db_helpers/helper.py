@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 from datetime import datetime
 
@@ -114,4 +115,5 @@ class Helper:
 
     def test_tree(self):
         t = tree.Tree('app', ceiling=18)
+        print(json.dumps(t.to_json(), indent=2))
         return t
