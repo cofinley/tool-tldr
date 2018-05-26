@@ -1,92 +1,141 @@
 from typing import List
 
+from slugify import slugify
+from sqlalchemy import and_
+
 from app import models, utils
 
 
 class Node:
-    def __init__(self, id, page_type: str, label, parent=None):
+    def __init__(self, id, name, link, is_tool=False, parent=None):
         self.id = id
         self.parent = parent
-        self.page_type = page_type
-        self.label = label
+        self.name = name
+        self.link = link
+        self.is_tool = is_tool
         self.children = set()
 
     def __repr__(self):
-        return "<Node: {}{}>".format(self.page_type.upper(), self.id)
+        return "<Node {}: {}>".format(self.id, self.name)
 
 
 class Tree:
-    def __init__(self, query: str, ceiling=0, show_links=True, show_root=True):
+    def __init__(self, query: str, ceiling: int = 0, show_links=True, show_root=False, environments=None):
         self.query = query
         self.nodes = {}
         self.ceiling = ceiling
         self.show_links = show_links
         self.show_root = show_root
-        # TODO: make filter functions for envs
+        self.environments = environments or []
+        self.results = []
         if self.query:
-            self.results = None
             self.find_query_results()
             self.build_tree_from_bottom()
         else:
+            self.find_children_results()
             self.build_tree_from_top()
 
     def add_node(self, node: Node):
-        if node.id not in self.nodes:
+        if node.is_tool or node.id not in self.nodes:
             self.nodes[node.id] = node
-        if node.parent:
-            # Set children based on parent
-            # Make sure to set children of parent nodes in self.nodes,
-            #  not the children of the parent of the input arg `node`
-            #  AKA tracked
-            tracked_parent = self.nodes[node.parent.id]
-            tracked_current = self.nodes[node.id]
-            tracked_parent.children.add(tracked_current)
+            if node.parent:
+                # Set children based on parent
+                # Make sure to set children of parent nodes in self.nodes,
+                #  not the children of the parent of the input arg `node`
+                #  AKA tracked
+                tracked_parent = self.nodes[node.parent.id]
+                tracked_current = self.nodes[node.id]
+                tracked_parent.children.add(tracked_current)
 
     def find_query_results(self):
-        if self.query:
-            self.results = \
-                models.Category.query.whoosh_search(self.query, like=True).all() \
-                + models.Tool.query.whoosh_search(self.query, like=True).all()
+        self.results += models.Category.query.whoosh_search(self.query, like=True).all() \
+                        + models.Tool.query.whoosh_search(self.query, like=True).all()
+
+    def find_children_results(self):
+        # Start from root/ceiling
+        # Load all children cats/tools at one level below ceiling
+        if self.ceiling == 0:
+            categories = models.Category.query.filter_by(parent_category_id=None).order_by(models.Category.name).all()
         else:
-            # TODO: bring in load_children_[content]() functionality here
-            pass
+            categories = models.Category.query.filter_by(parent_category_id=self.ceiling).order_by(
+                models.Category.name).all()
+
+            # Load tools if not at root level
+            if self.environments:
+                tools = models.Tool.query \
+                    .filter_by(parent_category_id=self.ceiling) \
+                    .order_by(models.Tool.name).all()
+            else:
+                tools = models.Tool.query \
+                    .filter_by(parent_category_id=id) \
+                    .filter(and_(models.Tool.environments.contains(e) for e in self.environments)) \
+                    .order_by(models.Tool.name).all()
+
+            self.results += tools
+        self.results += categories
 
     def build_tree_from_top(self):
-        # Start from root/ceiling
-        root_category = models.Category.query.get_or_404(self.ceiling)
-        pass
+        if self.ceiling == 0:
+            root = Node(id=0, name="/", link="/", parent=None)
+            self.nodes[0] = root
+            parent_node = root
+        else:
+            parent_category = models.Category.query.get_or_404(self.ceiling)
+            parent_node = Node(
+                id=parent_category.id,
+                name=parent_category.name,
+                link=self.generate_node_html(parent_category))
+        self.add_node(parent_node)
+
+        for child in self.results:
+            is_tool = child.__tablename__ == "tools"
+            child_node = Node(
+                id=child.id,
+                name=child.name,
+                link=self.generate_node_html(child),
+                is_tool=is_tool,
+                parent=parent_node)
+            self.add_node(child_node)
 
     def build_tree_from_bottom(self):
         # New branch for every endpoint
         for endpoint in self.results:
             endpoint_type = endpoint.__tablename__
-            prefix = endpoint_type[0]
             if endpoint_type == "categories":
                 branch = utils.build_bottom_up_tree(endpoint.parent)
             else:
                 branch = utils.build_bottom_up_tree(endpoint.category)
             prev = None
-            if self.ceiling == 0 and self.show_root:
-                root = Node(id=0, page_type="r", label="/", parent=prev)
-                self.nodes[0] = root
+            if self.ceiling == 0:
+                if 0 not in self.nodes:
+                    root = Node(id=0, name="/", link="/", parent=prev)
+                    self.add_node(root)
+                else:
+                    root = self.nodes[0]
                 prev = root
             branch = self.filter_for_ceiling(branch)
             for item in branch:
-                curr = Node(id=item.id, page_type="c", label=item.name, parent=prev)
-                self.add_node(curr)
+                if item.id not in self.nodes:
+                    curr = Node(
+                        id=item.id,
+                        name=item.name,
+                        link=self.generate_node_html(item),
+                        parent=prev)
+                    self.add_node(curr)
+                else:
+                    curr = self.nodes[item.id]
                 prev = curr
-            endpoint_node = Node(endpoint.id, page_type=prefix, label=endpoint.name, parent=prev)
+            # Always add endpoint, don't check if not in self.nodes
+            # Endpoint usually a tool, can't check tool.id against
+            # category ids in self.nodes.keys()
+            is_tool = endpoint_type == "tools"
+            endpoint_node = Node(
+                id=endpoint.id,
+                name=endpoint.name,
+                link=self.generate_node_html(endpoint),
+                is_tool=is_tool,
+                parent=prev)
             self.add_node(endpoint_node)
-
-    def children_to_json(self, parent: Node = None):
-        root = parent or self.nodes[self.ceiling]
-        d = {"id": root.id, "type": root.page_type, "label": root.label}
-        if root.children:
-            d["children"] = []
-            for child in root.children:
-                c = {"id": child.id, "type": child.page_type, "label": child.label}
-                d["children"].append(c)
-        return d
 
     def filter_for_ceiling(self, branch: List[models.Category]) -> List[models.Category]:
         branch_ids = [c.id for c in branch]
@@ -96,6 +145,22 @@ class Tree:
             ceiling_idx = 0
         return branch[ceiling_idx:]
 
+    @staticmethod
+    def generate_node_html(model_node):
+        link = "<a href='/{}/{}/{}'>{}</a>".format(
+            utils.escape_html(model_node.__tablename__),
+            utils.escape_html(model_node.id),
+            utils.escape_html(slugify(model_node.name)),
+            utils.escape_html(model_node.name)
+        )
+        if model_node.__tablename__ == "tools":
+            if model_node.environments:
+                link += "<div class='tool-environments ml-1'>"
+                for e in model_node.environments:
+                    link += e.html
+                link += "</div>"
+        return link
+
     def pprint(self, parent: Node = None, level=0):
         root = parent or self.nodes[self.ceiling]
         print(("\t" * level) + str(root))
@@ -104,11 +169,49 @@ class Tree:
             for child in root.children:
                 self.pprint(parent=child, level=level)
 
-    def to_json(self, parent: Node = None):
-        root = parent or self.nodes[self.ceiling]
-        d = {"id": root.id, "type": root.page_type, "label": root.label}
-        if root.children:
+    def to_json(self):
+        if self.query:
+            tree = self.tree_to_json()
+        else:
+            tree = self.children_to_json()
+        if not isinstance(tree, list):
+            tree = [tree]
+        return tree
+
+    def tree_to_json(self, parent_node: Node = None):
+        parent = parent_node or self.nodes[self.ceiling]
+
+        if parent.id == 0 and not self.show_root:
+            l = []
+            for child in parent.children:
+                l.append(self.tree_to_json(child))
+            return l
+
+        label = parent.link if self.show_links else parent.name
+        d = {"id": parent.id, "label": label}
+        if parent.children:
             d["children"] = []
-            for child in root.children:
-                d["children"].append(self.to_json(child))
+            for child in parent.children:
+                d["children"].append(self.tree_to_json(child))
+        return d
+
+    def children_to_json(self, parent_node: Node = None):
+        parent = parent_node or self.nodes[self.ceiling]
+
+        if parent.id == 0 and not self.show_root:
+            l = []
+            for child in parent.children:
+                label = child.link if self.show_links else child.name
+                c = {"id": child.id, "label": label, "load_on_demand": True}
+                l.append(c)
+            return l
+
+        label = parent.link if self.show_links else parent.name
+        d = {"id": parent.id, "label": label, "load_on_demand": True}
+        if parent.children:
+            d["children"] = []
+            for child in parent.children:
+                label = child.link if self.show_links else child.name
+                c = {"id": child.id, "label": label, "load_on_demand": True}
+                d["children"].append(c)
         return d

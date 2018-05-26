@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app, session, \
     make_response
-from flask_login import login_required, current_user
+from flask_login import current_user, login_required
 from flask_sqlalchemy import Pagination, get_debug_queries
 from slugify import slugify
 from sqlalchemy import not_, and_
@@ -176,9 +176,16 @@ def explore_nodes():
 
 @main.route("/filter_nodes")
 def filter_nodes():
-    query = request.args.get("q")
-    t = tree.Tree(query=query)
-    return jsonify([t.to_json()])
+    params = {
+        "query": request.args.get("q"),
+        "show_root": request.args.get("show_root", default=False, type=bool),
+        "show_links": request.args.get("show_links", default=True, type=bool),
+        "ceiling": request.args.get("ceiling", default=0, type=int),
+        "environments": request.args.get("environments", default=[], type=list)
+    }
+
+    t = tree.Tree(**params)
+    return jsonify(t.to_json())
 
 
 @main.route("/about")
