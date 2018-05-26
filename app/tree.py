@@ -16,13 +16,19 @@ class Node:
 
 
 class Tree:
-    def __init__(self, query: str, nodes=None, ceiling=0):
+    def __init__(self, query: str, ceiling=0, show_links=True, show_root=True):
         self.query = query
-        self.nodes = nodes or {}
+        self.nodes = {}
         self.ceiling = ceiling
-        self.results = None
-        self.find_query_results()
-        self.build_tree_from_results()
+        self.show_links = show_links
+        self.show_root = show_root
+        # TODO: make filter functions for envs
+        if self.query:
+            self.results = None
+            self.find_query_results()
+            self.build_tree_from_bottom()
+        else:
+            self.build_tree_from_top()
 
     def add_node(self, node: Node):
         if node.id not in self.nodes:
@@ -45,7 +51,12 @@ class Tree:
             # TODO: bring in load_children_[content]() functionality here
             pass
 
-    def build_tree_from_results(self):
+    def build_tree_from_top(self):
+        # Start from root/ceiling
+        root_category = models.Category.query.get_or_404(self.ceiling)
+        pass
+
+    def build_tree_from_bottom(self):
         # New branch for every endpoint
         for endpoint in self.results:
             endpoint_type = endpoint.__tablename__
@@ -55,8 +66,8 @@ class Tree:
             else:
                 branch = utils.build_bottom_up_tree(endpoint.category)
             prev = None
-            if self.ceiling == 0:
-                root = Node(0, "r", prev)
+            if self.ceiling == 0 and self.show_root:
+                root = Node(id=0, page_type="r", label="/", parent=prev)
                 self.nodes[0] = root
                 prev = root
             branch = self.filter_for_ceiling(branch)
@@ -66,6 +77,16 @@ class Tree:
                 prev = curr
             endpoint_node = Node(endpoint.id, page_type=prefix, label=endpoint.name, parent=prev)
             self.add_node(endpoint_node)
+
+    def children_to_json(self, parent: Node = None):
+        root = parent or self.nodes[self.ceiling]
+        d = {"id": root.id, "type": root.page_type, "label": root.label}
+        if root.children:
+            d["children"] = []
+            for child in root.children:
+                c = {"id": child.id, "type": child.page_type, "label": child.label}
+                d["children"].append(c)
+        return d
 
     def filter_for_ceiling(self, branch: List[models.Category]) -> List[models.Category]:
         branch_ids = [c.id for c in branch]

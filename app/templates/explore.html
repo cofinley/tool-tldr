@@ -19,6 +19,8 @@
       <a class="btn btn-secondary btn-sm ml-3" href={{ url_for("main.browse_categories", id=id) }}>Remove Filter</a>
     </div>
   {% endif %}
+  <label for="filter-tree">Search tree:</label>
+  <input id="filter-tree" class="form-control" autocomplete="off"/>
   <div class="explore-tree explore-tree-explore" class="col-12"
        data-url={{ url_for("main.explore_nodes", manual_node=id, envs=environments) }}></div>
 {% endblock %}

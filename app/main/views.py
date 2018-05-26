@@ -10,7 +10,7 @@ from sqlalchemy_continuum import version_class, versioning_manager
 
 from app.main.forms import *
 from . import main
-from .. import cache, utils, db, models
+from .. import cache, utils, db, models, tree
 from ..decorators import admin_required, permission_required
 
 
@@ -172,6 +172,13 @@ def explore_nodes():
         return jsonify(root)
 
     return jsonify(results)
+
+
+@main.route("/filter_nodes")
+def filter_nodes():
+    query = request.args.get("q")
+    t = tree.Tree(query=query)
+    return jsonify([t.to_json()])
 
 
 @main.route("/about")

@@ -32,6 +32,24 @@ var explore = (function () {
             });
 
         $('#collapse-button').click(collapseTree);
+
+        $("#filter-tree").on("input", filterTree);
+    };
+
+    var filterTree = function () {
+        var query = $(this).val();
+        var params = {"q": query};
+        var filterURL = window.location.origin + "/filter_nodes?" + $.param(params);
+        $(exploreTreeSelector).tree("loadDataFromUrl", filterURL, null, function () {
+            // Expand all nodes if filtered tree
+            if (query.length) {
+                var root = $(exploreTreeSelector).tree("getTree");
+                root.iterate(function (node) {
+                    $(exploreTreeSelector).tree("openNode", node);
+                    return true;
+                });
+            }
+        });
     };
 
     var collapseTree = function () {
