@@ -87,6 +87,7 @@ def filter_nodes():
     ceiling = request.args.get("node", type=int) or request.args.get("ceiling", type=int) or 0
     params = {
         "query": request.args.get("q"),
+        "environments": request.args.get("envs"),
         "ceiling": ceiling
     }
 
