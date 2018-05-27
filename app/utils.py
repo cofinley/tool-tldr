@@ -115,14 +115,9 @@ def find_diff(old, new, type):
     diffs = {}
 
     if type == "categories":
-        new_what = new.what
         new_where = new.where
-
-        old_what = old.what
         old_where = old.where
 
-        if old_what != new_what:
-            diffs["What"] = [old_what, new_what]
         if old_where != new_where:
             diffs["Where"] = [old_where, new_where]
 
@@ -187,11 +182,15 @@ def find_diff(old, new, type):
             diffs["Parent Category"] = [old_parent_category_name, new_parent_category_name]
 
     new_name = new.name
+    new_what = new.what
     new_why = new.why
 
     old_name = old.name
+    old_what = old.what
     old_why = old.why
 
+    if old_what != new_what:
+        diffs["What"] = [old_what, new_what]
     if old_name != new_name:
         diffs["Name"] = [old_name, new_name]
     if old_why != new_why:
@@ -211,7 +210,6 @@ def overwrite(old, new, type):
     """
 
     if type == "categories":
-        old.what = new.what
         old.where = new.where
 
     else:
@@ -223,6 +221,7 @@ def overwrite(old, new, type):
         old.project_version = new.project_version
         old.link = new.link
 
+    old.what = new.what
     old.name = new.name
     old.why = new.why
     old.parent_category_id = new.parent_category_id
@@ -299,6 +298,8 @@ def parse_environments(env_string: str) -> List:
     :return:
     """
 
+    if not env_string:
+        return []
     envs = []
     env_names = env_string.split(",")
 

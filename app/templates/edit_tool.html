@@ -35,6 +35,8 @@
       {{ wtf.form_field(form.project_version) }}
       {{ wtf.form_field(form.is_active) }}
       {{ wtf.form_field(form.link) }}
+      {{ wtf.form_field(form.what, maxlength=max) }}
+      <span id="what-count" class="char-count text-muted">{{ max }}</span>
       {{ wtf.form_field(form.why, maxlength=max) }}
       <span id="why-count" class="char-count text-muted">{{ max }}</span>
       {{ wtf.form_field(form.edit_msg, class="form-control edit-msg-input", maxlength=edit_msg_max) }}
