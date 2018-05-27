@@ -20,13 +20,21 @@ class Node:
 
 
 class Tree:
-    def __init__(self, query: str, ceiling: int = 0, show_links=True, show_root=False, environments=None):
+    def __init__(
+            self,
+            query: str,
+            ceiling: int = 0,
+            show_links=True,
+            show_root=False,
+            environments=None,
+            only_categories=False):
         self.query = query
         self.nodes = {}
         self.ceiling = ceiling
         self.show_links = show_links
         self.show_root = show_root
         self.environments = environments or ""
+        self.only_categories = only_categories
         if self.environments:
             self.environments = utils.parse_environments(self.environments)
         self.results = []
@@ -50,11 +58,11 @@ class Tree:
                 tracked_parent.children.add(tracked_current)
 
     def find_query_results(self):
-        self.results += \
-            models.Category.query \
-                .whoosh_search(self.query, like=True) \
-                .order_by(models.Category.name).all() \
-            + models.Tool.query \
+        self.results += models.Category.query \
+            .whoosh_search(self.query, like=True) \
+            .order_by(models.Category.name).all()
+        if not self.only_categories:
+            self.results += models.Tool.query \
                 .whoosh_search(self.query, like=True) \
                 .order_by(models.Tool.name).all()
 
@@ -67,24 +75,25 @@ class Tree:
             categories = models.Category.query.filter_by(parent_category_id=self.ceiling).order_by(
                 models.Category.name).all()
 
-            # Load tools if not at root level
-            if self.environments:
-                tools = models.Tool.query \
-                    .filter_by(parent_category_id=self.ceiling) \
-                    .filter(and_(models.Tool.environments.contains(e) for e in self.environments)) \
-                    .order_by(models.Tool.name).all()
-            else:
-                tools = models.Tool.query \
-                    .filter_by(parent_category_id=self.ceiling) \
-                    .order_by(models.Tool.name).all()
+            if not self.only_categories:
+                # Load tools if not at root level
+                if self.environments:
+                    tools = models.Tool.query \
+                        .filter_by(parent_category_id=self.ceiling) \
+                        .filter(and_(models.Tool.environments.contains(e) for e in self.environments)) \
+                        .order_by(models.Tool.name).all()
+                else:
+                    tools = models.Tool.query \
+                        .filter_by(parent_category_id=self.ceiling) \
+                        .order_by(models.Tool.name).all()
 
-            self.results += tools
+                self.results += tools
         self.results += categories
 
     def build_tree_from_top(self):
         if self.ceiling == 0:
             root = Node(id=0, name="/", link="/", parent=None)
-            self.nodes[0] = root
+            self.add_node(root)
             parent_node = root
         else:
             parent_category = models.Category.query.get_or_404(self.ceiling)
@@ -177,10 +186,14 @@ class Tree:
                 self.pprint(parent=child, level=level)
 
     def to_json(self):
+        if not self.nodes:
+            return [{"id": -1, "label": "No results found"}]
         if self.query:
             tree = self.tree_to_json()
         else:
             tree = self.children_to_json()
+            if self.show_root:
+                return [{"id": 0, "label": "/", "children": tree}]
         if not isinstance(tree, list):
             tree = [tree]
         return tree
@@ -190,7 +203,7 @@ class Tree:
 
         if parent.id == 0 and not self.show_root:
             l = []
-            for child in parent.children:
+            for child in sorted(parent.children, key=lambda c: c.name):
                 l.append(self.tree_to_json(child))
             return l
 
@@ -198,7 +211,7 @@ class Tree:
         d = {"id": parent.id, "label": label}
         if parent.children:
             d["children"] = []
-            for child in parent.children:
+            for child in sorted(parent.children, key=lambda c: c.name):
                 d["children"].append(self.tree_to_json(child))
         else:
             if not parent.is_tool:
@@ -210,7 +223,7 @@ class Tree:
         parent = parent_node or self.nodes[self.ceiling]
 
         l = []
-        for child in parent.children:
+        for child in sorted(parent.children, key=lambda c: c.name):
             label = child.link if self.show_links else child.name
             c = {"id": child.id, "label": label}
             if not child.is_tool:

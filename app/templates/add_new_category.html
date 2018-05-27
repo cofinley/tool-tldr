@@ -27,8 +27,12 @@
       {% include "includes/form_actions.html" %}
     </form>
     <div id="tree-pane" class="col-md-7">
+      <label for="filter-tree">Search tree:</label>
+      <input id="filter-tree" class="form-control" autocomplete="off"/>
       <label>Pick a parent category</label>
-      <div class="explore-tree explore-tree-edit" data-url="/explore_nodes?no-link=true&show-root=true"></div>
+      <div class="explore-tree explore-tree-edit explore-tree-edit-category"
+           data-url="/filter_nodes?show_links=false&show_root=true&only_categories=true">
+      </div>
     </div>
   </div>
 {% endblock %}
