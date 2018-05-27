@@ -177,23 +177,21 @@ def explore_nodes():
 @main.route("/filter_nodes")
 def filter_nodes():
     ceiling = request.args.get("node", type=int) or request.args.get("ceiling", type=int) or 0
-    show_root = request.args.get("show_root")
-    if show_root:
-        show_root = show_root == "true"
-    show_links = request.args.get("show_links")
-    if show_links:
-        show_links = show_links == "true"
-    only_categories = request.args.get("only_categories")
-    if only_categories:
-        only_categories = only_categories == "true"
     params = {
         "query": request.args.get("q"),
-        "show_root": show_root,
-        "show_links": show_links,
-        "ceiling": ceiling,
-        "environments": request.args.get("envs"),
-        "only_categories": only_categories
+        "ceiling": ceiling
     }
+
+    bool_args = [
+        "show_root",
+        "show_links",
+        "only_categories"
+    ]
+    for arg in bool_args:
+        value = request.args.get(arg)
+        if value:
+            value = value == "true"
+            params[arg] = value
 
     t = tree.Tree(**params)
     return jsonify(t.to_json())

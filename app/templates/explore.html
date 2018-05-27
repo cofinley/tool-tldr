@@ -26,5 +26,6 @@
     </div>
   </div>
   <div class="explore-tree explore-tree-explore" class="col-12"
-       data-url={{ url_for("main.filter_nodes", ceiling=id, envs=environments) }}></div>
+       data-url="/filter_nodes?show_links=true&show_root=false&ceiling={{ id }}&envs={{ environments }}">
+  </div>
 {% endblock %}

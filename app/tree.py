@@ -192,7 +192,7 @@ class Tree:
             tree = self.tree_to_json()
         else:
             tree = self.children_to_json()
-            if self.show_root:
+            if self.show_root and self.ceiling == 0:
                 return [{"id": 0, "label": "/", "children": tree}]
         if not isinstance(tree, list):
             tree = [tree]
