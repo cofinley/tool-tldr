@@ -26,7 +26,9 @@ class Tree:
         self.ceiling = ceiling
         self.show_links = show_links
         self.show_root = show_root
-        self.environments = environments or []
+        self.environments = environments or ""
+        if self.environments:
+            self.environments = utils.parse_environments(self.environments)
         self.results = []
         if self.query:
             self.find_query_results()
@@ -48,8 +50,13 @@ class Tree:
                 tracked_parent.children.add(tracked_current)
 
     def find_query_results(self):
-        self.results += models.Category.query.whoosh_search(self.query, like=True).all() \
-                        + models.Tool.query.whoosh_search(self.query, like=True).all()
+        self.results += \
+            models.Category.query \
+                .whoosh_search(self.query, like=True) \
+                .order_by(models.Category.name).all() \
+            + models.Tool.query \
+                .whoosh_search(self.query, like=True) \
+                .order_by(models.Tool.name).all()
 
     def find_children_results(self):
         # Start from root/ceiling
@@ -64,11 +71,11 @@ class Tree:
             if self.environments:
                 tools = models.Tool.query \
                     .filter_by(parent_category_id=self.ceiling) \
+                    .filter(and_(models.Tool.environments.contains(e) for e in self.environments)) \
                     .order_by(models.Tool.name).all()
             else:
                 tools = models.Tool.query \
-                    .filter_by(parent_category_id=id) \
-                    .filter(and_(models.Tool.environments.contains(e) for e in self.environments)) \
+                    .filter_by(parent_category_id=self.ceiling) \
                     .order_by(models.Tool.name).all()
 
             self.results += tools
@@ -193,25 +200,20 @@ class Tree:
             d["children"] = []
             for child in parent.children:
                 d["children"].append(self.tree_to_json(child))
+        else:
+            if not parent.is_tool:
+                # Show folder icon for category endpoints
+                d["load_on_demand"] = True
         return d
 
     def children_to_json(self, parent_node: Node = None):
         parent = parent_node or self.nodes[self.ceiling]
 
-        if parent.id == 0 and not self.show_root:
-            l = []
-            for child in parent.children:
-                label = child.link if self.show_links else child.name
-                c = {"id": child.id, "label": label, "load_on_demand": True}
-                l.append(c)
-            return l
-
-        label = parent.link if self.show_links else parent.name
-        d = {"id": parent.id, "label": label, "load_on_demand": True}
-        if parent.children:
-            d["children"] = []
-            for child in parent.children:
-                label = child.link if self.show_links else child.name
-                c = {"id": child.id, "label": label, "load_on_demand": True}
-                d["children"].append(c)
-        return d
+        l = []
+        for child in parent.children:
+            label = child.link if self.show_links else child.name
+            c = {"id": child.id, "label": label}
+            if not child.is_tool:
+                c["load_on_demand"] = True
+            l.append(c)
+        return l

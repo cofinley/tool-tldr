@@ -45,8 +45,12 @@ var explore = (function () {
             if (query.length) {
                 var root = $(exploreTreeSelector).tree("getTree");
                 root.iterate(function (node) {
-                    $(exploreTreeSelector).tree("openNode", node);
-                    return true;
+                    if (!node.load_on_demand) {
+                        // Only auto-open if no load_on_demand (forces folder icon)
+                        // Used for category endpoints on query
+                        $(exploreTreeSelector).tree("openNode", node);
+                        return true;
+                    }
                 });
             }
         });

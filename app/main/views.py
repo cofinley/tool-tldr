@@ -176,12 +176,13 @@ def explore_nodes():
 
 @main.route("/filter_nodes")
 def filter_nodes():
+    ceiling = request.args.get("node", type=int) or request.args.get("ceiling", type=int) or 0
     params = {
         "query": request.args.get("q"),
-        "show_root": request.args.get("show_root", default=False, type=bool),
-        "show_links": request.args.get("show_links", default=True, type=bool),
-        "ceiling": request.args.get("ceiling", default=0, type=int),
-        "environments": request.args.get("environments", default=[], type=list)
+        "show_root": request.args.get("show-root", default=False, type=bool),
+        "show_links": request.args.get("show-links", default=True, type=bool),
+        "ceiling": ceiling,
+        "environments": request.args.get("envs")
     }
 
     t = tree.Tree(**params)
