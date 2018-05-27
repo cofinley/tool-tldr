@@ -66,11 +66,11 @@ var explore = (function () {
         var query = $(this).val();
         var params = {"q": query};
         var currentTree;
-        for (var t in trees) {
-            if ($(trees[t].selector).length) {
-                currentTree = trees[t];
+        $.each(trees, function (i, t) {
+            if ($(t.selector).length) {
+                currentTree = t;
             }
-        }
+        });
         $.extend(params, currentTree.opts);
 
         var currentURL = new URL(window.location.href);
