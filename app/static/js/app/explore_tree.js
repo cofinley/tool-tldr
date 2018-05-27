@@ -63,15 +63,30 @@ var explore = (function () {
     };
 
     var filterTree = function () {
+        var query = $(this).val();
+        var params = {"q": query};
         var currentTree;
         for (var t in trees) {
             if ($(trees[t].selector).length) {
                 currentTree = trees[t];
             }
         }
-        var query = $(this).val();
-        var params = {"q": query};
         $.extend(params, currentTree.opts);
+
+        var currentURL = new URL(window.location.href);
+        var currentParams = {};
+        var available_params = ["id", "envs"];
+        $.each(available_params, function (i, param) {
+            var value = currentURL.searchParams.get(param);
+            if (null !== value) {
+                if ("id" === param) {
+                    param = "ceiling";
+                }
+                currentParams[param] = value;
+            }
+        });
+        $.extend(params, currentParams);
+
         var filterURL = window.location.origin + "/filter_nodes?" + $.param(params);
         $(currentTree.selector).tree("loadDataFromUrl", filterURL, null, function () {
             var rootTree = $(currentTree.selector).tree("getTree");

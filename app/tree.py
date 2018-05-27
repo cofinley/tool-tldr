@@ -46,15 +46,15 @@ class Tree:
             self.build_tree_from_top()
 
     def add_node(self, node: Node):
-        if node.is_tool or node.id not in self.nodes:
-            self.nodes[node.id] = node
+        if node.is_tool or (node.id, False) not in self.nodes:
+            self.nodes[(node.id, node.is_tool)] = node
             if node.parent:
                 # Set children based on parent
                 # Make sure to set children of parent nodes in self.nodes,
                 #  not the children of the parent of the input arg `node`
                 #  AKA tracked
-                tracked_parent = self.nodes[node.parent.id]
-                tracked_current = self.nodes[node.id]
+                tracked_parent = self.nodes[(node.parent.id, node.parent.is_tool)]
+                tracked_current = self.nodes[(node.id, node.is_tool)]
                 tracked_parent.children.add(tracked_current)
 
     def find_query_results(self):
@@ -123,23 +123,25 @@ class Tree:
                 branch = utils.build_bottom_up_tree(endpoint.category)
             prev = None
             if self.ceiling == 0:
-                if 0 not in self.nodes:
-                    root = Node(id=0, name="/", link="/", parent=prev)
+                if (0, False) not in self.nodes:
+                    root = Node(id=0, name="/", link="/", parent=prev, is_tool=False)
                     self.add_node(root)
                 else:
-                    root = self.nodes[0]
+                    root = self.nodes[(0, False)]
                 prev = root
             branch = self.filter_for_ceiling(branch)
             for item in branch:
-                if item.id not in self.nodes:
+                if (item.id, False) not in self.nodes:
                     curr = Node(
                         id=item.id,
                         name=item.name,
                         link=self.generate_node_html(item),
-                        parent=prev)
+                        parent=prev,
+                        is_tool=False
+                    )
                     self.add_node(curr)
                 else:
-                    curr = self.nodes[item.id]
+                    curr = self.nodes[(item.id, False)]
                 prev = curr
             # Always add endpoint, don't check if not in self.nodes
             # Endpoint usually a tool, can't check tool.id against
@@ -178,7 +180,7 @@ class Tree:
         return link
 
     def pprint(self, parent: Node = None, level=0):
-        root = parent or self.nodes[self.ceiling]
+        root = parent or self.nodes[(self.ceiling, False)]
         print(("\t" * level) + str(root))
         if root.children:
             level += 1
@@ -199,7 +201,7 @@ class Tree:
         return tree
 
     def tree_to_json(self, parent_node: Node = None):
-        parent = parent_node or self.nodes[self.ceiling]
+        parent = parent_node or self.nodes[(self.ceiling, False)]
 
         if parent.id == 0 and not self.show_root:
             l = []
@@ -220,7 +222,7 @@ class Tree:
         return d
 
     def children_to_json(self, parent_node: Node = None):
-        parent = parent_node or self.nodes[self.ceiling]
+        parent = parent_node or self.nodes[self.ceiling, False]
 
         l = []
         for child in sorted(parent.children, key=lambda c: c.name):
