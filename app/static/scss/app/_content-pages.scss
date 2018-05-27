@@ -78,6 +78,14 @@
   }
 }
 
+.loading-spinner {
+  animation: spin 1.1s linear infinite;
+  animation-name: loader-spin;
+  transform-origin: 50% 50%;
+  display: block;
+  margin: auto;
+}
+
 @include media-breakpoint-up(sm2) {
   .content-page-header .edit-buttons .edit-button {
     font-size: 1.1rem;
