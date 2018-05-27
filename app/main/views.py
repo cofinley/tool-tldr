@@ -456,6 +456,7 @@ def edit_tool_page(tool_id):
         tool.created = form.created.data or None
         tool.project_version = form.project_version.data or None
         tool.is_active = form.is_active.data or None
+        tool.what = form.what.data
         tool.why = form.why.data
         tool.edit_msg = form.edit_msg.data
         tool.edit_time = datetime.utcnow()
@@ -483,6 +484,7 @@ def edit_tool_page(tool_id):
         if current_user.is_member:
             form.parent_category_id.data = tool.parent_category_id
             form.parent_category.data = tool.category.name
+        form.what.data = tool.what
         form.why.data = tool.why
         form.edit_msg.data = ""
     return render_template('edit_tool.html',
@@ -661,6 +663,7 @@ def add_new_tool(parent_category_id=None):
             project_version=form.project_version.data or None,
             is_active=form.is_active.data or None,
             link=form.link.data or None,
+            what=form.what.data,
             why=form.why.data,
             edit_author=edit_author.id,
             edit_time=datetime.utcnow()

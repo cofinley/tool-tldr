@@ -85,6 +85,7 @@ class Tool(db.Model):
     created = deferred(db.Column(db.Integer()), group="page")
     project_version = deferred(db.Column(db.String(10)), group="page")
     link = deferred(db.Column(db.String(200)), group="page")
+    what = deferred(db.Column(db.String(250)), group="page")
     why = deferred(db.Column(db.String(250)), group="page")
     # Edit-specific columns
     edit_msg = deferred(db.Column(db.String(100), default="Initial edit"), group="edits")

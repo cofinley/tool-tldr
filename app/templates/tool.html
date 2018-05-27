@@ -13,9 +13,10 @@
     <div id="tool-left-content" class="col-md-10 col-lg-6">
       <div class="question-block tool-question-block">
         <h1 class="question-title">The What</h1>
-        <p>This tool falls within the <a
-                href={{ url_for("main.fetch_category_page", category_id=tree[-1].id, category_name=slugify(tree[-1].name)) }}>{{ tree[-1].name }}</a>
-          category.</p>
+        <p class="text-muted help-text mb-0">What is the tl;dr of the tool? How does it differ from the description of
+          <a href={{ url_for("main.fetch_category_page", category_id=tree[-1].id, category_name=slugify(tree[-1].name)) }}>its
+            category</a>?</p>
+        <p>{{ tool.what }}</p>
       </div>
       <div class="question-block tool-question-block">
         <h1 class="question-title">The Why</h1>

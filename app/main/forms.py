@@ -12,6 +12,7 @@ category_why_description = "Why would I need to use it? Why would I need to <i>s
 category_where_description = "Where in the application design/pipeline is this category of tools used? <a href='/about#categories-where'>Learn more.</a>"
 
 tool_environment_description = "In what environment(s) is this tool used or found in? Usually, this is a programming lanugage."
+tool_what_description = "What is the tl;dr of the tool? How does it differ from the description of its category?"
 tool_why_description = "Why use this tool over an alternative?"
 tool_active_description = "Is someone still maintaining or actively developing this tool?"
 
@@ -116,6 +117,7 @@ class EditCategoryPageFormMember(EditCategoryPageForm):
 class EditToolPageForm(FlaskForm):
     # Required
     name = StringField("Name*", validators=[DataRequired(), Length(1, 64)])
+    what = TextAreaField("What*", description=tool_what_description, validators=[DataRequired(), Length(1, 250)])
     why = TextAreaField("Why*", description=tool_why_description, validators=[DataRequired(), Length(1, 250)])
     edit_msg = StringField("Edit Message*", validators=[DataRequired(), Length(1, 100)])
 
@@ -162,6 +164,7 @@ class AddNewToolForm(FlaskForm):
     parent_category = StringField("Parent Category*", description=parent_category_description,
                                   validators=[DataRequired(), Length(max=64)])
     parent_category_id = HiddenField()
+    what = TextAreaField("What*", description=tool_what_description, validators=[DataRequired(), Length(1, 250)])
     why = TextAreaField("Why*", description=tool_why_description, validators=[DataRequired(), Length(1, 250)])
 
     # Optional
