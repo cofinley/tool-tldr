@@ -3,6 +3,30 @@ var explore = (function () {
     var generalTreeSelector = ".explore-tree";
     var exploreTreeSelector = ".explore-tree-explore";
     var editTreeSelector = ".explore-tree-edit";
+    var exploreTree = {
+        selector: ".explore-tree-explore",
+        opts: {
+            "show_root": false,
+            "show_links": true
+        }
+    };
+    var editTreeCategory = {
+        selector: ".explore-tree-edit-category",
+        opts: {
+            "show_root": true,
+            "show_links": false,
+            "only_categories": true
+        }
+    };
+    var editTreeTool = {
+        selector: ".explore-tree-edit-tool",
+        opts: {
+            "show_root": false,
+            "show_links": false,
+            "only_categories": true
+        }
+    };
+    var trees = [exploreTree, editTreeCategory, editTreeTool];
 
     var treeOptions = {
         dragAndDrop: false,
@@ -22,7 +46,9 @@ var explore = (function () {
                 if (event.node) {
                     // node was selected
                     var node = event.node;
-                    populateFormField(node);
+                    if (-1 !== node.id) {
+                        populateFormField(node);
+                    }
                 }
             })
             .bind('tree.init', function () {
@@ -32,6 +58,53 @@ var explore = (function () {
             });
 
         $('#collapse-button').click(collapseTree);
+
+        $("#filter-tree").on("input", filterTree);
+    };
+
+    var filterTree = function () {
+        var query = $(this).val();
+        var params = {"q": query};
+        var currentTree;
+        $.each(trees, function (i, t) {
+            if ($(t.selector).length) {
+                currentTree = t;
+            }
+        });
+        $.extend(params, currentTree.opts);
+
+        var currentURL = new URL(window.location.href);
+        var currentParams = {};
+        var available_params = ["id", "envs"];
+        $.each(available_params, function (i, param) {
+            var value = currentURL.searchParams.get(param);
+            if (null !== value) {
+                if ("id" === param) {
+                    param = "ceiling";
+                }
+                currentParams[param] = value;
+            }
+        });
+        $.extend(params, currentParams);
+
+        var filterURL = window.location.origin + "/filter_nodes?" + $.param(params);
+        $(currentTree.selector).tree("loadDataFromUrl", filterURL, null, function () {
+            var rootTree = $(currentTree.selector).tree("getTree");
+            // Open root by default
+            var root = $(currentTree.selector).tree('getNodeById', 0);
+            $(currentTree.selector).tree('openNode', root);
+            // Expand all nodes if filtered tree
+            if (query.length) {
+                rootTree.iterate(function (node) {
+                    if (!node.load_on_demand) {
+                        // Only auto-open if no load_on_demand (forces folder icon)
+                        // Used for category endpoints on query
+                        $(currentTree.selector).tree("openNode", node);
+                        return true;
+                    }
+                });
+            }
+        });
     };
 
     var collapseTree = function () {

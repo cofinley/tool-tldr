@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app, session, \
     make_response
-from flask_login import login_required, current_user
+from flask_login import current_user, login_required
 from flask_sqlalchemy import Pagination, get_debug_queries
 from slugify import slugify
 from sqlalchemy import not_, and_
@@ -10,7 +10,7 @@ from sqlalchemy_continuum import version_class, versioning_manager
 
 from app.main.forms import *
 from . import main
-from .. import cache, utils, db, models
+from .. import cache, utils, db, models, tree
 from ..decorators import admin_required, permission_required
 
 
@@ -81,95 +81,29 @@ def browse_categories():
                            environments_html=environments_html)
 
 
+@main.route("/filter_nodes")
 @cache.cached(key_prefix=make_cache_key)
-def load_children_tools(id, envs: str):
-    # Used for explore tree
+def filter_nodes():
+    ceiling = request.args.get("node", type=int) or request.args.get("ceiling", type=int) or 0
+    params = {
+        "query": request.args.get("q"),
+        "environments": request.args.get("envs"),
+        "ceiling": ceiling
+    }
 
-    if envs:
-        environments = utils.parse_environments(envs)
-        child_tools = models.Tool.query \
-            .filter_by(parent_category_id=id) \
-            .filter(and_(models.Tool.environments.contains(e) for e in environments)) \
-            .order_by(models.Tool.name).all()
-    else:
-        child_tools = models.Tool.query \
-            .filter_by(parent_category_id=id) \
-            .order_by(models.Tool.name).all()
-    cols = ["id", "name", "environments"]
-    results = [{col: getattr(child, col) for col in cols} for child in child_tools]
+    bool_args = [
+        "show_root",
+        "show_links",
+        "only_categories"
+    ]
+    for arg in bool_args:
+        value = request.args.get(arg)
+        if value:
+            value = value == "true"
+            params[arg] = value
 
-    for result in results:
-        label_link = "<a href='/tools/{}/{}'>{}</a>".format(
-            result["id"],
-            utils.escape_html(slugify(result["name"])),
-            utils.escape_html(result["name"]),
-        )
-        if result["environments"]:
-            label_link += "<div class='tool-environments ml-1'>"
-            for e in result["environments"]:
-                label_link += e.html
-            label_link += "</div>"
-        result.pop("name")
-        result.pop("environments")
-        result["label"] = label_link
-
-    return results
-
-
-@cache.memoize()
-def load_children_categories(id, no_link):
-    if id:
-        children = models.Category.query.filter_by(parent_category_id=id).order_by(models.Category.name).all()
-    else:
-        children = models.Category.query.filter_by(parent_category_id=None).order_by(models.Category.name).all()
-
-    cols = ["id", "name"]
-    results = [{col: getattr(child, col) for col in cols} for child in children]
-    cleaned_results = []
-    for result in results:
-        cleaned_result = {"id": result["id"], "load_on_demand": True}
-        if not no_link:
-            # anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
-            label_link = "<a href='/categories/{}/{}'>{}</a>".format(
-                result["id"],
-                utils.escape_html(slugify(result["name"])),
-                utils.escape_html(result["name"])
-            )
-            cleaned_result["label"] = label_link
-        else:
-            cleaned_result["name"] = result["name"]
-        cleaned_results.append(cleaned_result)
-
-    return cleaned_results
-
-
-@main.route("/explore_nodes")
-@cache.cached(key_prefix=make_cache_key)
-def explore_nodes():
-    node_id = request.args.get("node")
-    manual_node_id = request.args.get("manual_node")
-    # `manual_node_id` passed in from tool alternatives
-    # At first, it will just be manual id passed as param here
-    # Once user expands a node, `node` will also be added as param
-    # If just `manual_node`, use it as node_id
-    # If both, default to `node`. This prevents infinite recursive loop
-    if manual_node_id and not node_id:
-        node_id = manual_node_id
-    envs = request.args.get("envs")
-    show_root = request.args.get("show-root")
-    no_link = request.args.get("no-link", False, type=bool)
-
-    results = load_children_categories(node_id, no_link)
-    if not no_link:
-        results += load_children_tools(node_id, envs)
-
-    if show_root and not node_id:
-        # Only show root node if explicit param and jqTree has not added a node id param
-        # (will recursively repeat otherwise)
-        root = [{"id": 0, "name": "/", "children": results}]
-        return jsonify(root)
-
-    return jsonify(results)
+    t = tree.Tree(**params)
+    return jsonify(t.to_json())
 
 
 @main.route("/about")

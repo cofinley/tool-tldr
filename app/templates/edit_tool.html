@@ -55,8 +55,12 @@
     </form>
     {% if is_member %}
       <div id="tree-pane" class="col-md-7 initially-hidden-field">
-        <label>Pick a parent category</label>
-        <div class="explore-tree explore-tree-edit" data-url="/explore_nodes?no-link=true"></div>
+        <label for="filter-tree">Search tree:</label>
+        <input id="filter-tree" class="form-control" autocomplete="off"/>
+        <label class="mt-3">Pick a parent category:</label>
+        <div class="explore-tree explore-tree-edit explore-tree-edit-tool"
+             data-url="/filter_nodes?show_links=false&only_categories=true">
+        </div>
       </div>
     {% endif %}
   </div>

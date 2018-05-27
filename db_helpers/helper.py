@@ -1,8 +1,9 @@
 import csv
+import json
 import os
 from datetime import datetime
 
-from app import db, models, create_app, utils
+from app import db, models, create_app, utils, tree
 
 
 class Helper:
@@ -111,3 +112,8 @@ class Helper:
     @staticmethod
     def create_all():
         db.create_all()
+
+    def test_tree(self):
+        t = tree.Tree('app', ceiling=18)
+        print(json.dumps(t.to_json(), indent=2))
+        return t
