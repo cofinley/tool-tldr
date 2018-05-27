@@ -12,8 +12,8 @@ var shield = (function () {
                 .replace("-", "--")
                 .replace("_", "__");
             var url = generateShieldUrl(page_title);
-            var html = generateShieldHtml(url);
-            $dropdownMenu.after(html);
+            var $shieldHTML = generateShieldHtml(url);
+            $dropdownMenu.after($shieldHTML);
 
             copyShieldLinkToClipboard();
             e.stopPropagation();
@@ -35,9 +35,16 @@ var shield = (function () {
     var generateShieldHtml = function(url) {
         var $shieldDiv = $("<div/>").addClass("shield-container");
 
+        var $loader = $("<img/>")
+            .attr("src", "/static/img/loader.svg")
+            .addClass("loading-spinner");
+
         var $hr = $("<hr>");
         var $shieldImageRow = $("<img/>")
             .addClass("shield-img")
+            .on("load", function () {
+                $loader.hide();
+            })
             .attr("src", url);
 
         var $shieldLinkRow = $("<div/>")
@@ -63,7 +70,7 @@ var shield = (function () {
             });
         $shieldLinkRow.append([$shieldLink, $copyClipboardSvg]);
 
-        $shieldDiv.append([$hr, $shieldImageRow, $shieldLinkRow]);
+        $shieldDiv.append([$hr, $loader, $shieldImageRow, $shieldLinkRow]);
         return $shieldDiv;
     };
 
