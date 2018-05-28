@@ -2,14 +2,15 @@ from datetime import datetime, timedelta
 
 from flask import render_template, redirect, url_for, flash, request, jsonify, abort, current_app, session, \
     make_response
-from flask_login import login_required, current_user
+from flask_login import current_user, login_required
 from flask_sqlalchemy import Pagination, get_debug_queries
 from slugify import slugify
+from sqlalchemy import not_, and_
 from sqlalchemy_continuum import version_class, versioning_manager
 
 from app.main.forms import *
 from . import main
-from .. import cache, utils, db, models
+from .. import cache, utils, db, models, tree
 from ..decorators import admin_required, permission_required
 
 
@@ -68,103 +69,41 @@ def browse_categories():
     else:
         category = None
         category_id = None
-    environment = request.args.get("env")
+    # Comma-separated envs
+    environments = request.args.get("envs")
+    environments_html = ""
+    if environments:
+        environments_html = utils.parse_environments_html(environments)
     return render_template("explore.html",
                            id=category_id,
                            category=category,
-                           environment=environment)
+                           environments=environments,
+                           environments_html=environments_html)
 
 
+@main.route("/filter_nodes")
 @cache.cached(key_prefix=make_cache_key)
-def load_children_tools(id, env):
-    # Used for explore tree
+def filter_nodes():
+    ceiling = request.args.get("node", type=int) or request.args.get("ceiling", type=int) or 0
+    params = {
+        "query": request.args.get("q"),
+        "environments": request.args.get("envs"),
+        "ceiling": ceiling
+    }
 
-    if env:
-        child_tools = models.Tool.query \
-            .filter_by(parent_category_id=id, env=env) \
-            .order_by(models.Tool.name).all()
-    else:
-        child_tools = models.Tool.query \
-            .filter_by(parent_category_id=id) \
-            .order_by(models.Tool.name).all()
-    cols = ["id", "name", "env"]
-    results = [{col: getattr(child, col) for col in cols} for child in child_tools]
+    bool_args = [
+        "show_root",
+        "show_links",
+        "only_categories"
+    ]
+    for arg in bool_args:
+        value = request.args.get(arg)
+        if value:
+            value = value == "true"
+            params[arg] = value
 
-    for result in results:
-        if env:
-            label_link = "<a href='/tools/{}/{}'>{}</a>".format(
-                result["id"],
-                utils.escape_html(slugify(result["name"])),
-                utils.escape_html(result["name"])
-            )
-        else:
-            label_link = "<a href='/tools/{}/{}'>{}</a>".format(
-                result["id"],
-                utils.escape_html(slugify(result["name"])),
-                utils.escape_html(result["name"]),
-            )
-            if result["env"]:
-                label_link += " ({})".format(utils.escape_html(result["env"]))
-        result.pop("name")
-        result["label"] = label_link
-
-    return results
-
-
-@cache.memoize()
-def load_children_categories(id, no_link):
-    if id:
-        children = models.Category.query.filter_by(parent_category_id=id).order_by(models.Category.name).all()
-    else:
-        children = models.Category.query.filter_by(parent_category_id=None).order_by(models.Category.name).all()
-
-    cols = ["id", "name"]
-    results = [{col: getattr(child, col) for col in cols} for child in children]
-    cleaned_results = []
-    for result in results:
-        cleaned_result = {"id": result["id"], "load_on_demand": True}
-        if not no_link:
-            # anchor tags for '/explore' tree, regular text if on '/add-new-...' page tree
-            label_link = "<a href='/categories/{}/{}'>{}</a>".format(
-                result["id"],
-                utils.escape_html(slugify(result["name"])),
-                utils.escape_html(result["name"])
-            )
-            cleaned_result["label"] = label_link
-        else:
-            cleaned_result["name"] = result["name"]
-        cleaned_results.append(cleaned_result)
-
-    return cleaned_results
-
-
-@main.route("/explore_nodes")
-@cache.cached(key_prefix=make_cache_key)
-def explore_nodes():
-    node_id = request.args.get("node")
-    manual_node_id = request.args.get("manual_node")
-    # `manual_node_id` passed in from tool alternatives
-    # At first, it will just be manual id passed as param here
-    # Once user expands a node, `node` will also be added as param
-    # If just `manual_node`, use it as node_id
-    # If both, default to `node`. This prevents infinite recursive loop
-    if manual_node_id and not node_id:
-        node_id = manual_node_id
-    env = request.args.get("env")
-    show_root = request.args.get("show-root")
-    no_link = request.args.get("no-link", False, type=bool)
-
-    results = load_children_categories(node_id, no_link)
-    if not no_link:
-        results += load_children_tools(node_id, env)
-
-    if show_root and not node_id:
-        # Only show root node if explicit param and jqTree has not added a node id param
-        # (will recursively repeat otherwise)
-        root = [{"id": 0, "name": "/", "children": results}]
-        return jsonify(root)
-
-    return jsonify(results)
+    t = tree.Tree(**params)
+    return jsonify(t.to_json())
 
 
 @main.route("/about")
@@ -213,16 +152,21 @@ def fetch_tool_page(tool_id, tool_name):
         return redirect(url_for('.fetch_tool_page', tool_id=tool_id, tool_name=tool_name_slug))
 
     ALTS_PER_LIST = current_app.config["ALTS_PER_LIST"]
-    alts_for_this_env = models.Tool.query \
-        .filter_by(parent_category_id=tool.parent_category_id) \
-        .filter_by(env=tool.env) \
-        .filter(models.Tool.id != tool.id) \
-        .limit(ALTS_PER_LIST) \
-        .all()
+    tool_envs = tool.environments
+    alts_for_this_env = []
+    if tool_envs:
+        alts_for_this_env = models.Tool.query \
+            .filter_by(parent_category_id=tool.parent_category_id) \
+            .filter(models.Tool.environments.any()) \
+            .filter(and_(models.Tool.environments.contains(e) for e in tool_envs)) \
+            .filter(models.Tool.id != tool.id) \
+            .limit(ALTS_PER_LIST) \
+            .all()
 
     alts_for_other_envs = models.Tool.query \
-        .filter(models.Tool.parent_category_id == tool.parent_category_id) \
-        .filter(models.Tool.env != tool.env) \
+        .filter_by(parent_category_id=tool.parent_category_id) \
+        .filter(and_(not_(models.Tool.environments.contains(e)) for e in tool_envs)) \
+        .filter(models.Tool.id != tool.id) \
         .limit(ALTS_PER_LIST) \
         .all()
 
@@ -269,6 +213,17 @@ def search_tools():
     for category in search_categories:
         results.append({"label": category.name, "type": "c", "id": category.id})
 
+    return jsonify(results)
+
+
+@main.route("/search-envs")
+@cache.cached(key_prefix=make_cache_key)
+def search_envs():
+    search_query = request.args.get("q")
+    results = []
+    queried_envs = models.Environment.query.whoosh_search(search_query, like=True).all()
+    for env in queried_envs:
+        results.append({"label": env.name, "id": env.id})
     return jsonify(results)
 
 
@@ -486,7 +441,7 @@ def edit_tool_page(tool_id):
 
     if form.validate_on_submit():
         tool.name = form.name.data
-        tool.avatar_url = form.avatar_url.data or None
+        tool.logo_url = form.logo_url.data or None
         tool.link = form.link.data or None
         if current_user.is_authenticated:
             edit_author = current_user
@@ -495,10 +450,13 @@ def edit_tool_page(tool_id):
                     tool.parent_category_id = form.parent_category_id.data
         else:
             edit_author = create_temp_user()
-        tool.env = form.env.data or None
+        environments = utils.parse_environments(form.environments.data)
+        tool.environments = environments or [None]
+        tool.environments_dumped = utils.dump_environments(environments)
         tool.created = form.created.data or None
         tool.project_version = form.project_version.data or None
         tool.is_active = form.is_active.data or None
+        tool.what = form.what.data
         tool.why = form.why.data
         tool.edit_msg = form.edit_msg.data
         tool.edit_time = datetime.utcnow()
@@ -517,15 +475,16 @@ def edit_tool_page(tool_id):
         return redirect(url_for('.fetch_tool_page', tool_id=tool.id))
     if not form.is_submitted():
         form.name.data = tool.name
-        form.env.data = tool.env
+        form.environments.data = utils.dump_environments(tool.environments)
         form.created.data = tool.created
         form.project_version.data = tool.project_version
         form.is_active.data = tool.is_active
-        form.avatar_url.data = tool.avatar_url
+        form.logo_url.data = tool.logo_url
         form.link.data = tool.link
         if current_user.is_member:
             form.parent_category_id.data = tool.parent_category_id
             form.parent_category.data = tool.category.name
+        form.what.data = tool.what
         form.why.data = tool.why
         form.edit_msg.data = ""
     return render_template('edit_tool.html',
@@ -550,7 +509,10 @@ def render_diff(page_type, page_id, older, newer):
     diffs = utils.find_diff(older_data, newer_data, page_type)
     for key in diffs:
         before, after = diffs[key]
-        diffs[key] = utils.gen_diff_html(before, after)
+        if key == "Environment(s)":
+            diffs[key] = utils.gen_environment_diff_html(before, after)
+        else:
+            diffs[key] = utils.gen_diff_html(before, after)
 
     older_time = older_data.edit_time.strftime('%d %B %Y, %H:%M')
     newer_time = newer_data.edit_time.strftime('%d %B %Y, %H:%M')
@@ -611,7 +573,10 @@ def render_time_travel(page_type, page_id, target_version_id):
     diffs = utils.find_diff(current_version, destination_version, page_type)
     for key in diffs:
         before, after = diffs[key]
-        diffs[key] = utils.gen_diff_html(before, after)
+        if key == "Environment(s)":
+            diffs[key] = utils.gen_environment_diff_html(before, after)
+        else:
+            diffs[key] = utils.gen_diff_html(before, after)
 
     anonymous_warning()
 
@@ -686,15 +651,19 @@ def add_new_tool(parent_category_id=None):
             edit_author = create_temp_user()
         else:
             edit_author = current_user
+
+        environments = utils.parse_environments(form.environments.data)
         tool = models.Tool(
             name=form.name.data,
             parent_category_id=form.parent_category_id.data,
-            avatar_url=form.avatar_url.data or None,
-            env=form.env.data or None,
+            logo_url=form.logo_url.data or None,
+            environments=environments or [None],
+            environments_dumped=utils.dump_environments(environments),
             created=form.created.data or None,
             project_version=form.project_version.data or None,
             is_active=form.is_active.data or None,
             link=form.link.data or None,
+            what=form.what.data,
             why=form.why.data,
             edit_author=edit_author.id,
             edit_time=datetime.utcnow()
@@ -724,9 +693,10 @@ def add_new_tool(parent_category_id=None):
                            is_member=current_user.is_member)
 
 
+@main.route("/categories/<int:parent_category_id>/add-new-category", methods=["GET", "POST"])
 @main.route("/add-new-category", methods=["GET", "POST"])
 @login_required
-def add_new_category():
+def add_new_category(parent_category_id=None):
     form = AddNewCategoryForm()
     if form.validate_on_submit():
         if not current_user.is_authenticated:
@@ -760,6 +730,13 @@ def add_new_category():
         flash('This category has been added.', 'success')
         cache.clear()
         return redirect(url_for('.fetch_category_page', category_id=category.id))
+
+    if parent_category_id:
+        # Subcategory added from category page
+        form.parent_category_id.data = parent_category_id
+        parent_category = models.Category.query.get_or_404(parent_category_id)
+        form.parent_category.data = parent_category.name
+
     return render_template('add_new_category.html', form=form)
 
 
@@ -800,3 +777,8 @@ def sitemap():
     response.headers["Content-Type"] = "application/xml"
 
     return response
+
+
+@main.route("/changelogs")
+def changelogs():
+    return render_template("changelogs.html")

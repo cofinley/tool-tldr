@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% import "_macros.html" as macros %}
 {% block title %}{{ tool.name }}{% endblock %}
+{%- block description -%}
+  {{ tool.why }}
+{%- endblock -%}
+
 {% block content %}
 
   {{ macros.page_header(type="tools", obj=tool) }}
@@ -9,30 +13,34 @@
     <div id="tool-left-content" class="col-md-10 col-lg-6">
       <div class="question-block tool-question-block">
         <h1 class="question-title">The What</h1>
-        <p>This tool falls within the <a
-                href={{ url_for("main.fetch_category_page", category_id=tree[-1].id, category_name=slugify(tree[-1].name)) }}>{{ tree[-1].name }}</a>
-          category.</p>
+        <p class="text-muted help-text mb-0">What is the tl;dr of the tool? How does it differ from the description of
+          <a href={{ url_for("main.fetch_category_page", category_id=tree[-1].id, category_name=slugify(tree[-1].name)) }}>its
+            category</a>?</p>
+        <p>{{ tool.what }}</p>
       </div>
       <div class="question-block tool-question-block">
         <h1 class="question-title">The Why</h1>
         <p class="text-muted help-text mb-0">Why use this tool over an alternative?</p>
         <p>{{ tool.why }}</p>
       </div>
+
       <div class="question-block tool-question-block">
         <h1 class="question-title">Alternatives</h1>
         <div class="row ml-0">
-
           <div class="env-alts-section col-md-6">
             <h3 class="env-alts-env-title"><i>For
-              {% if tool.env %}{{ tool.env }}{% else %}this environment{% endif %}</i></h3>
+              {% if tool.environments %}{{ tool.environments_html | safe }}{% else %}this
+                environment{% endif %}</i></h3>
             {% if env_alts | length %}
               <ul class="env-alts-list">
                 {% for alt in env_alts %}
                   <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a></li>
                   {%- if loop.index == ALTS_PER_LIST %}
                     <p class="alts-more-link"><a
-                            href={{ url_for("main.browse_categories", id=tool.category.id, env=tool.env) }}>More
-                      for {% if tool.env %}{{ tool.env }}{% else %}this environment{% endif %}...</a></p>
+                            href={{ url_for("main.browse_categories", id=tool.category.id, envs=tool.environments_dumped) }}>More
+                      for {% if tool.environments %}{{ tool.environments_html | safe }}{% else %}this
+                        environment{% endif %}...</a>
+                    </p>
                     {% break %}
                   {% endif %}
                 {%- endfor %}
@@ -48,7 +56,9 @@
               <ul class="env-alts-list">
               {% for alt in other_alts %}
                 <li><a href={{ url_for("main.fetch_tool_page", tool_id=alt.id) }}>{{ alt.name }}</a>
-                  ({{ alt.env }})
+                  {% if alt.environments %}
+                    {{ alt.environments_html | safe }}
+                  {% endif %}
                 </li>
                 {%- if loop.index == ALTS_PER_LIST %}
                   <p class="alts-more-link"><a href={{ url_for("main.browse_categories", id=tool.category.id) }}>More
@@ -69,9 +79,9 @@
     <div id="tool-right-content" class="col-md-auto">
       <div id="tool-pane">
         <div id="tool-pane-top">
-          <div id="tool-avatar">
+          <div id="tool-logo">
             <span class="img-align-helper"></span>
-            <img id="avatar-img" src="{{ tool.avatar_url }}" alt="{{ tool.name }}">
+            <img id="logo-img" src="{{ tool.logo_url }}" alt="{{ tool.name }}">
           </div>
           <h1 id="tool-name">{{ tool.name }}</h1>
         </div>
@@ -91,18 +101,20 @@
               </td>
             </tr>
             <tr class="tool-metadata-row">
-              <td class="tool-metadata-name">Environment</td>
+              <td class="tool-metadata-name">Created</td>
               <td class="tool-metadata-value">
-                {% if tool.env %}
-                  {{ tool.env }}
+                {% if tool.created %}
+                  {{ tool.created }}
                 {% endif %}
               </td>
             </tr>
             <tr class="tool-metadata-row">
-              <td class="tool-metadata-name">Created</td>
-              {% if tool.created %}
-                <td class="tool-metadata-value">{{ tool.created }}</td>
-              {% endif %}
+              <td class="tool-metadata-name">Environment</td>
+              <td class="tool-metadata-value">
+                {% if tool.environments %}
+                  {{ tool.environments_html | safe }}
+                {% endif %}
+              </td>
             </tr>
             <tr class="tool-metadata-row">
               <td class="tool-metadata-name">Version</td>

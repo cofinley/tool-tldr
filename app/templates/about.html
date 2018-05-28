@@ -1,13 +1,48 @@
 {% extends "base.html" %}
 
 {% block title %}About{% endblock %}
+{%- block description -%}
+  Tool TL;DR was created to help people of all levels of expertise get a grasp of the growing software tool landscape.
+  Whether you're a beginner who doesn't know what's out there, or a senior dev who just wants a quick rundown of a
+  particular framework/library/tool, you will find answers here.
+{%- endblock -%}
 
 {% block content %}
 
   <h1 class="display-4">About</h1>
   <div class="about-text">
+
+    <div class="toc">
+      <ul>
+        <li><a href="#about-background">Background</a>
+        <li><a href="#organization-formatting">Organization &amp; Formatting</a>
+          <ul>
+            <li><a href="#categories">Categories</a>
+              <ul>
+                <li><a href="#categories-what">What</a></li>
+                <li><a href="#categories-why">Why</a></li>
+                <li><a href="#categories-where">Where</a></li>
+                <li><a href="#categories-naming">Naming</a></li>
+              </ul>
+            </li>
+            <li><a href="#tools">Tools</a>
+              <ul>
+                <li><a href="#tools-what">What</a></li>
+                <li><a href="#tools-why">Why</a></li>
+                <li><a href="#tools-details">Tool Details</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="{{ url_for('main.get_roles') }}">Roles</a></li>
+        <li><a href="{{ url_for('main.sitelog') }}">Site Log</a></li>
+        <li><a href="{{ url_for("main.changelogs") }}">Changelogs</a></li>
+        <li><a href="#about-contact-discussion">Contact &amp; Discussion</a></li>
+      </ul>
+    </div>
+
     <div class="row">
-      <div class="col-md-6">
+      <div id="about-background" class="col-md-6">
         <p><b>TL;DR: it's a wiki for any kind of software development tool. The content and its
           organization are up to the community. Have fun!</b></p>
         <p><i>Tool TL;DR</i> was created to help people of all levels of expertise get a grasp of the growing software
@@ -24,12 +59,12 @@
 
     <div class="row">
       <div class="col-md-6">
-        <h2 id="organization">Organization<a class="anchorlink" href="#organization"></a></h2>
+        <h2 id="organization-formatting">Organization & Formatting<a class="anchorlink"
+                                                                     href="#organization-formatting"></a></h2>
         <p>The wiki is broken down by categories and tools. Tools and categories can go in other categories.
           You can rearrange this structure to find the best fit for information.
         </p>
 
-        <h2 id="format">Format<a class="anchorlink" href="#format"></a></h2>
         <h3 id="categories">Categories<a class="anchorlink" href="#categories"></a></h3>
         <p>Categories have three main parts: the <b>what</b>, <b>why</b>, and <b>where</b>.</p>
 
@@ -66,8 +101,10 @@
         <h4 id="categories-naming">Naming<a class="anchorlink" href="#categories-naming"></a></h4>
         <p>Some simple guidelines for naming categories:</p>
         <ul>
-          <li>Spell out acronyms. You can put the acronym in parentheses at the end of the name.</li>
-          <li>Don't repeat words from the parent category's name. If "Embedded Systems" falls within "Systems," you can just say "Embedded."</li>
+          <li>Don't spell out acronyms in the title, it takes up too much space. Instead, spell them out and put the
+            acronym in parentheses at the end of the name in the <i>What</i> section when describing the category.
+          </li>
+          <li>You don't need to repeat words from the parent category's name, this also takes up space.</li>
         </ul>
       </div>
     </div>
@@ -77,6 +114,9 @@
 
         <h3 id="tools">Tools<a class="anchorlink" href="#tools"></a></h3>
         <p>Tools have one main question: <b>why</b> use this tool over one of its alternatives in the same category?</p>
+
+        <h4 id="tools-what">What<a class="anchorlink" href="#tools-what"></a></h4>
+        <p>The tl;dr of the tool. Also describes how the tool deviates from its category's description.</p>
 
         <h4 id="tools-why">Why<a class="anchorlink" href="#tools-why"></a></h4>
         <p>Tools will often have neighbors in the same space, but when exploring what's out there in a TL;DR fashion,
@@ -103,21 +143,8 @@
 
     <div class="row">
       <div class="col-md-6">
-        <h2 id="roles">Roles<a class="anchorlink" href="#roles"></a></h2>
-        <p>To learn more about roles, go <a href="{{ url_for('main.get_roles') }}">here</a>.</p>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <h2 id="site-log">Site Log<a class="anchorlink" href="#site-log"></a></h2>
-        <p>To see the whole site's user activity, go <a href="{{ url_for('main.sitelog') }}">here</a>.</p>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <h2 id="about-contact">Contact/Discussion<a class="anchorlink" href="#about-contact"></a></h2>
+        <h2 id="about-contact-discussion">Contact & Discussion<a class="anchorlink"
+                                                                 href="#about-contact-discussion"></a></h2>
         <p>Have a question, comment, feature request, or bug to report? Go to the GitHub issues page <a
                 href="https://github.com/tooltldr/discussion/issues">here</a>.</p>
         <p>If you want to create a discussion on one of the pages here, then click on the extra (...) menu button at the

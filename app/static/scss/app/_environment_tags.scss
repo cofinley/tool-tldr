@@ -1,0 +1,30 @@
+.tool-environments {
+  display: inline-block;
+  position: relative;
+  top: -2px;
+}
+
+.tool-environment {
+  display: inline-block;
+  background: $lighter-gray;
+  color: #181818;
+  padding: 4px 5px;
+  margin: 2px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: $font-lighter;
+  font-style: normal;
+  border: 1px solid $light-gray;
+}
+
+.tool-environment-removed {
+  background: $diff-red-bg;
+  color: $diff-red-text;
+  border-color: $diff-red-text;
+}
+
+.tool-environment-added {
+  background: $diff-green-bg;
+  color: $diff-green-text;
+  border-color: $diff-green-text;
+}

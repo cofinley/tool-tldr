@@ -11,7 +11,8 @@ category_what_description = "What is the tl;dr of the category? What do tools in
 category_why_description = "Why would I need to use it? Why would I need to <i>start</i> using it?"
 category_where_description = "Where in the application design/pipeline is this category of tools used? <a href='/about#categories-where'>Learn more.</a>"
 
-tool_environment_description = "In what environment is this tool used? Usually, this is a programming lanugage."
+tool_environment_description = "In what environment(s) is this tool used or found in? Usually, this is a programming lanugage."
+tool_what_description = "What is the tl;dr of the tool? How does it differ from the description of its category?"
 tool_why_description = "Why use this tool over an alternative?"
 tool_active_description = "Is someone still maintaining or actively developing this tool?"
 
@@ -107,7 +108,7 @@ class EditCategoryPageFormMember(EditCategoryPageForm):
                 return False
         if self.move_parent.data:
             if is_at_or_below_category(int(self.parent_category_id.data), self.current_category_id):
-                self.parent_category_id.errors.append(
+                self.parent_category.errors.append(
                     "The current category's parent cannot be itself or a subcategory of itself.")
                 return False
         return True
@@ -116,19 +117,20 @@ class EditCategoryPageFormMember(EditCategoryPageForm):
 class EditToolPageForm(FlaskForm):
     # Required
     name = StringField("Name*", validators=[DataRequired(), Length(1, 64)])
+    what = TextAreaField("What*", description=tool_what_description, validators=[DataRequired(), Length(1, 250)])
     why = TextAreaField("Why*", description=tool_why_description, validators=[DataRequired(), Length(1, 250)])
     edit_msg = StringField("Edit Message*", validators=[DataRequired(), Length(1, 100)])
 
     # Optional
-    env = StringField("Environment", description=tool_environment_description,
-                      validators=[Optional(), Length(1, 64)])
+    environments = StringField("Environment(s)", description=tool_environment_description,
+                               validators=[Optional()])
     created = IntegerField("Date Created", validators=[Optional()])
     project_version = StringField("Project Version", validators=[Optional(), Length(1, 10)])
     is_active = SelectField("Actively Developed?", description=tool_active_description, validators=[Optional()],
                             choices=[(True, "Yes"), (False, "No")], coerce=lambda x: x == "True")
 
-    avatar_url = StringField("Avatar URL", validators=[Optional(), URL(), Length(1, 200),
-                                                       Regexp("^https://",
+    logo_url = StringField("Logo URL", validators=[Optional(), URL(), Length(1, 200),
+                                                   Regexp("^https://",
                                                               message="Image link must be hosted under https://")])
     link = StringField("Project URL", validators=[Optional(), URL(), Length(1, 200)])
 
@@ -144,9 +146,6 @@ class EditToolPageFormMember(EditToolPageForm):
     parent_category = StringField("Parent Category*", description=parent_category_description,
                                   validators=[RequiredIf("move_parent"), Length(max=64)])
     parent_category_id = HiddenField()
-
-    avatar_url = StringField("Avatar URL", validators=[Optional(), URL(), Length(1, 200)])
-    link = StringField("Project URL", validators=[Optional(), URL(), Length(1, 200)])
 
     def validate_parent_category_id(self, field):
         if not db.session.query(Category.id).filter_by(id=int(field.data)).scalar():
@@ -165,14 +164,15 @@ class AddNewToolForm(FlaskForm):
     parent_category = StringField("Parent Category*", description=parent_category_description,
                                   validators=[DataRequired(), Length(max=64)])
     parent_category_id = HiddenField()
+    what = TextAreaField("What*", description=tool_what_description, validators=[DataRequired(), Length(1, 250)])
     why = TextAreaField("Why*", description=tool_why_description, validators=[DataRequired(), Length(1, 250)])
 
     # Optional
-    avatar_url = StringField("Avatar URL", validators=[Optional(), URL(), Length(1, 200),
-                                                       Regexp("^https://",
+    logo_url = StringField("Logo URL", validators=[Optional(), URL(), Length(1, 200),
+                                                   Regexp("^https://",
                                                               message="Image link must be hosted under https://")])
-    env = StringField("Environment", description=tool_environment_description,
-                      validators=[Optional(), Length(1, 64)])
+    environments = StringField("Environment(s)", description=tool_environment_description,
+                               validators=[Optional()])
     created = IntegerField("Date Created", validators=[Optional()])
     project_version = StringField("Project Version", validators=[Optional(), Length(1, 10)])
     is_active = SelectField("Actively Developed?", description=tool_active_description, validators=[Optional()],

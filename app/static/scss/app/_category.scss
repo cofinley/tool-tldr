@@ -1,53 +1,57 @@
-#category-top-info {
+#breadcrumbs {
+  font-size: 1.3em;
 
-  #breadcrumbs {
-    font-size: 1.3em;
-
-    .breadcrumb-item {
-      a {
-        @include blue-link;
-      }
+  .breadcrumb-item {
+    a {
+      @include blue-link;
     }
   }
 }
 
-#category-content {
+#category-content-top {
+  background-color: $dark-gray;
+  color: $white;
+  border-radius: 20px;
+  padding: 7px 15px;
 
-  #category-content-top {
-    background-color: $dark-gray;
-    color: $white;
-    border-radius: 20px;
-    padding: 7px 15px;
+  .help-text {
+    color: mix($white, $dark-gray, 50%);
 
-    .help-text {
-      color: mix($white, $dark-gray, 50%);
-
-      a {
-        color: mix($white, $dark-gray, 70%);
-      }
-    }
-
-  }
-
-  #category-content-bottom {
-    margin-top: 20px;
-
-    .category-bottom-block {
-
-      .env-alts-env-title {
-        font-weight: $font-medium;
-        font-size: 2rem;
-      }
-
-      .category-content-list {
-        list-style-position: inside;
-        display: table;
-        margin: auto;
-        padding: 0;
-
-      }
+    a {
+      color: mix($white, $dark-gray, 70%);
     }
   }
+}
+
+#category-content-bottom {
+  margin-top: 20px;
+
+  .category-bottom-block {
+
+    h1 {
+      font-weight: $font-medium;
+      font-size: 2rem;
+      display: inline-block;
+    }
+  }
+
+  .category-bottom-block-title {
+    @include min-width-max-content;
+  }
+
+  .category-content-list {
+    list-style-position: inside;
+    display: table;
+    margin: auto;
+    padding: 0;
+
+  }
+}
+
+.add-child-button {
+  width: 22px;
+  display: inline-block;
+  margin-left: 5px;
 }
 
 .alt-list-item {
@@ -58,32 +62,14 @@
   }
 }
 
-// Small devices (landscape phones, 576px and up)
-//@media (min-width: 340px) {  }
+@include media-breakpoint-up(lg) {
+  #category-content-bottom {
+    margin-top: 10px;
 
-// Small devices (landscape phones, 576px and up)
-//@media (min-width: 576px) {  }
-
-// Medium devices (tablets, 768px and up)
-//@media (min-width: 768px) {  }
-
-// Large devices (desktops, 992px and up)
-@media (min-width: 992px) {
-  #category-content {
-
-    #category-content-bottom {
-      margin-top: 10px;
-
-      .category-bottom-block {
-
-        .env-alts-env-title {
-          font-size: 2em;
-        }
+    .category-bottom-block {
+      h1 {
+        font-size: 2em;
       }
     }
   }
-
 }
-
-// Extra large devices (large desktops, 1200px and up)
-//@media (min-width: 1200px) {  }

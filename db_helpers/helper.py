@@ -1,8 +1,9 @@
 import csv
+import json
 import os
 from datetime import datetime
 
-from app import db, models, create_app, utils
+from app import db, models, create_app, utils, tree
 
 
 class Helper:
@@ -32,9 +33,9 @@ class Helper:
                     id=int(id),
                     name=name,
                     parent_category_id=parent_category_id,
-                    what="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.",
-                    why="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.",
-                    where="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.",
+                    what=what,
+                    why=why,
+                    where=where,
                     edit_time=datetime.strptime(edit_time, "%Y-%m-%d %H:%M:%S.%f"),
                     edit_author=edit_author
                 )
@@ -49,18 +50,18 @@ class Helper:
             next(tsvin, None)  # skip header
 
             for row in tsvin:
-                id, name, avatar_url, parent_category_id, is_active, env, created, project_version, link, why, edit_msg, edit_time, edit_author, is_time_travel_edit = row
+                id, name, logo_url, parent_category_id, is_active, env, created, project_version, link, why, what, edit_msg, edit_time, edit_author, is_time_travel_edit = row
                 parent_category_id = int(parent_category_id) if (parent_category_id != "") else None
                 t = models.Tool(
                     id=int(id),
                     name=name,
-                    avatar_url=avatar_url,
+                    logo_url=logo_url,
                     parent_category_id=parent_category_id,
-                    env=env,
                     created=2017,
                     project_version=project_version,
                     link=link,
-                    why="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.",
+                    why=why,
+                    what=what,
                     edit_time=datetime.strptime(edit_time, "%Y-%m-%d %H:%M:%S.%f"),
                     edit_author=edit_author
                 )
@@ -111,3 +112,8 @@ class Helper:
     @staticmethod
     def create_all():
         db.create_all()
+
+    def test_tree(self):
+        t = tree.Tree('app', ceiling=18)
+        print(json.dumps(t.to_json(), indent=2))
+        return t

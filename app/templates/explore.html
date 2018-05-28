@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Explore{% endblock %}
+{%- block description -%}
+  Explore the landscape of all the software development tools out there. This tree view acts as a roadmap which helps
+  software developers or programmers understand the big picture.
+{%- endblock -%}
 
 {% block content %}
   <div id="explore-header" class="content-page-header">
@@ -9,12 +13,19 @@
   </div>
   <p class="explore-subtitle">Here, you can dive into the landscape and get a top-down view of all the different
     categories of tools.</p>
-  {% if environment %}
-    <div class="d-flex align-items-center">
-      <p class="filter-text">Filter: {{ environment }} environment</p>
+  {% if environments %}
+    <div class="d-flex align-items-center mb-4">
+      <p class="filter-text">Filter: {{ environments_html | safe }}</p>
       <a class="btn btn-secondary btn-sm ml-3" href={{ url_for("main.browse_categories", id=id) }}>Remove Filter</a>
     </div>
   {% endif %}
+  <div class="row">
+    <div class="col-md-4">
+      <label for="filter-tree">Search tree:</label>
+      <input id="filter-tree" class="form-control" autocomplete="off"/>
+    </div>
+  </div>
   <div class="explore-tree explore-tree-explore" class="col-12"
-       data-url={{ url_for("main.explore_nodes", manual_node=id, env=environment) }}></div>
+       data-url="/filter_nodes?show_links=true&show_root=false&ceiling={{ id }}&envs={{ environments }}">
+  </div>
 {% endblock %}

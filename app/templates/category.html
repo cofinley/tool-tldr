@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% import "_macros.html" as macros %}
 {% block title %}{{ category.name }}{% endblock %}
+{% block description %}{{ category.what }}{% endblock %}
+
 {% block content %}
 
   {% if breadcrumbs|length > 1 %}
@@ -48,7 +50,13 @@
 
     <div id="category-content-bottom" class="justify-content-center row text-center mb-5">
       <div class="category-bottom-block col-md-4">
-        <h1 class="env-alts-env-title">Subcategories</h1>
+        <div class="category-bottom-block-title">
+          <h1>Subcategories</h1>
+          <a class="add-child-button" href="{{ url_for(".add_new_category", parent_category_id=category.id) }}"
+             title="Add Subcategory">
+            <img src="{{ url_for('static', filename='img/add-circle.svg') }}" alt="Add Circle Button">
+          </a>
+        </div>
         {% if subcategories %}
           <ul class="category-content-list text-left">
             {% for subcategory in subcategories %}
@@ -69,14 +77,22 @@
       </div>
 
       <div class="category-bottom-block col-md-4">
-        <h1 class="env-alts-env-title">Tools</h1>
+
+        <div class="category-bottom-block-title">
+          <h1>Tools</h1>
+          <a class="add-child-button" href="{{ url_for(".add_new_tool", parent_category_id=category.id) }}"
+             title="Add Tool for this Category">
+            <img src="{{ url_for('static', filename='img/add-circle.svg') }}" alt="Add Circle Button">
+          </a>
+        </div>
+
         {% if subtools %}
           <ul class="category-content-list text-left">
             {% for tool in subtools %}
               <li class="alt-list-item"><a
                       href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=slugify(tool.name)) }}">{{ tool.name }}</a>
-                {% if tool.env %}
-                  ({{ tool.env }})
+                {% if tool.environments %}
+                  {{ tool.environments_html | safe }}
                 {% endif %}
               </li>
               {%- if loop.index == ALTS_PER_LIST %}

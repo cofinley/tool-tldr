@@ -115,14 +115,9 @@ def find_diff(old, new, type):
     diffs = {}
 
     if type == "categories":
-        new_what = new.what
         new_where = new.where
-
-        old_what = old.what
         old_where = old.where
 
-        if old_what != new_what:
-            diffs["What"] = [old_what, new_what]
         if old_where != new_where:
             diffs["Where"] = [old_where, new_where]
 
@@ -146,22 +141,22 @@ def find_diff(old, new, type):
 
     else:
         # Tool
-        new_avatar_url = new.avatar_url
-        new_env = new.env
+        new_logo_url = new.logo_url
+        new_env = new.environments_dumped
         new_created = new.created
         new_project_version = new.project_version
         new_link = new.link
 
-        old_avatar_url = old.avatar_url
-        old_env = old.env
+        old_logo_url = old.logo_url
+        old_env = old.environments_dumped
         old_created = old.created
         old_project_version = old.project_version
         old_link = old.link
 
-        if old_avatar_url != new_avatar_url:
-            diffs["Avatar URL"] = [old_avatar_url, new_avatar_url]
+        if old_logo_url != new_logo_url:
+            diffs["Logo URL"] = [old_logo_url, new_logo_url]
         if old_env != new_env:
-            diffs["Environment"] = [old_env, new_env]
+            diffs["Environment(s)"] = [old_env, new_env]
         if old_created != new_created:
             diffs["Created Date"] = [old_created, new_created]
         if old_project_version != new_project_version:
@@ -187,11 +182,15 @@ def find_diff(old, new, type):
             diffs["Parent Category"] = [old_parent_category_name, new_parent_category_name]
 
     new_name = new.name
+    new_what = new.what
     new_why = new.why
 
     old_name = old.name
+    old_what = old.what
     old_why = old.why
 
+    if old_what != new_what:
+        diffs["What"] = [old_what, new_what]
     if old_name != new_name:
         diffs["Name"] = [old_name, new_name]
     if old_why != new_why:
@@ -211,17 +210,18 @@ def overwrite(old, new, type):
     """
 
     if type == "categories":
-        old.what = new.what
         old.where = new.where
 
     else:
         # Tool
-        old.avatar_url = new.avatar_url
-        old.env = new.env
+        old.logo_url = new.logo_url
+        old.environments = parse_environments(new.environments_dumped)
+        old.environments_dumped = new.environments_dumped
         old.created = new.created
         old.project_version = new.project_version
         old.link = new.link
 
+    old.what = new.what
     old.name = new.name
     old.why = new.why
     old.parent_category_id = new.parent_category_id
@@ -289,3 +289,66 @@ def get_client_ip():
     else:
         ip = request.remote_addr
     return ip
+
+
+def parse_environments(env_string: str) -> List:
+    """
+    Take in list of environment strings, return list of Environment model objects
+    :param env_string:
+    :return:
+    """
+
+    if not env_string:
+        return []
+    envs = []
+    env_names = env_string.split(",")
+
+    for name in env_names:
+        name = name.lower()
+        existing_env = models.Environment.query.filter_by(name=name).first()
+        if not existing_env:
+            e = models.Environment(name=name)
+        else:
+            e = existing_env
+        db.session.add(e)
+        envs.append(e)
+    db.session.commit()
+
+    return envs
+
+
+def dump_environments(list_of_envs: List) -> str:
+    return ",".join(env.name.lower() for env in list_of_envs)
+
+
+def parse_environments_html(env_string: str) -> str:
+    envs = parse_environments(env_string)
+    html = "<div class='tool-environments'>"
+    for e in envs:
+        html += "<span class='tool-environment'>" + escape_html(e.name) + "</span>"
+    html += "</div>"
+    return html
+
+
+def gen_environment_diff_html(old, new):
+    old_envs = []
+    new_envs = []
+    if old:
+        old_envs = set(old.split(","))
+    if new:
+        new_envs = set(new.split(","))
+
+    left = [e for e in old_envs if e not in new_envs]
+    right = [e for e in new_envs if e not in old_envs]
+
+    left_html = "<div class='tool-environments pl-4'>"
+    for e in left:
+        left_html += "<span class='tool-environment tool-environment-removed'>" + escape_html(e) + "</span>"
+    left_html += "</div>"
+
+    right_html = "<div class='tool-environments pl-4'>"
+    for e in right:
+        right_html += "<span class='tool-environment tool-environment-added'>" + escape_html(e) + "</span>"
+    right_html += "</div>"
+
+    return [left_html, right_html]
