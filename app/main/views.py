@@ -777,3 +777,8 @@ def sitemap():
     response.headers["Content-Type"] = "application/xml"
 
     return response
+
+
+@main.route("/changelogs")
+def changelogs():
+    return render_template("changelogs.html")
