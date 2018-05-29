@@ -99,7 +99,7 @@ def filter_nodes():
     for arg in bool_args:
         value = request.args.get(arg)
         if value:
-            value = value == "true"
+            value = (value == "True") or (value == "true")
             params[arg] = value
 
     t = tree.Tree(**params)
@@ -764,7 +764,7 @@ def sitelog():
 def sitemap():
     """Generate sitemap.xml. Makes a list of urls and date modified."""
     pages = []
-    ten_days_ago = (datetime.now() - timedelta(days=10)).isoformat()
+    ten_days_ago = (datetime.now() - timedelta(days=10)).strftime("%Y-%m-%d")
     # static pages
     for rule in current_app.url_map.iter_rules():
         if "GET" in rule.methods and len(rule.arguments) == 0 and "admin" not in rule.rule:
