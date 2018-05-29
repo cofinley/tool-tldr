@@ -31,7 +31,7 @@
       <input id="filter-tree" class="form-control" autocomplete="off"/>
       <label class="mt-3">Pick a parent category:</label>
       <div class="explore-tree explore-tree-edit explore-tree-edit-category"
-           data-url="/filter_nodes?show_links=false&show_root=true&only_categories=true">
+           data-url="{{ url_for("main.filter_nodes", show_links=False, show_root=True, only_categories=True) }}">
       </div>
     </div>
   </div>
