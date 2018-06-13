@@ -30,7 +30,6 @@ gulp.task('sass-lint', function () {
             rules: {
                 'no-ids': 0,
                 'property-sort-order': 0,
-                'nesting-depth': 0,
                 'no-important': 0
             }
         }))

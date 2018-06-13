@@ -51,13 +51,11 @@ def anonymous_warning():
 @main.route("/")
 def index():
     pages_to_show = current_app.config["POPULAR_PAGE_COUNT"]
-    # TODO: popularity score
-    # TODO: include popular tools
-    categories = models.Category.query \
-        .order_by(models.Category.id.desc()) \
+    tools = models.Tool.query \
+        .order_by(models.Tool.id.desc()) \
         .limit(pages_to_show)
     return render_template("index.html",
-                           categories=categories)
+                           tools=tools)
 
 
 @main.route("/explore")
@@ -596,7 +594,7 @@ def render_time_travel(page_type, page_id, target_version_id):
         db.session.add(edit_author)
 
         cache.clear()
-        flash('This {} has been updated.'.format(page_type), 'success')
+        flash('This page has been updated.', 'success')
         destination_slug = slugify(destination_version.name)
         if page_type == "categories":
             return_route = url_for('main.fetch_category_page', category_id=page_id, category_name=destination_slug)
@@ -638,8 +636,7 @@ def category_time_travel(category_id, target_version_id):
 @login_required
 def add_new_tool(parent_category_id=None):
     if not current_user.is_authenticated:
-        flash(
-            "You must log in or sign up to add new pages.")
+        flash("You must log in or sign up to add new pages.")
         return redirect(url_for("auth.login"))
     if current_user.is_member:
         form = AddNewToolFormMember()

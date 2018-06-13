@@ -12,13 +12,15 @@
     <input id="big-search-bar-input" class="form-control search-form" aria-label="Search" placeholder="Search software tools">
     <img id="big-loader" src="{{ url_for('static', filename='img/loader.svg') }}" alt="Loading...">
   </div>
-  <div id="home-page-categories">
-    <p id="category-title">Recent Categories</p>
-    <div id="category-columns">
-      {% for category in categories %}
-        <a class="category-list-item btn btn-outline-primary btn-lg" href="{{ url_for(".fetch_category_page", category_id=category.id, category_name=slugify(category.name)) }}" data-notitle>{{ category.name }}</a>
+  <div id="home-page-recent">
+    <h2 class="text-center mb-5">Recent Tools</h2>
+    <div class="recent-grid">
+      {% for tool in tools %}
+        <a class="grid-item btn btn-outline-primary btn-lg"
+           href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=slugify(tool.name)) }}"
+           data-notitle>{{ tool.name }}</a>
       {% endfor %}
     </div>
-    <p id="show-more"><a href="/explore">Show More...</a></p>
+    <p class="text-center"><a href="/explore">Show More...</a></p>
   </div>
 {% endblock %}
