@@ -446,7 +446,7 @@ def edit_tool_page(tool_id):
         else:
             edit_author = create_temp_user()
         environments = utils.parse_environments(form.environments.data)
-        tool.environments = environments or [None]
+        tool.environments = environments or []
         tool.environments_dumped = utils.dump_environments(environments)
         tool.created = form.created.data or None
         tool.project_version = form.project_version.data or None
@@ -651,7 +651,7 @@ def add_new_tool(parent_category_id=None):
             name=form.name.data,
             parent_category_id=form.parent_category_id.data,
             logo_url=form.logo_url.data or None,
-            environments=environments or [None],
+            environments=environments or [],
             environments_dumped=utils.dump_environments(environments),
             created=form.created.data or None,
             project_version=form.project_version.data or None,
