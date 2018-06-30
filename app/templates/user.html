@@ -78,13 +78,15 @@
                       {{ tool_edit.edit_time | timesince }}
                     </a>
                     {% else %}
-                    <a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=slugify(tool_edit.name)) }}"
-                       title="{{ tool_edit.edit_time }}">
+                      <a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=tool_edit.slug) }}"
+                         title="{{ tool_edit.edit_time }}">
                       {{ tool_edit.edit_time | timesince }}
                     </a>
                     {% endif %}
                   </td>
-                  <td><a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=slugify(tool_edit.name)) }}">{{ tool_edit.name }}</a></td>
+                  <td>
+                    <a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=tool_edit.slug) }}">{{ tool_edit.name }}</a>
+                  </td>
                   <td>{{ tool_edit.edit_msg }}</td>
                 </tr>
               {% endfor %}
@@ -119,13 +121,15 @@
                       {{ category_edit.edit_time | timesince }}
                     </a>
                     {% else %}
-                    <a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=slugify(category_edit.name)) }}"
-                       title="{{ category_edit.edit_time }}">
+                      <a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=category_edit.slug) }}"
+                         title="{{ category_edit.edit_time }}">
                       {{ category_edit.edit_time | timesince }}
                     </a>
                     {% endif %}
                   </td>
-                  <td><a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=slugify(category_edit.name)) }}">{{ category_edit.name }}</a></td>
+                  <td>
+                    <a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=category_edit.slug) }}">{{ category_edit.name }}</a>
+                  </td>
                   <td>{{ category_edit.edit_msg }}</td>
                 </tr>
               {% endfor %}

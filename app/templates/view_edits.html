@@ -7,9 +7,13 @@
 
 {% block content %}
   {% if type == "tools" %}
-    <h1><a href="{{ url_for(".fetch_tool_page", tool_id=id, tool_name=slugify(current_version.name)) }}">{{ current_version.name }}</a>: Edits</h1>
+    <h1>
+      <a href="{{ url_for(".fetch_tool_page", tool_id=id, tool_name=current_version.slug) }}">{{ current_version.name }}</a>:
+      Edits</h1>
   {% else %}
-    <h1><a href="{{ url_for(".fetch_category_page", category_id=id, category_name=slugify(current_version.name)) }}">{{ current_version.name }}</a>: Edits</h1>
+    <h1>
+      <a href="{{ url_for(".fetch_category_page", category_id=id, category_name=current_version.slug) }}">{{ current_version.name }}</a>:
+      Edits</h1>
   {% endif %}
   <table class="table table-striped">
     <thead>

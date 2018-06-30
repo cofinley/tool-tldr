@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from slugify import slugify
-
 from . import main
 from ..models import Permission
 
@@ -9,15 +7,6 @@ from ..models import Permission
 @main.app_context_processor
 def inject_permissions():
     return dict(Permission=Permission)
-
-
-@main.app_context_processor
-def utility_processor():
-    # Functions to be used inside jinja functions
-    def jinja_slugify(s):
-        return slugify(s)
-
-    return dict(slugify=jinja_slugify)
 
 
 @main.app_template_filter("timesince")
@@ -42,6 +31,6 @@ def timesince(dt, default="Just now"):
 
     for period, singular, plural in periods:
         if period >= 1:
-            return "%d %s ago" % (period, singular if period == 1 else plural)
+            return "%d %s ago" % (period, singular if int(period) == 1 else plural)
 
     return default

@@ -27,7 +27,7 @@
                 {{ edit.edit_time | timesince }}
               </a>
             {% else %}
-              <a href="{{ url_for(".fetch_tool_page", tool_id=edit.id, tool_name=slugify(edit.name)) }}"
+              <a href="{{ url_for(".fetch_tool_page", tool_id=edit.id, tool_name=edit.slug) }}"
                  title="{{ edit.edit_time }}">
                 {{ edit.edit_time | timesince }}
               </a>
@@ -40,7 +40,7 @@
                 {{ edit.edit_time | timesince }}
               </a>
             {% else %}
-              <a href="{{ url_for(".fetch_category_page", category_id=edit.id, category_name=slugify(edit.name)) }}"
+              <a href="{{ url_for(".fetch_category_page", category_id=edit.id, category_name=edit.slug) }}"
                  title="{{ edit.edit_time }}">
                 {{ edit.edit_time | timesince }}
               </a>
