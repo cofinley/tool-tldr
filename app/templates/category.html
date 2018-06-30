@@ -11,7 +11,8 @@
       <div id="breadcrumbs" class="mt-4">
         {% for item in breadcrumbs %}
           {% if not loop.last %}
-            <span class="breadcrumb-item"><a href="{{ url_for(".fetch_category_page", category_id=item.id, category_name=slugify(item.name)) }}">{{ item.name }}</a></span>
+            <span class="breadcrumb-item"><a
+                    href="{{ url_for(".fetch_category_page", category_id=item.id, category_name=item.slug) }}">{{ item.name }}</a></span>
             <span>  /  </span>
           {% endif %}
           {% if loop.last %}
@@ -61,7 +62,7 @@
           <ul class="category-content-list text-left">
             {% for subcategory in subcategories %}
               <li class="alt-list-item"><a
-                      href="{{ url_for(".fetch_category_page", category_id=subcategory.id, category_name=slugify(subcategory.name)) }}">{{ subcategory.name }}</a>
+                      href="{{ url_for(".fetch_category_page", category_id=subcategory.id, category_name=subcategory.slug) }}">{{ subcategory.name }}</a>
               </li>
               {%- if loop.index == ALTS_PER_LIST %}
                 <p class="alts-more-link"><a href="{{ url_for(".browse_categories", id=category.id) }}">Show
@@ -90,7 +91,7 @@
           <ul class="category-content-list text-left">
             {% for tool in subtools %}
               <li class="alt-list-item"><a
-                      href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=slugify(tool.name)) }}">{{ tool.name }}</a>
+                      href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=tool.slug) }}">{{ tool.name }}</a>
                 {% if tool.environments %}
                   {{ tool.environments_html | safe }}
                 {% endif %}

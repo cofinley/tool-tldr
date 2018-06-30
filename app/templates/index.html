@@ -17,7 +17,7 @@
     <div class="recent-grid">
       {% for tool in tools %}
         <a class="grid-item btn btn-outline-primary btn-lg"
-           href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=slugify(tool.name)) }}"
+           href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=tool.slug) }}"
            data-notitle>{{ tool.name }}</a>
       {% endfor %}
     </div>

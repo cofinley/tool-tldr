@@ -5,6 +5,7 @@ from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
 from flask_sqlalchemy import BaseQuery
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from slugify import slugify
 from sqlalchemy.orm import deferred, backref
 from werkzeug.security import generate_password_hash, check_password_hash
 from whoosh.analysis import FancyAnalyzer
@@ -94,6 +95,10 @@ class Tool(db.Model):
     is_time_travel_edit = deferred(db.Column(db.Boolean, default=False), group="edits")
 
     @property
+    def slug(self):
+        return slugify(self.name)
+
+    @property
     def environments_html(self):
         return "<div class='tool-environments'>" + "".join([env.html for env in self.environments]) + "</div>"
 
@@ -125,6 +130,10 @@ class Category(db.Model):
     edit_time = deferred(db.Column(db.DateTime(), default=datetime.utcnow), group="edits")
     edit_author = deferred(db.Column(db.Integer, db.ForeignKey("users.id")), group="edits")
     is_time_travel_edit = deferred(db.Column(db.Boolean, default=False), group="edits")
+
+    @property
+    def slug(self):
+        return slugify(self.name)
 
     def __repr__(self):
         return "<Category %d: %r>" % (self.id, self.name)

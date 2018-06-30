@@ -4,7 +4,6 @@ from flask import render_template, redirect, url_for, flash, request, jsonify, a
     make_response
 from flask_login import current_user, login_required
 from flask_sqlalchemy import Pagination, get_debug_queries
-from slugify import slugify
 from sqlalchemy import not_, and_
 from sqlalchemy_continuum import version_class, versioning_manager
 
@@ -122,9 +121,8 @@ def get_roles():
 @cache.cached(key_prefix=make_cache_key)
 def fetch_category_page(category_id, category_name):
     category = models.Category.query.get_or_404(category_id)
-    category_name_slug = slugify(category.name)
-    if category_name != category_name_slug:
-        return redirect(url_for('.fetch_category_page', category_id=category_id, category_name=category_name_slug))
+    if category_name != category.slug:
+        return redirect(url_for('.fetch_category_page', category_id=category_id, category_name=category.slug))
 
     ALTS_PER_LIST = current_app.config["ALTS_PER_LIST"]
     subcategories = category.children.limit(ALTS_PER_LIST).all()
@@ -145,9 +143,8 @@ def fetch_category_page(category_id, category_name):
 @cache.cached(key_prefix=make_cache_key)
 def fetch_tool_page(tool_id, tool_name):
     tool = models.Tool.query.get_or_404(tool_id)
-    tool_name_slug = slugify(tool.name)
-    if tool_name != tool_name_slug:
-        return redirect(url_for('.fetch_tool_page', tool_id=tool_id, tool_name=tool_name_slug))
+    if tool_name != tool.slug:
+        return redirect(url_for('.fetch_tool_page', tool_id=tool_id, tool_name=tool.slug))
 
     ALTS_PER_LIST = current_app.config["ALTS_PER_LIST"]
     tool_envs = tool.environments
@@ -406,7 +403,7 @@ def edit_category_page(category_id):
         session.pop('_flashes', None)
         flash('This category has been updated.', 'success')
         cache.clear()
-        return redirect(url_for('.fetch_category_page', category_id=category.id, category_name=slugify(category.name)))
+        return redirect(url_for('.fetch_category_page', category_id=category.id, category_name=category.slug))
     if not form.is_submitted():
         form.name.data = category.name
         if current_user.is_member:
@@ -595,7 +592,7 @@ def render_time_travel(page_type, page_id, target_version_id):
 
         cache.clear()
         flash('This page has been updated.', 'success')
-        destination_slug = slugify(destination_version.name)
+        destination_slug = destination_version.slug
         if page_type == "categories":
             return_route = url_for('main.fetch_category_page', category_id=page_id, category_name=destination_slug)
         else:

@@ -31,7 +31,7 @@
                       >
                     {% else %}
                       href="
-                      {{ url_for(".fetch_category_page", category_id=change.object_id, category_name=slugify(change.object.name)) }}
+                      {{ url_for(".fetch_category_page", category_id=change.object_id, category_name=change.object.slug) }}
                       ">
                     {% endif %}
                   {% elif change.object_type == "Tool" %}
@@ -41,7 +41,7 @@
                       ">
                     {% else %}
                       href="
-                      {{ url_for(".fetch_tool_page", tool_id=change.object_id, tool_name=slugify(change.object.name)) }}
+                      {{ url_for(".fetch_tool_page", tool_id=change.object_id, tool_name=change.object.slug) }}
                       ">
                     {% endif %}
                   {% endif %}
@@ -59,12 +59,12 @@
         {% endif %}
         {% if change.object_type == "Tool" %}
           <td>
-            <a href="{{ url_for(".fetch_tool_page", tool_id=change.object_id, tool_name=slugify(change.object.name)) }}">{{ change.object.name }}</a>
+            <a href="{{ url_for(".fetch_tool_page", tool_id=change.object_id, tool_name=change.object.slug) }}">{{ change.object.name }}</a>
             ({{ change.object_type }})
           </td>
         {% else %}
           <td>
-            <a href="{{ url_for(".fetch_category_page", category_id=change.object_id, category_name=slugify(change.object.name)) }}">{{ change.object.name }}</a>
+            <a href="{{ url_for(".fetch_category_page", category_id=change.object_id, category_name=change.object.slug) }}">{{ change.object.name }}</a>
             ({{ change.object_type }})
           </td>
         {% endif %}

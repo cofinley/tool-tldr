@@ -8,7 +8,8 @@
 {% block content %}
   <div id="explore-header" class="content-page-header">
     <h1 id="explore-title" class="display-4">Explore{% if category %} -
-      <a href={{ url_for("main.fetch_category_page", category_id=id, category_name=slugify(category.name)) }}>{{ category.name }}</a>{% endif %}</h1>
+      <a href={{ url_for("main.fetch_category_page", category_id=id, category_name=category.slug) }}>{{ category.name }}</a>{% endif %}
+    </h1>
     <button id="collapse-button" type="button" class="btn btn-secondary">Collapse All</button>
   </div>
   <p class="explore-subtitle">Here, you can dive into the landscape and get a top-down view of all the different
