@@ -14,8 +14,9 @@
       <div class="question-block tool-question-block">
         <h1 class="question-title">The What</h1>
         <p class="text-muted help-text mb-0">What is the tl;dr of the tool? How does it differ from the description of
-          <a href={{ url_for("main.fetch_category_page", category_id=tree[-1].id, category_name=tree[-1].slug) }}>its
-            category</a>?</p>
+          its category,
+          <a href={{ url_for("main.fetch_category_page", category_id=tree[-1].id, category_name=tree[-1].slug) }}>{{ tree[-1].name }}</a>?
+        </p>
         <p>{{ tool.what }}</p>
       </div>
       <div class="question-block tool-question-block">
