@@ -36,8 +36,8 @@ class RequiredIf(DataRequired):
 
 
 class EditProfileForm(FlaskForm):
-    name = StringField('Your name', validators=[Length(0, 64)])
-    about_me = TextAreaField('About me')
+    name = StringField('Your name (optional)', validators=[Length(0, 64)])
+    about_me = TextAreaField('About me (optional)')
     submit = SubmitField('Submit')
 
 
