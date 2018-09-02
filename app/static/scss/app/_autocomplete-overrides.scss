@@ -27,23 +27,28 @@
   padding-top: 5px;
   z-index: auto;
 
-  .autocomplete-suggestion {
-    font-size: .98em;
-    font-weight: 400;
-    padding: .2em 0 .2em .5em;
-    background-color: #f5fafd;
+}
 
-    b {
-      background-color: rgba(125, 168, 208, .2);
-    }
+.autocomplete-suggestion {
+  font-size: .98em;
+  font-weight: 400;
+  padding: .2em 0 .2em .5em;
+  background-color: #f5fafd;
 
-    &:first-child {
-      margin-top: -2px;
-    }
+  b {
+    background-color: rgba(125, 168, 208, .2);
   }
 
-  .autocomplete-suggestion-big {
-    font-size: 1.4rem;
-    padding: .45em 0 .4em .75em;
+  &:first-child {
+    margin-top: -2px;
   }
+
+  &.selected {
+    background-color: #d8e9f3;
+  }
+}
+
+.autocomplete-suggestion-big {
+  font-size: 1.4rem;
+  padding: .45em 0 .4em .75em;
 }
