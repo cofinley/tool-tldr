@@ -7,6 +7,7 @@ var autocomplete = (function () {
         var xhr;
         new autoComplete({
             selector: selector,
+            minChars: 1,
             source: function (term, response) {
                 $(loaderDiv).show();
                 try {
@@ -39,11 +40,16 @@ var autocomplete = (function () {
                 return suggestionDiv.outerHTML;
             },
             onSelect: function (e, term, item) {
+                // Handles clicks, enter key is handled by utils.js keyup handlers
+                // Still need to handle all types here to take care of clicks
                 if (e.keyCode === 13) {
                     e.preventDefault();
                 }
                 var itemData = item.dataset;
-                if (itemData.type === 't') {
+                if (itemData.type === '0') {
+                    return false;
+                }
+                else if (itemData.type === 't') {
                     window.location.href = window.location.origin + '/tools/' + itemData.id;
                 }
                 else if (itemData.type === 'c') {

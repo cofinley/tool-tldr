@@ -208,6 +208,9 @@ def search_tools():
     for category in search_categories:
         results.append({"label": category.name, "type": "c", "id": category.id})
 
+    if not results:
+        results.append({"label": "No results found", "type": "0", "id": "-1"})
+
     return jsonify(results)
 
 
