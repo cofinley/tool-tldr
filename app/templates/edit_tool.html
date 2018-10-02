@@ -19,7 +19,7 @@
 
       <p><span class="red-text">*</span> fields are required</p>
 
-      {{ wtf.form_field(form.name) }}
+      {{ wtf.form_field(form.name, class="form-control sl") }}
       {% if is_member %}
         <div class="form-group">
           {{ wtf.form_field(form.move_parent, checked=False) }}
@@ -35,9 +35,9 @@
       {{ wtf.form_field(form.project_version) }}
       {{ wtf.form_field(form.is_active) }}
       {{ wtf.form_field(form.link) }}
-      {{ wtf.form_field(form.what, maxlength=max) }}
+      {{ wtf.form_field(form.what, maxlength=max, class="form-control sl") }}
       <span id="what-count" class="char-count text-muted">{{ max }}</span>
-      {{ wtf.form_field(form.why, maxlength=max) }}
+      {{ wtf.form_field(form.why, maxlength=max, class="form-control sl") }}
       <span id="why-count" class="char-count text-muted">{{ max }}</span>
       {{ wtf.form_field(form.edit_msg, class="form-control edit-msg-input", maxlength=edit_msg_max) }}
       <span id="edit_msg-count" class="char-count text-muted">{{ edit_msg_max }}</span>

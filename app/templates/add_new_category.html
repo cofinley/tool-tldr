@@ -17,11 +17,11 @@
 
       {{ wtf.form_field(form.name) }}
       {{ wtf.form_field(form.parent_category, readonly=True) }}
-      {{ wtf.form_field(form.what, maxlength=max) }}
+      {{ wtf.form_field(form.what, maxlength=max, class="form-control sl") }}
       <span id="what-count" class="char-count text-muted">{{ max }}</span>
-      {{ wtf.form_field(form.why, maxlength=max) }}
+      {{ wtf.form_field(form.why, maxlength=max, class="form-control sl") }}
       <span id="why-count" class="char-count text-muted">{{ max }}</span>
-      {{ wtf.form_field(form.where, maxlength=max) }}
+      {{ wtf.form_field(form.where, maxlength=max, class="form-control sl") }}
       <span id="where-count" class="char-count text-muted">{{ max }}</span>
 
       {% include "includes/form_actions.html" %}
