@@ -20,7 +20,7 @@ var softlinks = (function () {
                     if (null === q || q.length < 1) {
                         return cb([]);
                     }
-                    $.get(window.location.origin + "/search", {q: q}, function (data) {
+                    $.get(window.location.origin + "/search", {q: q, e: true}, function (data) {
                         cb(data.map(function(currentValue, idx, arr){
                             currentValue.type = currentValue.type === "c" ? "Category" : "Tool";
                             return currentValue;

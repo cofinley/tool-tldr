@@ -200,13 +200,20 @@ def get_tooltip(category_id):
 @cache.cached(key_prefix=make_cache_key)
 def search_tools():
     search_query = request.args.get("q")
+    is_escaped = request.args.get("e")
     results = []
     queried_tools = models.Tool.query.whoosh_search(search_query, like=True).all()
     for tool in queried_tools:
-        results.append({"label": tool.name, "type": "t", "id": tool.id})
+        label = tool.name
+        if is_escaped:
+            label = utils.escape_html(label)
+        results.append({"label": label, "type": "t", "id": tool.id})
     search_categories = models.Category.query.whoosh_search(search_query, like=True).all()
     for category in search_categories:
-        results.append({"label": category.name, "type": "c", "id": category.id})
+        label = category.name
+        if is_escaped:
+            label = utils.escape_html(label)
+        results.append({"label": label, "type": "c", "id": category.id})
 
     if not results:
         results.append({"label": "No results found", "type": "0", "id": "-1"})
