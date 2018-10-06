@@ -27,12 +27,13 @@
           {{ wtf.form_field(form.parent_category, readonly=True) }}
         </div>
       {% endif %}
-      {{ wtf.form_field(form.what, maxlength=max) }}
+      <p class="alert alert-info">Use '!' followed by a page name to mention it</p>
+      {{ wtf.form_field(form.what, maxlength=max, class="form-control sl") }}
       <span id="what-count" class="char-count text-muted">{{ max }}</span>
-      {{ wtf.form_field(form.why, maxlength=max) }}
+      {{ wtf.form_field(form.why, maxlength=max, class="form-control sl") }}
       <span id="why-count" class="char-count text-muted">{{ max }}</span>
 
-      {{ wtf.form_field(form.where, maxlength=max) }}
+      {{ wtf.form_field(form.where, maxlength=max, class="form-control sl") }}
       <span id="where-count" class="char-count text-muted">{{ max }}</span>
 
       {{ wtf.form_field(form.edit_msg, class="form-control edit-msg-input", maxlength=edit_msg_max) }}

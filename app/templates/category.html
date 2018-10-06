@@ -31,12 +31,12 @@
         <h1 class="question-title">The What</h1>
         <p class="help-text mb-0">What is the TL;DR of the category? What do tools in this category
           let you do?</p>
-        <p>{{ category.what }}</p>
+        <p>{{ what | safe }}</p>
       </div>
       <div class="question-block category-question-block col-lg-4">
         <h1 class="question-title">The Why</h1>
         <p class="help-text mb-0">Why would I need to use it? Why would I need to <i>start</i> using it?</p>
-        <p>{{ category.why }}</p>
+        <p>{{ why | safe }}</p>
       </div>
       <div class="question-block category-question-block col-lg-4">
         <h1 class="question-title">The Where</h1>
@@ -45,7 +45,7 @@
           {% if category.parent %}{{ category.parent.name }}{% else %}application{% endif %} design/pipeline is this
           category of tools used? <a href="/about#categories-where">Learn more.</a>
         </p>
-        <p>{{ category.where }}</p>
+        <p>{{ where | safe }}</p>
       </div>
     </div>
 

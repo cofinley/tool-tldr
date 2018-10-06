@@ -129,12 +129,19 @@ def fetch_category_page(category_id, category_name):
     subtools = category.tools.limit(ALTS_PER_LIST).all()
     category_tree = utils.build_bottom_up_tree(category)
 
+    what = utils.process_mentions(category.what)
+    why = utils.process_mentions(category.why)
+    where = utils.process_mentions(category.where)
+
     return render_template("category.html",
                            category=category,
                            subcategories=subcategories,
                            subtools=subtools,
                            breadcrumbs=category_tree,
-                           ALTS_PER_LIST=ALTS_PER_LIST)
+                           ALTS_PER_LIST=ALTS_PER_LIST,
+                           what=what,
+                           why=why,
+                           where=where)
 
 
 @main.route("/tools/<int:tool_id>", defaults={"tool_name": ""})
@@ -173,13 +180,18 @@ def fetch_tool_page(tool_id, tool_name):
     else:
         project_link = None
 
+    what = utils.process_mentions(tool.what)
+    why = utils.process_mentions(tool.why)
+
     return render_template("tool.html",
                            tool=tool,
                            env_alts=alts_for_this_env,
                            other_alts=alts_for_other_envs,
                            tree=category_tree,
                            link=project_link,
-                           ALTS_PER_LIST=ALTS_PER_LIST)
+                           ALTS_PER_LIST=ALTS_PER_LIST,
+                           what=what,
+                           why=why)
 
 
 @main.route("/tip/<int:category_id>")
@@ -189,9 +201,9 @@ def get_tooltip(category_id):
     result = db.session.query(*columns).filter_by(id=category_id).first()
     if result:
         name, what = result
+        what = utils.process_mentions(what, show_links=False)
         bold_name = "<b>" + utils.escape_html(name) + "</b>"
-        escaped_what = utils.escape_html(what)
-        return bold_name + "<br>" + escaped_what
+        return bold_name + "<br>" + what
     else:
         abort(404)
 
@@ -200,13 +212,20 @@ def get_tooltip(category_id):
 @cache.cached(key_prefix=make_cache_key)
 def search_tools():
     search_query = request.args.get("q")
+    is_escaped = request.args.get("e")
     results = []
     queried_tools = models.Tool.query.whoosh_search(search_query, like=True).all()
     for tool in queried_tools:
-        results.append({"label": tool.name, "type": "t", "id": tool.id})
+        label = tool.name
+        if is_escaped:
+            label = utils.escape_html(label)
+        results.append({"label": label, "type": "t", "id": tool.id})
     search_categories = models.Category.query.whoosh_search(search_query, like=True).all()
     for category in search_categories:
-        results.append({"label": category.name, "type": "c", "id": category.id})
+        label = category.name
+        if is_escaped:
+            label = utils.escape_html(label)
+        results.append({"label": label, "type": "c", "id": category.id})
 
     if not results:
         results.append({"label": "No results found", "type": "0", "id": "-1"})
