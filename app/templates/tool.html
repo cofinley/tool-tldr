@@ -17,12 +17,12 @@
           its category,
           <a href={{ url_for("main.fetch_category_page", category_id=tree[-1].id, category_name=tree[-1].slug) }}>{{ tree[-1].name }}</a>?
         </p>
-        <p>{% if what_with_mentions %}{{ what_with_mentions | safe }}{% else %}{{ tool.what }}{% endif %}</p>
+        <p>{{ what | safe }}</p>
       </div>
       <div class="question-block tool-question-block">
         <h1 class="question-title">The Why</h1>
         <p class="text-muted help-text mb-0">Why use this tool over an alternative?</p>
-        <p>{% if why_with_mentions %}{{ why_with_mentions | safe }}{% else %}{{ tool.why }}{% endif%}</p>
+        <p>{{ why | safe }}</p>
       </div>
 
       <div class="question-block tool-question-block">

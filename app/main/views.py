@@ -129,12 +129,19 @@ def fetch_category_page(category_id, category_name):
     subtools = category.tools.limit(ALTS_PER_LIST).all()
     category_tree = utils.build_bottom_up_tree(category)
 
+    what = utils.process_mentions(category.what)
+    why = utils.process_mentions(category.why)
+    where = utils.process_mentions(category.where)
+
     return render_template("category.html",
                            category=category,
                            subcategories=subcategories,
                            subtools=subtools,
                            breadcrumbs=category_tree,
-                           ALTS_PER_LIST=ALTS_PER_LIST)
+                           ALTS_PER_LIST=ALTS_PER_LIST,
+                           what=what,
+                           why=why,
+                           where=where)
 
 
 @main.route("/tools/<int:tool_id>", defaults={"tool_name": ""})
@@ -173,7 +180,8 @@ def fetch_tool_page(tool_id, tool_name):
     else:
         project_link = None
 
-    what_with_mentions, why_with_mentions = utils.scan_tool_page_for_mentions(tool.what, tool.why)
+    what = utils.process_mentions(tool.what)
+    why = utils.process_mentions(tool.why)
 
     return render_template("tool.html",
                            tool=tool,
@@ -182,8 +190,8 @@ def fetch_tool_page(tool_id, tool_name):
                            tree=category_tree,
                            link=project_link,
                            ALTS_PER_LIST=ALTS_PER_LIST,
-                           what_with_mentions=what_with_mentions,
-                           why_with_mentions=why_with_mentions)
+                           what=what,
+                           why=why)
 
 
 @main.route("/tip/<int:category_id>")
@@ -193,9 +201,9 @@ def get_tooltip(category_id):
     result = db.session.query(*columns).filter_by(id=category_id).first()
     if result:
         name, what = result
+        what = utils.process_mentions(what, show_links=False)
         bold_name = "<b>" + utils.escape_html(name) + "</b>"
-        escaped_what = utils.escape_html(what)
-        return bold_name + "<br>" + escaped_what
+        return bold_name + "<br>" + what
     else:
         abort(404)
 

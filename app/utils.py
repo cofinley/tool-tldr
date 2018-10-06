@@ -355,11 +355,10 @@ def gen_environment_diff_html(old, new):
     return [left_html, right_html]
 
 
-def replace_mentions(body, matches):
-    if not matches:
-        return None
+def replace_mentions(body, matches, show_links, marker='!'):
+    body = escape_html(body)
     for match in matches:
-        string_to_replace = '!' + "-".join(match)
+        string_to_replace = marker + "-".join(match)
         cls = None
         type = None
         if match[0] == "Tool":
@@ -370,15 +369,15 @@ def replace_mentions(body, matches):
             type = "categories"
         id = int(match[1])
         page = cls.query.get(id)
-        page_link_text = "<a href='/{}/{}/{}'>{}</a>".format(type, id, page.slug, escape_html(page.name))
+        page_link_text = escape_html(page.name)
+        if show_links:
+            page_link_text = "<a href='/{}/{}/{}'>{}</a>".format(type, id, page.slug, escape_html(page.name))
         body = body.replace(string_to_replace, page_link_text)
     return body
 
 
-def scan_tool_page_for_mentions(what, why):
-    mention_pattern = r"(Category|Tool)\-(\d+)"
-    what_matches = re.findall(mention_pattern, what)
-    why_matches = re.findall(mention_pattern, why)
-    new_what = replace_mentions(what, what_matches)
-    new_why = replace_mentions(why, why_matches)
-    return new_what, new_why
+def process_mentions(body, show_links=True):
+    mention_pattern = r"!(Category|Tool)\-(\d+)"
+    matches = re.findall(mention_pattern, body)
+    new_body = replace_mentions(body, matches, show_links)
+    return new_body
