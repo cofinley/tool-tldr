@@ -173,13 +173,17 @@ def fetch_tool_page(tool_id, tool_name):
     else:
         project_link = None
 
+    what_with_mentions, why_with_mentions = utils.scan_tool_page_for_mentions(tool.what, tool.why)
+
     return render_template("tool.html",
                            tool=tool,
                            env_alts=alts_for_this_env,
                            other_alts=alts_for_other_envs,
                            tree=category_tree,
                            link=project_link,
-                           ALTS_PER_LIST=ALTS_PER_LIST)
+                           ALTS_PER_LIST=ALTS_PER_LIST,
+                           what_with_mentions=what_with_mentions,
+                           why_with_mentions=why_with_mentions)
 
 
 @main.route("/tip/<int:category_id>")
