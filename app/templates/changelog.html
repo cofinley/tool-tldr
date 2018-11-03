@@ -1,16 +1,36 @@
 {% extends "base.html" %}
 
-{% block title %}Changelogs{% endblock %}
+{% block title %}Change Log{% endblock %}
 {%- block description -%}
   See all the changes made to tooltldr.com over time.
 {%- endblock -%}
 
 {% block content %}
 
+  <h1 class="display-4">Change Log</h1>
+
   <div class="changelogs">
 
     <div class="row">
-      <div class="col-md-7 m-auto">
+      <div class="col-md-7">
+        <h2>v1.2</h2>
+        <span class="text-muted changelog-date">November 3, 2018</span>
+        <ul>
+          <li>Allow hyperlinks to other pages</li>
+          <ul>
+            <li>When editing pages, you can use an exclamation point ('!') followed by text to search for the page and
+              insert a link to another tool or category page.
+            </li>
+          </ul>
+          <li>Fixed bug when leaving environment field blank</li>
+          <li>Show recent tools instead of categories on home page</li>
+          <li>Let users know when there are no results in search</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-7">
         <h2>v1.1.1</h2>
         <span class="text-muted changelog-date">May 29th, 2018</span>
         <ul>
@@ -20,7 +40,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-7 m-auto">
+      <div class="col-md-7">
         <h2>v1.1</h2>
         <span class="text-muted changelog-date">May 28th, 2018</span>
         <ul>
@@ -46,7 +66,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-7 m-auto">
+      <div class="col-md-7">
         <h2>v1.0</h2>
         <span class="text-muted changelog-date">May 9th, 2018</span>
         <ul>

@@ -795,6 +795,6 @@ def sitemap():
     return response
 
 
-@main.route("/changelogs")
-def changelogs():
-    return render_template("changelogs.html")
+@main.route("/changelog")
+def changelog():
+    return render_template("changelog.html")
