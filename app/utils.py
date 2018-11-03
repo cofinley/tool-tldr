@@ -1,9 +1,9 @@
 import html
+import re
 from datetime import timedelta, datetime
 from difflib import ndiff
 from typing import List
 from urllib.parse import urlsplit
-import re
 
 from flask import request, current_app
 from sqlalchemy_continuum import version_class, versioning_manager
@@ -378,6 +378,8 @@ def replace_mentions(body, matches, show_links, marker='!'):
 
 def process_mentions(body, show_links=True):
     mention_pattern = r"!(Category|Tool)\-(\d+)"
+    if body is None:
+        return body
     matches = re.findall(mention_pattern, body)
     new_body = replace_mentions(body, matches, show_links)
     return new_body
