@@ -25,9 +25,10 @@
       {{ wtf.form_field(form.project_version) }}
       {{ wtf.form_field(form.is_active) }}
       {{ wtf.form_field(form.link) }}
-      {{ wtf.form_field(form.what, maxlength=max) }}
+      <p class="alert alert-info">Use '!' followed by a page name to mention it</p>
+      {{ wtf.form_field(form.what, maxlength=max, class="form-control sl") }}
       <span id="what-count" class="char-count text-muted">{{ max }}</span>
-      {{ wtf.form_field(form.why, maxlength=max) }}
+      {{ wtf.form_field(form.why, maxlength=max, class="form-control sl") }}
       <span id="why-count" class="char-count text-muted">{{ max }}</span>
       {% if not is_member %}
         {{ form.recaptcha }}

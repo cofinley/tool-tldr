@@ -4,7 +4,6 @@ from flask import render_template, redirect, url_for, flash, request, jsonify, a
     make_response
 from flask_login import current_user, login_required
 from flask_sqlalchemy import Pagination, get_debug_queries
-from slugify import slugify
 from sqlalchemy import not_, and_
 from sqlalchemy_continuum import version_class, versioning_manager
 
@@ -51,13 +50,11 @@ def anonymous_warning():
 @main.route("/")
 def index():
     pages_to_show = current_app.config["POPULAR_PAGE_COUNT"]
-    # TODO: popularity score
-    # TODO: include popular tools
-    categories = models.Category.query \
-        .order_by(models.Category.id.desc()) \
+    tools = models.Tool.query \
+        .order_by(models.Tool.id.desc()) \
         .limit(pages_to_show)
     return render_template("index.html",
-                           categories=categories)
+                           tools=tools)
 
 
 @main.route("/explore")
@@ -124,21 +121,27 @@ def get_roles():
 @cache.cached(key_prefix=make_cache_key)
 def fetch_category_page(category_id, category_name):
     category = models.Category.query.get_or_404(category_id)
-    category_name_slug = slugify(category.name)
-    if category_name != category_name_slug:
-        return redirect(url_for('.fetch_category_page', category_id=category_id, category_name=category_name_slug))
+    if category_name != category.slug:
+        return redirect(url_for('.fetch_category_page', category_id=category_id, category_name=category.slug))
 
     ALTS_PER_LIST = current_app.config["ALTS_PER_LIST"]
     subcategories = category.children.limit(ALTS_PER_LIST).all()
     subtools = category.tools.limit(ALTS_PER_LIST).all()
     category_tree = utils.build_bottom_up_tree(category)
 
+    what = utils.process_mentions(category.what)
+    why = utils.process_mentions(category.why)
+    where = utils.process_mentions(category.where)
+
     return render_template("category.html",
                            category=category,
                            subcategories=subcategories,
                            subtools=subtools,
                            breadcrumbs=category_tree,
-                           ALTS_PER_LIST=ALTS_PER_LIST)
+                           ALTS_PER_LIST=ALTS_PER_LIST,
+                           what=what,
+                           why=why,
+                           where=where)
 
 
 @main.route("/tools/<int:tool_id>", defaults={"tool_name": ""})
@@ -147,9 +150,8 @@ def fetch_category_page(category_id, category_name):
 @cache.cached(key_prefix=make_cache_key)
 def fetch_tool_page(tool_id, tool_name):
     tool = models.Tool.query.get_or_404(tool_id)
-    tool_name_slug = slugify(tool.name)
-    if tool_name != tool_name_slug:
-        return redirect(url_for('.fetch_tool_page', tool_id=tool_id, tool_name=tool_name_slug))
+    if tool_name != tool.slug:
+        return redirect(url_for('.fetch_tool_page', tool_id=tool_id, tool_name=tool.slug))
 
     ALTS_PER_LIST = current_app.config["ALTS_PER_LIST"]
     tool_envs = tool.environments
@@ -178,13 +180,18 @@ def fetch_tool_page(tool_id, tool_name):
     else:
         project_link = None
 
+    what = utils.process_mentions(tool.what)
+    why = utils.process_mentions(tool.why)
+
     return render_template("tool.html",
                            tool=tool,
                            env_alts=alts_for_this_env,
                            other_alts=alts_for_other_envs,
                            tree=category_tree,
                            link=project_link,
-                           ALTS_PER_LIST=ALTS_PER_LIST)
+                           ALTS_PER_LIST=ALTS_PER_LIST,
+                           what=what,
+                           why=why)
 
 
 @main.route("/tip/<int:category_id>")
@@ -194,9 +201,9 @@ def get_tooltip(category_id):
     result = db.session.query(*columns).filter_by(id=category_id).first()
     if result:
         name, what = result
+        what = utils.process_mentions(what, show_links=False)
         bold_name = "<b>" + utils.escape_html(name) + "</b>"
-        escaped_what = utils.escape_html(what)
-        return bold_name + "<br>" + escaped_what
+        return bold_name + "<br>" + what
     else:
         abort(404)
 
@@ -205,13 +212,23 @@ def get_tooltip(category_id):
 @cache.cached(key_prefix=make_cache_key)
 def search_tools():
     search_query = request.args.get("q")
+    is_escaped = request.args.get("e")
     results = []
     queried_tools = models.Tool.query.whoosh_search(search_query, like=True).all()
     for tool in queried_tools:
-        results.append({"label": tool.name, "type": "t", "id": tool.id})
+        label = tool.name
+        if is_escaped:
+            label = utils.escape_html(label)
+        results.append({"label": label, "type": "t", "id": tool.id})
     search_categories = models.Category.query.whoosh_search(search_query, like=True).all()
     for category in search_categories:
-        results.append({"label": category.name, "type": "c", "id": category.id})
+        label = category.name
+        if is_escaped:
+            label = utils.escape_html(label)
+        results.append({"label": label, "type": "c", "id": category.id})
+
+    if not results:
+        results.append({"label": "No results found", "type": "0", "id": "-1"})
 
     return jsonify(results)
 
@@ -408,7 +425,7 @@ def edit_category_page(category_id):
         session.pop('_flashes', None)
         flash('This category has been updated.', 'success')
         cache.clear()
-        return redirect(url_for('.fetch_category_page', category_id=category.id, category_name=slugify(category.name)))
+        return redirect(url_for('.fetch_category_page', category_id=category.id, category_name=category.slug))
     if not form.is_submitted():
         form.name.data = category.name
         if current_user.is_member:
@@ -451,7 +468,7 @@ def edit_tool_page(tool_id):
         else:
             edit_author = create_temp_user()
         environments = utils.parse_environments(form.environments.data)
-        tool.environments = environments or [None]
+        tool.environments = environments or []
         tool.environments_dumped = utils.dump_environments(environments)
         tool.created = form.created.data or None
         tool.project_version = form.project_version.data or None
@@ -596,8 +613,8 @@ def render_time_travel(page_type, page_id, target_version_id):
         db.session.add(edit_author)
 
         cache.clear()
-        flash('This {} has been updated.'.format(page_type), 'success')
-        destination_slug = slugify(destination_version.name)
+        flash('This page has been updated.', 'success')
+        destination_slug = destination_version.slug
         if page_type == "categories":
             return_route = url_for('main.fetch_category_page', category_id=page_id, category_name=destination_slug)
         else:
@@ -638,8 +655,7 @@ def category_time_travel(category_id, target_version_id):
 @login_required
 def add_new_tool(parent_category_id=None):
     if not current_user.is_authenticated:
-        flash(
-            "You must log in or sign up to add new pages.")
+        flash("You must log in or sign up to add new pages.")
         return redirect(url_for("auth.login"))
     if current_user.is_member:
         form = AddNewToolFormMember()
@@ -657,7 +673,7 @@ def add_new_tool(parent_category_id=None):
             name=form.name.data,
             parent_category_id=form.parent_category_id.data,
             logo_url=form.logo_url.data or None,
-            environments=environments or [None],
+            environments=environments or [],
             environments_dumped=utils.dump_environments(environments),
             created=form.created.data or None,
             project_version=form.project_version.data or None,

@@ -3,6 +3,7 @@ from datetime import timedelta, datetime
 from difflib import ndiff
 from typing import List
 from urllib.parse import urlsplit
+import re
 
 from flask import request, current_app
 from sqlalchemy_continuum import version_class, versioning_manager
@@ -352,3 +353,31 @@ def gen_environment_diff_html(old, new):
     right_html += "</div>"
 
     return [left_html, right_html]
+
+
+def replace_mentions(body, matches, show_links, marker='!'):
+    body = escape_html(body)
+    for match in matches:
+        string_to_replace = marker + "-".join(match)
+        cls = None
+        type = None
+        if match[0] == "Tool":
+            cls = models.Tool
+            type = "tools"
+        else:
+            cls = models.Category
+            type = "categories"
+        id = int(match[1])
+        page = cls.query.get(id)
+        page_link_text = escape_html(page.name)
+        if show_links:
+            page_link_text = "<a href='/{}/{}/{}'>{}</a>".format(type, id, page.slug, escape_html(page.name))
+        body = body.replace(string_to_replace, page_link_text)
+    return body
+
+
+def process_mentions(body, show_links=True):
+    mention_pattern = r"!(Category|Tool)\-(\d+)"
+    matches = re.findall(mention_pattern, body)
+    new_body = replace_mentions(body, matches, show_links)
+    return new_body

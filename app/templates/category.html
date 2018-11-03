@@ -11,7 +11,8 @@
       <div id="breadcrumbs" class="mt-4">
         {% for item in breadcrumbs %}
           {% if not loop.last %}
-            <span class="breadcrumb-item"><a href="{{ url_for(".fetch_category_page", category_id=item.id, category_name=slugify(item.name)) }}">{{ item.name }}</a></span>
+            <span class="breadcrumb-item"><a
+                    href="{{ url_for(".fetch_category_page", category_id=item.id, category_name=item.slug) }}">{{ item.name }}</a></span>
             <span>  /  </span>
           {% endif %}
           {% if loop.last %}
@@ -30,12 +31,12 @@
         <h1 class="question-title">The What</h1>
         <p class="help-text mb-0">What is the TL;DR of the category? What do tools in this category
           let you do?</p>
-        <p>{{ category.what }}</p>
+        <p>{{ what | safe }}</p>
       </div>
       <div class="question-block category-question-block col-lg-4">
         <h1 class="question-title">The Why</h1>
         <p class="help-text mb-0">Why would I need to use it? Why would I need to <i>start</i> using it?</p>
-        <p>{{ category.why }}</p>
+        <p>{{ why | safe }}</p>
       </div>
       <div class="question-block category-question-block col-lg-4">
         <h1 class="question-title">The Where</h1>
@@ -44,7 +45,7 @@
           {% if category.parent %}{{ category.parent.name }}{% else %}application{% endif %} design/pipeline is this
           category of tools used? <a href="/about#categories-where">Learn more.</a>
         </p>
-        <p>{{ category.where }}</p>
+        <p>{{ where | safe }}</p>
       </div>
     </div>
 
@@ -61,7 +62,7 @@
           <ul class="category-content-list text-left">
             {% for subcategory in subcategories %}
               <li class="alt-list-item"><a
-                      href="{{ url_for(".fetch_category_page", category_id=subcategory.id, category_name=slugify(subcategory.name)) }}">{{ subcategory.name }}</a>
+                      href="{{ url_for(".fetch_category_page", category_id=subcategory.id, category_name=subcategory.slug) }}">{{ subcategory.name }}</a>
               </li>
               {%- if loop.index == ALTS_PER_LIST %}
                 <p class="alts-more-link"><a href="{{ url_for(".browse_categories", id=category.id) }}">Show
@@ -72,7 +73,7 @@
           </ul>
         {% endif %}
         {% if not subcategories %}
-          <p class="alt-list-item text-muted"><i>No subcategories added yet</i></p>
+          <span class="alt-list-item text-muted"><i>No subcategories added yet</i></span>
         {% endif %}
       </div>
 
@@ -90,7 +91,7 @@
           <ul class="category-content-list text-left">
             {% for tool in subtools %}
               <li class="alt-list-item"><a
-                      href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=slugify(tool.name)) }}">{{ tool.name }}</a>
+                      href="{{ url_for(".fetch_tool_page", tool_id=tool.id, tool_name=tool.slug) }}">{{ tool.name }}</a>
                 {% if tool.environments %}
                   {{ tool.environments_html | safe }}
                 {% endif %}
@@ -105,7 +106,7 @@
         {% endif %}
 
         {% if not subtools %}
-          <p class="alt-list-item text-muted"><i>No tools added yet</i></p>
+          <span class="alt-list-item text-muted"><i>No tools added yet</i></span>
         {% endif %}
       </div>
     </div>

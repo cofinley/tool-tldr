@@ -12,3 +12,5 @@ app/static/dist/
 app/static/css/style.css
 profiler/
 *.egg-info/
+*.swp
+*.mo

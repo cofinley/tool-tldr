@@ -33,16 +33,20 @@
           <li class="list-group-item justify-content-between">
             <span><b>Last seen</b></span>{{ user.last_seen | timesince }}
           </li>
-          <li class="list-group-item justify-content-between"><span><b>Real name</b></span>{{ user.name }}</li>
+          {% if user.name %}
+            <li class="list-group-item justify-content-between"><span><b>Real name</b></span>{{ user.name }}</li>
+          {% endif %}
           <li class="list-group-item justify-content-between"><span><b>Role</b></span><a
                   href="{{ url_for('main.get_roles') }}">{{ user.role.name }}</a></li>
           <li class="list-group-item justify-content-between"><span><b>Total edits</b></span>{{ total_edits }}</li>
         </ul>
 
-        <ul class="list-group">
-          <li class="list-group-item text-muted">About</li>
-          <li class="list-group-item"><p id="about-me">{{ user.about_me }}</p></li>
-        </ul>
+        {% if user.about_me %}
+          <ul class="list-group">
+            <li class="list-group-item text-muted">About</li>
+            <li class="list-group-item"><p id="about-me">{{ user.about_me }}</p></li>
+          </ul>
+        {% endif %}
       </div>
 
       <div id="recent-activity" class="col-lg-9 col-12">
@@ -78,13 +82,15 @@
                       {{ tool_edit.edit_time | timesince }}
                     </a>
                     {% else %}
-                    <a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=slugify(tool_edit.name)) }}"
-                       title="{{ tool_edit.edit_time }}">
+                      <a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=tool_edit.slug) }}"
+                         title="{{ tool_edit.edit_time }}">
                       {{ tool_edit.edit_time | timesince }}
                     </a>
                     {% endif %}
                   </td>
-                  <td><a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=slugify(tool_edit.name)) }}">{{ tool_edit.name }}</a></td>
+                  <td>
+                    <a href="{{ url_for(".fetch_tool_page", tool_id=tool_edit.id, tool_name=tool_edit.slug) }}">{{ tool_edit.name }}</a>
+                  </td>
                   <td>{{ tool_edit.edit_msg }}</td>
                 </tr>
               {% endfor %}
@@ -119,13 +125,15 @@
                       {{ category_edit.edit_time | timesince }}
                     </a>
                     {% else %}
-                    <a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=slugify(category_edit.name)) }}"
-                       title="{{ category_edit.edit_time }}">
+                      <a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=category_edit.slug) }}"
+                         title="{{ category_edit.edit_time }}">
                       {{ category_edit.edit_time | timesince }}
                     </a>
                     {% endif %}
                   </td>
-                  <td><a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=slugify(category_edit.name)) }}">{{ category_edit.name }}</a></td>
+                  <td>
+                    <a href="{{ url_for(".fetch_category_page", category_id=category_edit.id, category_name=category_edit.slug) }}">{{ category_edit.name }}</a>
+                  </td>
                   <td>{{ category_edit.edit_msg }}</td>
                 </tr>
               {% endfor %}

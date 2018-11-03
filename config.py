@@ -4,6 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
+    SITE_VERSION = "1.2"
     SECRET_KEY = os.environ.get('TOOLTLDR_SECRET_KEY')
 
     # Flask-SQLAlchemy

@@ -1,6 +1,5 @@
 from typing import List
 
-from slugify import slugify
 from sqlalchemy import and_
 
 from app import models, utils
@@ -168,7 +167,7 @@ class Tree:
         link = "<a href='/{}/{}/{}'>{}</a>".format(
             utils.escape_html(model_node.__tablename__),
             utils.escape_html(model_node.id),
-            utils.escape_html(slugify(model_node.name)),
+            utils.escape_html(model_node.slug),
             utils.escape_html(model_node.name)
         )
         if model_node.__tablename__ == "tools":
