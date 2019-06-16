@@ -14,3 +14,4 @@ profiler/
 *.egg-info/
 *.swp
 *.mo
+package-lock.json
